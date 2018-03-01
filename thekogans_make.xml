@@ -1,0 +1,78 @@
+<thekogans_make organization = "thekogans"
+                project = "make_core"
+                project_type = "library"
+                major_version = "0"
+                minor_version = "4"
+                patch_version = "1"
+                build_type = "Shared"
+                guid = "5171bfe46480363ac0a3fab41b5addf5"
+                schema_version = "2">
+  <features>
+    <feature>THEKOGANS_MAKE_CORE_HAVE_CURL</feature>
+  </features>
+  <dependencies>
+    <project organization = "thekogans"
+             name = "util">
+      <features>
+        <feature>THEKOGANS_UTIL_HAVE_PUGIXML</feature>
+      </features>
+    </project>
+    <toolchain organization = "thekogans"
+               name = "pugixml"/>
+    <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
+      <toolchain organization = "thekogans"
+                 name = "curllib"/>
+      <toolchain organization = "thekogans"
+                 name = "curl"
+                 config = "Release"
+                 type = "Static"/>
+    </if>
+  </dependencies>
+  <cpp_preprocessor_definitions>
+    <if condition = "$(TOOLCHAIN_OS) == 'Windows'">
+      <cpp_preprocessor_definition>_CRT_SECURE_NO_WARNINGS</cpp_preprocessor_definition>
+    </if>
+  </cpp_preprocessor_definitions>
+  <cpp_headers prefix = "include"
+               install = "yes">
+    <cpp_header>$(organization)/$(project_directory)/Config.h</cpp_header>
+    <if condition = "$(TOOLCHAIN_OS) == 'Windows'">
+      <cpp_header>$(organization)/$(project_directory)/CygwinMountTable.h</cpp_header>
+    </if>
+    <cpp_header>$(organization)/$(project_directory)/Function.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Generator.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Installer.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Manifest.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Parser.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Project.h</cpp_header>
+    <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
+      <cpp_header>$(organization)/$(project_directory)/Source.h</cpp_header>
+      <cpp_header>$(organization)/$(project_directory)/Sources.h</cpp_header>
+    </if>
+    <cpp_header>$(organization)/$(project_directory)/Toolchain.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Utils.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Value.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Version.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/thekogans_make.h</cpp_header>
+  </cpp_headers>
+  <cpp_sources prefix = "src">
+    <if condition = "$(TOOLCHAIN_OS) == 'Windows'">
+      <cpp_source>CygwinMountTable.cpp</cpp_source>
+    </if>
+    <cpp_source>Function.cpp</cpp_source>
+    <cpp_source>Generator.cpp</cpp_source>
+    <cpp_source>Installer.cpp</cpp_source>
+    <cpp_source>Manifest.cpp</cpp_source>
+    <cpp_source>Parser.cpp</cpp_source>
+    <cpp_source>Project.cpp</cpp_source>
+    <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
+      <cpp_source>Source.cpp</cpp_source>
+      <cpp_source>Sources.cpp</cpp_source>
+    </if>
+    <cpp_source>Toolchain.cpp</cpp_source>
+    <cpp_source>Utils.cpp</cpp_source>
+    <cpp_source>Value.cpp</cpp_source>
+    <cpp_source>Version.cpp</cpp_source>
+    <cpp_source>thekogans_make.cpp</cpp_source>
+  </cpp_sources>
+</thekogans_make>
