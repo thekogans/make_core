@@ -2,6 +2,6 @@ thekogans_make_core is the heart of thekogans_make. it's built in to a
 shared library to be used by thekogans_make and plugins made for it.
 
 please take note of the library name; make_core. that underscore gives
-away the fact that make_core is a sub-project of make. because of
-this, when cloning make_core, either clone make or mkdir make and
-clone to make/core.
+away the fact that make_core is a sub-project of make. because of this,
+when cloning make_core, either clone make or mkdir make and clone it to
+make/core.
