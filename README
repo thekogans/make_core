@@ -1,5 +1,5 @@
-thekogans_make_core is the heart of thekogans_make. it's built in to a
-shared library to be used by thekogans_make and plugins made for it.
+libthekogans_make_core is the heart of thekogans_make. it's built in to
+a shared library to be used by thekogans_make and plugins made for it.
 
 please take note of the library name; make_core. that underscore gives
 away the fact that make_core is a sub-project of make. because of this,
