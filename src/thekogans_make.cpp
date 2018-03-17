@@ -2430,34 +2430,34 @@ namespace thekogans {
             namespace {
                 std::regex::flag_type stringToflag (const std::string &flag) {
                     if (flag == "icase") {
-                        return std::regex::flag_type::icase;
+                        return std::regex::icase;
                     }
                     else if (flag == "nosubs") {
-                        return std::regex::flag_type::nosubs;
+                        return std::regex::nosubs;
                     }
                     else if (flag == "optimize") {
-                        return std::regex::flag_type::optimize;
+                        return std::regex::optimize;
                     }
                     else if (flag == "collate") {
-                        return std::regex::flag_type::collate;
+                        return std::regex::collate;
                     }
                     else if (flag == "ECMAScript") {
-                        return std::regex::flag_type::ECMAScript;
+                        return std::regex::ECMAScript;
                     }
                     else if (flag == "basic") {
-                        return std::regex::flag_type::basic;
+                        return std::regex::basic;
                     }
                     else if (flag == "extended") {
-                        return std::regex::flag_type::extended;
+                        return std::regex::extended;
                     }
                     else if (flag == "awk") {
-                        return std::regex::flag_type::awk;
+                        return std::regex::awk;
                     }
                     else if (flag == "grep") {
-                        return std::regex::flag_type::grep;
+                        return std::regex::grep;
                     }
                     else if (flag == "egrep") {
-                        return std::regex::flag_type::egrep;
+                        return std::regex::egrep;
                     }
                     return std::regex::flag_type (0);
                 }
@@ -2474,7 +2474,7 @@ namespace thekogans {
                     }
                     value |= stringToflag (
                         util::TrimSpaces (flags.substr (lastPipe).c_str ()));
-                    return value != 0 ? value : std::regex::flag_type::ECMAScript;
+                    return value != 0 ? value : std::regex::ECMAScript;
                 }
 
                 void MatchComponent (
