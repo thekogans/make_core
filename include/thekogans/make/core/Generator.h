@@ -92,12 +92,14 @@ namespace thekogans {
                 /// \param[in] config Debug or Release.
                 /// \param[in] type Static or Shared.
                 /// \param[in] generateDependencies true = Generate Dependencies.
+                /// \param[in] force true = Don't bother checking the timestamps and force generation.
                 /// \return true = Generated the build system, false = The build system was up to date.
                 virtual bool Generate (
                     const std::string &project_root,
                     const std::string &config,
                     const std::string &type,
-                    bool generateDependencies) = 0;
+                    bool generateDependencies,
+                    bool force) = 0;
 
                 /// \brief
                 /// Delete a build system.

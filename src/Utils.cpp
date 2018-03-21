@@ -1039,12 +1039,13 @@ namespace thekogans {
                     const std::string &generator_,
                     const std::string &config,
                     const std::string &type,
-                    bool generateDependencies) {
+                    bool generateDependencies,
+                    bool force) {
                 Generator::UniquePtr generator = Generator::Get (generator_);
                 if (generator.get () != 0) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
-                            generator->Generate (project_root, config, type, generateDependencies);
+                            generator->Generate (project_root, config, type, generateDependencies, force);
                         }
                         else {
                             THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
@@ -1202,7 +1203,7 @@ namespace thekogans {
                     bool hide_commands,
                     bool parallel_build,
                     const std::string &target) {
-                CreateBuildSystem (project_root, "make", config_, type, true);
+                CreateBuildSystem (project_root, "make", config_, type, true, false);
                 std::string gnu_make =
                     ToSystemPath (
                         Toolchain::GetProgram ("gnu", "make",

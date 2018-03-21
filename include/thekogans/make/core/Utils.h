@@ -239,7 +239,8 @@ namespace thekogans {
                 const std::string &generator,
                 const std::string &config,
                 const std::string &type,
-                bool generateDependencies);
+                bool generateDependencies,
+                bool force);
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API DeleteBuildSystem (
                 const std::string &project_root,
                 const std::string &generator,
