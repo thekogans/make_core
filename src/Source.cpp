@@ -328,6 +328,9 @@ namespace thekogans {
                         projects.erase (it);
                         return true;
                     }
+                    else {
+                        ++it;
+                    }
                 }
                 return false;
             }
@@ -457,6 +460,9 @@ namespace thekogans {
                         std::cout << "Deleting " << **it << std::endl;
                         toolchain.erase (it);
                         return true;
+                    }
+                    else {
+                        ++it;
                     }
                 }
                 return false;
