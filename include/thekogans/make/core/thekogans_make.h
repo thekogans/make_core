@@ -60,6 +60,7 @@ namespace thekogans {
                 static const char * const ATTR_CONDITION;
                 static const char * const ATTR_PREFIX;
                 static const char * const ATTR_INSTALL;
+                static const char * const ATTR_DESTINATION_PREFIX;
                 static const char * const ATTR_NAME;
                 static const char * const ATTR_VALUE;
                 static const char * const ATTR_BRANCH;
@@ -253,8 +254,11 @@ namespace thekogans {
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL FileList {
                     typedef std::unique_ptr<FileList> Ptr;
 
+                    THEKOGANS_UTIL_DECLARE_HEAP (FileList)
+
                     std::string prefix;
                     bool install;
+                    std::string destinationPrefix;
                     struct _LIB_THEKOGANS_MAKE_CORE_DECL File {
                         typedef std::unique_ptr<File> Ptr;
 
@@ -293,11 +297,9 @@ namespace thekogans {
                     };
                     std::list<File::Ptr> files;
 
-                    FileList () :
-                        install (false) {}
-                    virtual ~FileList () {}
-
-                    virtual std::string GetDestinationPrefix () const = 0;
+                    explicit FileList (const std::string &destinationPrefix_) :
+                        install (false),
+                        destinationPrefix (destinationPrefix_) {}
 
                     THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (FileList)
                 };
@@ -309,15 +311,9 @@ namespace thekogans {
                     std::string prefix;
                     bool install;
                     std::list<std::string> paths;
-                    const std::string destinationPrefix;
 
-                    explicit IncludeDirectories (const thekogans_make &config) :
-                        install (false),
-                        destinationPrefix (config.GetToolchainIncludeDirectory ()) {}
-
-                    std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
+                    IncludeDirectories () :
+                        install (false) {}
 
                     THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (IncludeDirectories)
                 };
@@ -333,337 +329,50 @@ namespace thekogans {
                     std::string prefix;
                     bool install;
                     std::list<std::string> files;
-                    const std::string destinationPrefix;
 
                     LinkLibraries (
                         const std::string &prefix_,
-                        bool install_,
-                        const thekogans_make &config) :
+                        bool install_) :
                         prefix (prefix_),
-                        install (install_),
-                        destinationPrefix (config.GetToolchainLibDirectory ()) {}
-
-                    std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
+                        install (install_) {}
 
                     THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (LinkLibraries)
                 };
                 std::list<LinkLibraries::Ptr> link_libraries;
                 std::list<std::string> masm_flags;
                 std::list<std::string> masm_preprocessor_definitions;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL MASMHeaders : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (MASMHeaders)
-
-                    const std::string destinationPrefix;
-
-                    explicit MASMHeaders (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainIncludeDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (MASMHeaders)
-                };
                 std::list<FileList::Ptr> masm_headers;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL MASMSources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (MASMSources)
-
-                    const std::string destinationPrefix;
-
-                    explicit MASMSources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainSrcDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (MASMSources)
-                };
                 std::list<FileList::Ptr> masm_sources;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL MASMTests : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (MASMTests)
-
-                    const std::string destinationPrefix;
-
-                    explicit MASMTests (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainTestsDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (MASMTests)
-                };
                 std::list<FileList::Ptr> masm_tests;
                 std::list<std::string> nasm_flags;
                 std::list<std::string> nasm_preprocessor_definitions;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL NASMHeaders : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (NASMHeaders)
-
-                    const std::string destinationPrefix;
-
-                    explicit NASMHeaders (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainIncludeDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (NASMHeaders)
-                };
                 std::list<FileList::Ptr> nasm_headers;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL NASMSources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (NASMSources)
-
-                    const std::string destinationPrefix;
-
-                    explicit NASMSources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainSrcDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (NASMSources)
-                };
                 std::list<FileList::Ptr> nasm_sources;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL NASMTests : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (NASMTests)
-
-                    const std::string destinationPrefix;
-
-                    explicit NASMTests (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainTestsDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (NASMTests)
-                };
                 std::list<FileList::Ptr> nasm_tests;
                 std::list<std::string> c_flags;
                 std::list<std::string> c_preprocessor_definitions;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL CHeaders : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (CHeaders)
-
-                    const std::string destinationPrefix;
-
-                    explicit CHeaders (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainIncludeDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CHeaders)
-                };
                 std::list<FileList::Ptr> c_headers;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL CSources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (CSources)
-
-                    const std::string destinationPrefix;
-
-                    explicit CSources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainSrcDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CSources)
-                };
                 std::list<FileList::Ptr> c_sources;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL CTests : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (CTests)
-
-                    const std::string destinationPrefix;
-
-                    explicit CTests (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainTestsDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CTests)
-                };
                 std::list<FileList::Ptr> c_tests;
                 std::list<std::string> cpp_flags;
                 std::list<std::string> cpp_preprocessor_definitions;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL CPPHeaders : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (CPPHeaders)
-
-                    const std::string destinationPrefix;
-
-                    explicit CPPHeaders (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainIncludeDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CPPHeaders)
-                };
                 std::list<FileList::Ptr> cpp_headers;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL CPPSources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (CPPSources)
-
-                    const std::string destinationPrefix;
-
-                    explicit CPPSources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainSrcDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CPPSources)
-                };
                 std::list<FileList::Ptr> cpp_sources;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL CPPTests : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (CPPTests)
-
-                    const std::string destinationPrefix;
-
-                    explicit CPPTests (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainTestsDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CPPTests)
-                };
                 std::list<FileList::Ptr> cpp_tests;
                 std::list<std::string> objective_c_flags;
                 std::list<std::string> objective_c_preprocessor_definitions;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL ObjectiveCHeaders : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (ObjectiveCHeaders)
-
-                    const std::string destinationPrefix;
-
-                    explicit ObjectiveCHeaders (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainIncludeDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (ObjectiveCHeaders)
-                };
                 std::list<FileList::Ptr> objective_c_headers;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL ObjectiveCSources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (ObjectiveCSources)
-
-                    const std::string destinationPrefix;
-
-                    explicit ObjectiveCSources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainSrcDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (ObjectiveCSources)
-                };
                 std::list<FileList::Ptr> objective_c_sources;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL ObjectiveCTests : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (ObjectiveCTests)
-
-                    const std::string destinationPrefix;
-
-                    explicit ObjectiveCTests (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainTestsDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (ObjectiveCTests)
-                };
                 std::list<FileList::Ptr> objective_c_tests;
                 std::list<std::string> objective_cpp_flags;
                 std::list<std::string> objective_cpp_preprocessor_definitions;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL ObjectiveCPPHeaders : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (ObjectiveCPPHeaders)
-
-                    const std::string destinationPrefix;
-
-                    explicit ObjectiveCPPHeaders (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainIncludeDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (ObjectiveCPPHeaders)
-                };
                 std::list<FileList::Ptr> objective_cpp_headers;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL ObjectiveCPPSources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (ObjectiveCPPSources)
-
-                    const std::string destinationPrefix;
-
-                    explicit ObjectiveCPPSources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainSrcDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (ObjectiveCPPSources)
-                };
                 std::list<FileList::Ptr> objective_cpp_sources;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL ObjectiveCPPTests : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (ObjectiveCPPTests)
-
-                    const std::string destinationPrefix;
-
-                    explicit ObjectiveCPPTests (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainTestsDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (ObjectiveCPPTests)
-                };
                 std::list<FileList::Ptr> objective_cpp_tests;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL Resources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (Resources)
-
-                    const std::string destinationPrefix;
-
-                    explicit Resources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainResourcesDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (Resources)
-                };
                 std::list<FileList::Ptr> resources;
                 // Windows specific.
                 std::list<std::string> rc_flags;
                 std::list<std::string> rc_preprocessor_definitions;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL RCSources : public FileList {
-                    THEKOGANS_UTIL_DECLARE_HEAP (RCSources)
-
-                    const std::string destinationPrefix;
-
-                    explicit RCSources (const thekogans_make &config) :
-                        destinationPrefix (config.GetToolchainResourcesDirectory ()) {}
-
-                    virtual std::string GetDestinationPrefix () const {
-                        return destinationPrefix;
-                    }
-
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (RCSources)
-                };
                 std::list<FileList::Ptr> rc_sources;
                 std::string subsystem;
                 std::string def_file;

@@ -194,7 +194,7 @@ namespace thekogans {
                                     installPaths.insert (
                                         InstallPaths (
                                             MakePath (prefix, (*jt)->name),
-                                            MakePath ((*it)->GetDestinationPrefix (), (*jt)->name)));
+                                            MakePath ((*it)->destinationPrefix, (*jt)->name)));
                                 }
                                 else {
                                     std::string prefix =
@@ -209,7 +209,7 @@ namespace thekogans {
                                         installPaths.insert (
                                             InstallPaths (
                                                 MakePath (prefix, *kt),
-                                                MakePath ((*it)->GetDestinationPrefix (), *kt)));
+                                                MakePath ((*it)->destinationPrefix, *kt)));
                                     }
                                 }
                             }

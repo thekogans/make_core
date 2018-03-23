@@ -53,6 +53,7 @@ namespace thekogans {
             const char * const thekogans_make::ATTR_CONDITION = "condition";
             const char * const thekogans_make::ATTR_PREFIX = "prefix";
             const char * const thekogans_make::ATTR_INSTALL = "install";
+            const char * const thekogans_make::ATTR_DESTINATION_PREFIX = "destination_prefix";
             const char * const thekogans_make::ATTR_NAME = "name";
             const char * const thekogans_make::ATTR_VALUE = "value";
             const char * const thekogans_make::ATTR_BRANCH = "branch";
@@ -180,30 +181,11 @@ namespace thekogans {
             const char * const thekogans_make::VAR_LINK_LIBRARY_SUFFIX = "link_library_suffix";
 
             THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::FileList)
             THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::FileList::File)
             THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::FileList::File::CustomBuild)
             THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::IncludeDirectories)
             THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::LinkLibraries)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::MASMHeaders)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::MASMSources)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::MASMTests)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::NASMHeaders)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::NASMSources)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::NASMTests)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::CHeaders)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::CSources)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::CTests)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::CPPHeaders)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::CPPSources)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::CPPTests)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::ObjectiveCHeaders)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::ObjectiveCSources)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::ObjectiveCTests)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::ObjectiveCPPHeaders)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::ObjectiveCPPSources)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::ObjectiveCPPTests)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::Resources)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::RCSources)
 
             namespace {
                 std::string FormatFeatures (const std::set<std::string> &features) {
@@ -1936,8 +1918,7 @@ namespace thekogans {
                             Parsedependencies (child, dependencies);
                         }
                         else if (childName == TAG_INCLUDE_DIRECTORIES) {
-                            IncludeDirectories::Ptr includeDirectories (
-                                new IncludeDirectories (*this));
+                            IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                             {
                                 includeDirectories->prefix =
                                     Expand (child.attribute (ATTR_PREFIX).value ());
@@ -1965,7 +1946,7 @@ namespace thekogans {
                             LinkLibraries::Ptr linkLibraries (
                                 new LinkLibraries (
                                     Expand (child.attribute (ATTR_PREFIX).value ()),
-                                    Expand (child.attribute (ATTR_INSTALL).value ()) == VALUE_YES, *this));
+                                    Expand (child.attribute (ATTR_INSTALL).value ()) == VALUE_YES));
                             {
                                 SymbolTableMgr symbolTableMgr (localSymbolTable);
                                 localSymbolTable[ATTR_PREFIX] = Value (linkLibraries->prefix);
@@ -1986,29 +1967,27 @@ namespace thekogans {
                                 masm_preprocessor_definitions);
                         }
                         else if (childName == TAG_MASM_HEADERS) {
-                            FileList::Ptr fileList (new MASMHeaders (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_MASM_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (
-                                        new IncludeDirectories (*this));
+                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
-                                    includeDirectories->paths.push_back (
-                                        Expand (child.attribute (ATTR_PREFIX).value ()));
+                                    includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
                                 }
                                 masm_headers.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_MASM_SOURCES) {
-                            FileList::Ptr fileList (new MASMSources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_MASM_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 masm_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_MASM_TESTS) {
-                            FileList::Ptr fileList (new MASMTests (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_MASM_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 masm_tests.push_back (std::move (fileList));
@@ -2024,29 +2003,27 @@ namespace thekogans {
                                 nasm_preprocessor_definitions);
                         }
                         else if (childName == TAG_NASM_HEADERS) {
-                            FileList::Ptr fileList (new NASMHeaders (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_NASM_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (
-                                        new IncludeDirectories (*this));
+                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
-                                    includeDirectories->paths.push_back (
-                                        Expand (child.attribute (ATTR_PREFIX).value ()));
+                                    includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
                                 }
                                 nasm_headers.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_NASM_SOURCES) {
-                            FileList::Ptr fileList (new NASMSources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_NASM_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 nasm_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_NASM_TESTS) {
-                            FileList::Ptr fileList (new NASMTests (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_NASM_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 nasm_tests.push_back (std::move (fileList));
@@ -2062,29 +2039,27 @@ namespace thekogans {
                                 c_preprocessor_definitions);
                         }
                         else if (childName == TAG_C_HEADERS) {
-                            FileList::Ptr fileList (new CHeaders (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_C_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (
-                                        new IncludeDirectories (*this));
+                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
-                                    includeDirectories->paths.push_back (
-                                        Expand (child.attribute (ATTR_PREFIX).value ()));
+                                    includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
                                 }
                                 c_headers.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_C_SOURCES) {
-                            FileList::Ptr fileList (new CSources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_C_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 c_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_C_TESTS) {
-                            FileList::Ptr fileList (new CTests (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_C_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 c_tests.push_back (std::move (fileList));
@@ -2100,29 +2075,27 @@ namespace thekogans {
                                 cpp_preprocessor_definitions);
                         }
                         else if (childName == TAG_CPP_HEADERS) {
-                            FileList::Ptr fileList (new CPPHeaders (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_CPP_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (
-                                        new IncludeDirectories (*this));
+                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
-                                    includeDirectories->paths.push_back (
-                                        Expand (child.attribute (ATTR_PREFIX).value ()));
+                                    includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
                                 }
                                 cpp_headers.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_CPP_SOURCES) {
-                            FileList::Ptr fileList (new CPPSources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_CPP_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 cpp_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_CPP_TESTS) {
-                            FileList::Ptr fileList (new CPPTests (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_CPP_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 cpp_tests.push_back (std::move (fileList));
@@ -2141,29 +2114,27 @@ namespace thekogans {
                                 objective_c_preprocessor_definitions);
                         }
                         else if (childName == TAG_OBJECTIVE_C_HEADERS) {
-                            FileList::Ptr fileList (new ObjectiveCHeaders (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_C_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (
-                                        new IncludeDirectories (*this));
+                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
-                                    includeDirectories->paths.push_back (
-                                        Expand (child.attribute (ATTR_PREFIX).value ()));
+                                    includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
                                 }
                                 objective_c_headers.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_C_SOURCES) {
-                            FileList::Ptr fileList (new ObjectiveCSources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_C_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_c_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_C_TESTS) {
-                            FileList::Ptr fileList (new ObjectiveCTests (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_C_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_c_tests.push_back (std::move (fileList));
@@ -2179,36 +2150,34 @@ namespace thekogans {
                                 objective_cpp_preprocessor_definitions);
                         }
                         else if (childName == TAG_OBJECTIVE_CPP_HEADERS) {
-                            FileList::Ptr fileList (new ObjectiveCPPHeaders (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_CPP_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (
-                                        new IncludeDirectories (*this));
+                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
-                                    includeDirectories->paths.push_back (
-                                        Expand (child.attribute (ATTR_PREFIX).value ()));
+                                    includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
                                 }
                                 objective_cpp_headers.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_CPP_SOURCES) {
-                            FileList::Ptr fileList (new ObjectiveCPPSources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_CPP_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_cpp_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_CPP_TESTS) {
-                            FileList::Ptr fileList (new ObjectiveCPPTests (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_CPP_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_cpp_tests.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_RESOURCES) {
-                            FileList::Ptr fileList (new Resources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainResourcesDirectory ()));
                             ParseFileList (child, TAG_RESOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 resources.push_back (std::move (fileList));
@@ -2225,7 +2194,7 @@ namespace thekogans {
                                 rc_preprocessor_definitions);
                         }
                         else if (childName == TAG_RC_SOURCES) {
-                            FileList::Ptr fileList (new RCSources (*this));
+                            FileList::Ptr fileList (new FileList (GetToolchainResourcesDirectory ()));
                             ParseFileList (child, TAG_RC_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 rc_sources.push_back (std::move (fileList));
@@ -2507,9 +2476,14 @@ namespace thekogans {
                     FileList &fileList) {
                 fileList.prefix = Expand (node.attribute (ATTR_PREFIX).value ());
                 fileList.install = Expand (node.attribute (ATTR_INSTALL).value ()) == VALUE_YES;
+                std::string destinationPrefix = Expand (node.attribute (ATTR_DESTINATION_PREFIX).value ());
+                if (!destinationPrefix.empty ()) {
+                    fileList.destinationPrefix = destinationPrefix;
+                }
                 SymbolTableMgr symbolTableMgr (localSymbolTable);
                 localSymbolTable[ATTR_PREFIX] = Value (fileList.prefix);
                 localSymbolTable[ATTR_INSTALL] = Value (fileList.install);
+                localSymbolTable[ATTR_DESTINATION_PREFIX] = Value (fileList.destinationPrefix);
                 for (pugi::xml_node child = node.first_child ();
                         !child.empty (); child = child.next_sibling ()) {
                     if (child.type () == pugi::node_element) {
