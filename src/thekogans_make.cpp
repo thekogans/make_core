@@ -288,10 +288,7 @@ namespace thekogans {
                     }
 
                     virtual bool EquivalentTo (const Dependency &dependency) const {
-                        const ProjectDependency *projectDependency =
-                            dynamic_cast<const ProjectDependency *> (&dependency);
-                        return projectDependency != 0 &&
-                            projectDependency->GetProjectRoot () == GetProjectRoot ();
+                        return dependency.GetProjectRoot () == GetProjectRoot ();
                     }
 
                     virtual void CollectVersions (Versions &versions) const {
@@ -632,10 +629,7 @@ namespace thekogans {
                     }
 
                     virtual bool EquivalentTo (const Dependency &dependency) const {
-                        const ToolchainDependency *toolchainDependency =
-                            dynamic_cast<const ToolchainDependency *> (&dependency);
-                        return toolchainDependency != 0 &&
-                            toolchainDependency->GetConfigFile () == GetConfigFile ();
+                        return dependency.GetConfigFile () == GetConfigFile ();
                     }
 
                     virtual void CollectVersions (Versions &versions) const {
@@ -2243,7 +2237,52 @@ namespace thekogans {
                         !child.empty (); child = child.next_sibling ()) {
                     if (child.type () == pugi::node_element) {
                         std::string childName = child.name ();
-                        if (childName == TAG_PROJECT) {
+                        if (childName == TAG_DEPENDENCY) {
+                            std::string organization =
+                                Expand (child.attribute (ATTR_ORGANIZATION).value ());
+                            if (organization.empty ()) {
+                                THEKOGANS_UTIL_THROW_STRING_EXCEPTION ("%s",
+                                    "Invalid dependency, missing organization.");
+                            }
+                            std::string name = Expand (child.attribute (ATTR_NAME).value ());
+                            if (name.empty ()) {
+                                THEKOGANS_UTIL_THROW_STRING_EXCEPTION ("%s",
+                                    "Invalid dependency, missing name.");
+                            }
+                            std::string branch;
+                            std::string version = Expand (child.attribute (ATTR_VERSION).value ());
+                            std::string config = Expand (child.attribute (ATTR_CONFIG).value ());
+                            std::string type = Expand (child.attribute (ATTR_TYPE).value ());
+                            std::set<std::string> features;
+                            Parsedependencyfeatures (child, features);
+                            if (Project::Find (organization, name, branch, version, std::string ())) {
+                                dependencies.push_back (
+                                    Dependency::Ptr (
+                                        new ProjectDependency (
+                                            organization,
+                                            name,
+                                            branch,
+                                            version,
+                                            std::string (),
+                                            config,
+                                            type,
+                                            features,
+                                            *this)));
+                            }
+                            else {
+                                dependencies.push_back (
+                                    Dependency::Ptr (
+                                        new ToolchainDependency (
+                                            organization,
+                                            name,
+                                            version,
+                                            config,
+                                            type,
+                                            features,
+                                            *this)));
+                            }
+                        }
+                        else if (childName == TAG_PROJECT) {
                             std::string organization =
                                 Expand (child.attribute (ATTR_ORGANIZATION).value ());
                             if (organization.empty ()) {
