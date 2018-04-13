@@ -62,9 +62,11 @@ namespace thekogans {
 
             #define TARGET_ALL "all"
             #define TARGET_TESTS "tests"
+            #define TARGET_TESTS_SELF "tests_self"
             #define TARGET_CLEAN "clean"
             #define TARGET_CLEAN_SELF "clean_self"
             #define TARGET_TAGS "tags"
+            #define TARGET_TAGS_SELF "tags_self"
 
             #define MAKE "make"
             #define MAKEFILE "Makefile"

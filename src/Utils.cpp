@@ -1103,7 +1103,8 @@ namespace thekogans {
                 void Execgnu_make (
                         const std::string &build_root,
                         const std::string &gnu_make,
-                        const std::list<std::string> &arguments) {
+                        const std::list<std::string> &arguments,
+                        const std::string &target) {
                     util::ChildProcess gnu_makeProcess (gnu_make);
                     gnu_makeProcess.AddArgument ("-f");
                     gnu_makeProcess.AddArgument (MakePath (build_root, MAKEFILE));
@@ -1112,6 +1113,7 @@ namespace thekogans {
                             end = arguments.end (); it != end; ++it) {
                         gnu_makeProcess.AddArgument (*it);
                     }
+                    gnu_makeProcess.AddArgument (target);
                     util::ChildProcess::ChildStatus childStatus = gnu_makeProcess.Exec ();
                     if (childStatus == util::ChildProcess::Failed ||
                             gnu_makeProcess.GetReturnCode () != 0) {
@@ -1148,7 +1150,7 @@ namespace thekogans {
                                         (*it)->GetType (),
                                         gnu_make,
                                         arguments,
-                                        target,
+                                        target == TARGET_TESTS_SELF ? TARGET_ALL : target,
                                         builtProjects);
                                     if (target == TARGET_ALL || target == TARGET_TESTS) {
                                         const core::thekogans_make &plugin_host = thekogans_make::GetConfig (
@@ -1182,12 +1184,12 @@ namespace thekogans {
                                     (*it)->GetType (),
                                     gnu_make,
                                     arguments,
-                                    target,
+                                    target == TARGET_TESTS_SELF ? TARGET_ALL : target,
                                     builtProjects);
                             }
                         }
                         std::string build_root = GetBuildRoot (project_root, "make", config_, type);
-                        Execgnu_make (build_root, gnu_make, arguments);
+                        Execgnu_make (build_root, gnu_make, arguments, target);
                         if (target == TARGET_CLEAN) {
                             DeleteFile (MakePath (build_root, MAKEFILE));
                         }
@@ -1203,7 +1205,13 @@ namespace thekogans {
                     bool hide_commands,
                     bool parallel_build,
                     const std::string &target) {
-                CreateBuildSystem (project_root, "make", config_, type, true, false);
+                CreateBuildSystem (
+                    project_root,
+                    "make",
+                    config_,
+                    target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type,
+                    true,
+                    false);
                 std::string gnu_make =
                     ToSystemPath (
                         Toolchain::GetProgram ("gnu", "make",
@@ -1218,24 +1226,23 @@ namespace thekogans {
                 }
                 arguments.push_back ("mode=" + mode);
                 arguments.push_back ("hide_commands=" + std::string (hide_commands ? VALUE_YES : VALUE_NO));
-                arguments.push_back (target);
                 if (target != TARGET_CLEAN_SELF) {
                     std::set<std::string> builtProjects;
                     BuildProjectHelper (
                         project_root,
                         config_,
-                        type,
+                        target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type,
                         gnu_make,
                         arguments,
                         target,
                         builtProjects);
-                    if (target == TARGET_ALL || target == TARGET_TESTS) {
+                    if (target == TARGET_ALL || target == TARGET_TESTS || target == TARGET_TESTS_SELF) {
                         const thekogans_make &config = thekogans_make::GetConfig (
                             project_root,
                             THEKOGANS_MAKE_XML,
                             MAKE,
                             config_,
-                            type);
+                            target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type);
                         if (config.project_type == PROJECT_TYPE_PROGRAM) {
                             CopyDependencies (project_root, config_, type);
                         }
@@ -1246,7 +1253,7 @@ namespace thekogans {
                 }
                 else {
                     std::string build_root = GetBuildRoot (project_root, "make", config_, type);
-                    Execgnu_make (build_root, gnu_make, arguments);
+                    Execgnu_make (build_root, gnu_make, arguments, target);
                     DeleteFile (MakePath (build_root, MAKEFILE));
                 }
             }

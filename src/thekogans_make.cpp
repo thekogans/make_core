@@ -250,7 +250,7 @@ namespace thekogans {
                                 }
                                 if (!missingFeatures.empty ()) {
                                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                                        "Dependency %s is missing required features: %s",
+                                        "Project dependency %s is missing required features: %s",
                                         MakePath (GetProjectRoot (), GetConfigFile ()).c_str (),
                                         FormatFeatures (features).c_str ());
                                 }
@@ -258,7 +258,7 @@ namespace thekogans {
                         }
                         else {
                             THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                                "Unable to resolve dependency: %s",
+                                "Unable to resolve project dependency: %s",
                                 MakePath (GetProjectRoot (), GetConfigFile ()).c_str ());
                         }
                     }
@@ -589,7 +589,7 @@ namespace thekogans {
                                 }
                                 if (!missingFeatures.empty ()) {
                                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                                        "Dependency %s is missing required features: %s",
+                                        "Toolchain dependency %s is missing required features: %s",
                                         MakePath (GetProjectRoot (), GetConfigFile ()).c_str (),
                                         FormatFeatures (features).c_str ());
                                 }
@@ -597,7 +597,7 @@ namespace thekogans {
                         }
                         else {
                             THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                                "Unable to resolve dependency: %s",
+                                "Unable to resolve toolchain dependency: %s",
                                 MakePath (GetProjectRoot (), GetConfigFile ()).c_str ());
                         }
                     }
