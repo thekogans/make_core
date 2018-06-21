@@ -36,8 +36,7 @@ namespace thekogans {
                 }
 
                 void SkipSpaces (util::Buffer &buffer) {
-                    while (buffer.GetDataAvailableForReading () > 0 &&
-                            isspace (*buffer.GetReadPtr ())) {
+                    while (!buffer.IsEmpty () && isspace (*buffer.GetReadPtr ())) {
                         buffer.AdvanceReadOffset (1);
                     }
                 }
@@ -46,8 +45,7 @@ namespace thekogans {
                         util::Buffer &buffer,
                         util::ui32 token) {
                     SkipSpaces (buffer);
-                    if (buffer.GetDataAvailableForReading () > 0 &&
-                            *buffer.GetReadPtr () == token) {
+                    if (!buffer.IsEmpty () && *buffer.GetReadPtr () == token) {
                         buffer.AdvanceReadOffset (1);
                         return true;
                     }
@@ -57,7 +55,7 @@ namespace thekogans {
                 util::ui32 ParseIndex (util::Buffer &buffer) {
                     std::string index;
                     SkipSpaces (buffer);
-                    while (buffer.GetDataAvailableForReading () > 0) {
+                    while (!buffer.IsEmpty ()) {
                         util::ui8 ch;
                         buffer >> ch;
                         if (isdigit (ch)) {
@@ -82,7 +80,7 @@ namespace thekogans {
                         util::Buffer &buffer) {
                     Function::Identifier identifier (std::string (), util::NIDX32);
                     SkipSpaces (buffer);
-                    while (buffer.GetDataAvailableForReading () > 0) {
+                    while (!buffer.IsEmpty ()) {
                         util::i8 ch;
                         buffer >> ch;
                         switch (ch) {
@@ -150,7 +148,7 @@ namespace thekogans {
                         const thekogans_make &config,
                         util::Buffer &buffer) {
                     std::string option;
-                    while (buffer.GetDataAvailableForReading () > 0) {
+                    while (!buffer.IsEmpty ()) {
                         util::i8 ch;
                         buffer >> ch;
                         if (ch == ':' || ch == ')' || isspace (ch)) {
@@ -193,7 +191,7 @@ namespace thekogans {
                         const thekogans_make &config,
                         util::Buffer &buffer) {
                     std::string value;
-                    while (buffer.GetDataAvailableForReading () > 0) {
+                    while (!buffer.IsEmpty ()) {
                         util::i8 ch;
                         buffer >> ch;
                         if (ch == ')' || isspace (ch)) {

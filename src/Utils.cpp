@@ -155,7 +155,7 @@ namespace thekogans {
                     util::Buffer &buffer,
                     char quoteCh) {
                 std::string quotedString;
-                while (buffer.GetDataAvailableForReading () > 0) {
+                while (!buffer.IsEmpty ()) {
                     util::i8 ch;
                     buffer >> ch;
                     if (ch == quoteCh) {

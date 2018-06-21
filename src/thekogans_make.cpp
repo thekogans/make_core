@@ -1473,7 +1473,7 @@ namespace thekogans {
                 std::size_t formatLength = strlen (format);
                 util::TenantReadBuffer buffer (
                     util::HostEndian, (util::ui8 *)format, (util::ui32)formatLength);
-                while (buffer.GetDataAvailableForReading () > 0) {
+                while (!buffer.IsEmpty ()) {
                     util::i8 ch;
                     buffer >> ch;
                     switch (ch) {
