@@ -71,6 +71,9 @@ namespace thekogans {
             const char * const thekogans_make::TAG_PLUGIN_HOSTS = "plugin_hosts";
             const char * const thekogans_make::TAG_DEPENDENCIES = "dependencies";
             const char * const thekogans_make::TAG_DEPENDENCY = "dependency";
+            const char * const thekogans_make::TAG_PRECOMPILED_HEADER = "precompiled_header";
+            const char * const thekogans_make::TAG_FILE = "file";
+            const char * const thekogans_make::TAG_OUTPUT_FILE = "output_file";
             const char * const thekogans_make::TAG_PROJECT = "project";
             const char * const thekogans_make::TAG_TOOLCHAIN = "toolchain";
             const char * const thekogans_make::TAG_LIBRARY = "library";
@@ -1174,6 +1177,20 @@ namespace thekogans {
                 };
             }
 
+            const char * const thekogans_make::PrecompiledHeader::TYPE_NONE = "None";
+            const char * const thekogans_make::PrecompiledHeader::TYPE_USE = "Use";
+            const char * const thekogans_make::PrecompiledHeader::TYPE_CREATE = "Create";
+
+            std::string thekogans_make::PrecompiledHeader::TypeTostring (Type type) {
+                return type == Use ? TYPE_USE :
+                    type == Create ? TYPE_CREATE : TYPE_NONE;
+            }
+
+            thekogans_make::PrecompiledHeader::Type thekogans_make::PrecompiledHeader::stringToType (const std::string &type) {
+                return type == TYPE_USE ? Use :
+                    type == TYPE_CREATE ? Create : None;
+            }
+
             std::string thekogans_make::GetOrganization (
                     const std::string &project_root,
                     const std::string &config_file) {
@@ -1911,6 +1928,9 @@ namespace thekogans {
                         else if (childName == TAG_DEPENDENCIES) {
                             Parsedependencies (child, dependencies);
                         }
+                        else if (childName == TAG_PRECOMPILED_HEADER) {
+                            Parseprecompiled_header (child, precompiled_header);
+                        }
                         else if (childName == TAG_INCLUDE_DIRECTORIES) {
                             IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
                             {
@@ -2530,9 +2550,10 @@ namespace thekogans {
                         if (childName == name) {
                             std::string value = util::TrimSpaces (child.text ().get ());
                             if (!value.empty ()) {
-                                fileList.files.push_back (
-                                    FileList::File::Ptr (
-                                        new FileList::File (Expand (value.c_str ()))));
+                                FileList::File::Ptr file (
+                                    new FileList::File (Expand (value.c_str ())));
+                                ParseFile (child, *file);
+                                fileList.files.push_back (std::move (file));
                             }
                         }
                         else if (childName == TAG_REGEX) {
@@ -2560,12 +2581,30 @@ namespace thekogans {
                             for (std::list<std::string>::const_iterator
                                     it = results.begin (),
                                     end = results.end (); it != end; ++it) {
-                                fileList.files.push_back (
-                                    FileList::File::Ptr (new FileList::File (*it)));
+                                FileList::File::Ptr file (new FileList::File (*it));
+                                ParseFile (child, *file);
+                                fileList.files.push_back (std::move (file));
                             }
                         }
                         else if (childName == TAG_CUSTOM_BUILD) {
                             Parsecustom_build (child, fileList);
+                        }
+                        else {
+                            ParseDefault (child, node);
+                        }
+                    }
+                }
+            }
+
+            void thekogans_make::ParseFile (
+                    pugi::xml_node &node,
+                    FileList::File &file) {
+                for (pugi::xml_node child = node.first_child ();
+                        !child.empty (); child = child.next_sibling ()) {
+                    if (child.type () == pugi::node_element) {
+                        std::string childName = child.name ();
+                        if (childName == TAG_PRECOMPILED_HEADER) {
+                            Parseprecompiled_header (child, file.precompiled_header);
                         }
                         else {
                             ParseDefault (child, node);
@@ -2641,6 +2680,30 @@ namespace thekogans {
                 }
                 if (!outputs.empty ()) {
                     localSymbolTable[TAG_OUTPUTS] = Value (Value::TYPE_string, outputs);
+                }
+            }
+
+            void thekogans_make::Parseprecompiled_header (
+                    pugi::xml_node &node,
+                    PrecompiledHeader &precompiledHeader) {
+                precompiledHeader.type = PrecompiledHeader::stringToType (
+                    Expand (node.attribute (ATTR_TYPE).value ()));
+                for (pugi::xml_node child = node.first_child ();
+                        !child.empty (); child = child.next_sibling ()) {
+                    if (child.type () == pugi::node_element) {
+                        std::string childName = child.name ();
+                        if (childName == TAG_FILE) {
+                            precompiledHeader.file =
+                                Expand (util::TrimSpaces (child.text ().get ()).c_str ());
+                        }
+                        if (childName == TAG_OUTPUT_FILE) {
+                            precompiledHeader.outputFile =
+                                Expand (util::TrimSpaces (child.text ().get ()).c_str ());
+                        }
+                        else {
+                            ParseDefault (child, node);
+                        }
+                    }
                 }
             }
 

@@ -78,6 +78,9 @@ namespace thekogans {
                 static const char * const TAG_PLUGIN_HOSTS;
                 static const char * const TAG_DEPENDENCIES;
                 static const char * const TAG_DEPENDENCY;
+                static const char * const TAG_PRECOMPILED_HEADER;
+                static const char * const TAG_FILE;
+                static const char * const TAG_OUTPUT_FILE;
                 static const char * const TAG_PROJECT;
                 static const char * const TAG_TOOLCHAIN;
                 static const char * const TAG_LIBRARY;
@@ -251,6 +254,25 @@ namespace thekogans {
                 };
                 std::list<Dependency::Ptr> plugin_hosts;
                 std::list<Dependency::Ptr> dependencies;
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL PrecompiledHeader {
+                    enum Type {
+                        None,
+                        Use,
+                        Create
+                    } type;
+                    std::string file;
+                    std::string outputFile;
+
+                    static const char * const TYPE_NONE;
+                    static const char * const TYPE_USE;
+                    static const char * const TYPE_CREATE;
+
+                    static std::string TypeTostring (Type type);
+                    static Type stringToType (const std::string &type);
+
+                    PrecompiledHeader () :
+                        type (None) {}
+                } precompiled_header;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL FileList {
                     typedef std::unique_ptr<FileList> Ptr;
 
@@ -285,6 +307,7 @@ namespace thekogans {
                             THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CustomBuild)
                         };
                         CustomBuild::Ptr customBuild;
+                        PrecompiledHeader precompiled_header;
 
                         File () {}
                         File (
@@ -498,6 +521,9 @@ namespace thekogans {
                     pugi::xml_node &node,
                     const std::string &name,
                     FileList &fileList);
+                void ParseFile (
+                    pugi::xml_node &node,
+                    FileList::File &file);
                 void Parsecustom_build (
                     pugi::xml_node &node,
                     FileList &fileList);
@@ -505,6 +531,9 @@ namespace thekogans {
                     pugi::xml_node &node,
                     FileList &fileList,
                     FileList::File::CustomBuild &customBuild);
+                void Parseprecompiled_header (
+                    pugi::xml_node &node,
+                    PrecompiledHeader &precompiledHeader);
                 void Parsedependencies (
                     pugi::xml_node &node,
                     FileList &fileList,
