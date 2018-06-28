@@ -185,6 +185,18 @@ namespace thekogans {
                 }
             }
 
+            void Source::Destroy (const std::string &organization) {
+                std::list<std::string> components;
+                components.push_back (_DEVELOPMENT_ROOT);
+                components.push_back (SOURCES_DIR);
+                components.push_back (organization);
+                std::string sourcePath = ToSystemPath (MakePath (components, false));
+                if (util::Path (sourcePath).Exists ()) {
+                    std::cout << "Deleting " << sourcePath << std::endl;
+                    util::Directory::Delete (sourcePath);
+                }
+            }
+
             void Source::GetSources (std::set<std::string> &sources) {
                 std::string sourcePath = ToSystemPath (MakePath (_DEVELOPMENT_ROOT, SOURCES_DIR));
                 if (util::Path (sourcePath).Exists ()) {

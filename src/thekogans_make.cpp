@@ -1186,7 +1186,8 @@ namespace thekogans {
                     type == Create ? TYPE_CREATE : TYPE_NONE;
             }
 
-            thekogans_make::PrecompiledHeader::Type thekogans_make::PrecompiledHeader::stringToType (const std::string &type) {
+            thekogans_make::PrecompiledHeader::Type thekogans_make::PrecompiledHeader::stringToType (
+                    const std::string &type) {
                 return type == TYPE_USE ? Use :
                     type == TYPE_CREATE ? Create : None;
             }

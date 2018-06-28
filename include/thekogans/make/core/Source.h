@@ -124,6 +124,7 @@ namespace thekogans {
                 static void Create (
                     const std::string &organization,
                     const std::string &url);
+                static void Destroy (const std::string &organization);
                 static void GetSources (std::set<std::string> &sources);
 
                 Project *GetProject (
