@@ -1766,9 +1766,9 @@ namespace thekogans {
                     util::FormatString ("%s_%s_VERSION=0x%08x",
                         ORGANIZATION.c_str (),
                         PROJECT.c_str (),
-                        (atoi (major_version.c_str ()) << 16) +
-                        (atoi (minor_version.c_str ()) << 8) +
-                        atoi (patch_version.c_str ())));
+                        (util::stringToui32 (major_version.c_str ()) << 16) +
+                        (util::stringToui32 (minor_version.c_str ()) << 8) +
+                        util::stringToui32 (patch_version.c_str ())));
             }
 
             std::string thekogans_make::GetGoalFileName () const {
@@ -1896,7 +1896,7 @@ namespace thekogans {
                 if (schema_version.empty ()) {
                     schema_version = util::ui32Tostring (THEKOGANS_MAKE_XML_SCHEMA_VERSION);
                 }
-                if (atoi (schema_version.c_str ()) > THEKOGANS_MAKE_XML_SCHEMA_VERSION) {
+                if (util::stringToui32 (schema_version.c_str ()) > THEKOGANS_MAKE_XML_SCHEMA_VERSION) {
                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
                         "%s schema version (%s) is greater then we support (%u). "
                         "Please update your version (%s) of thekogans_make_core.",

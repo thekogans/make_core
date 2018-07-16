@@ -95,7 +95,7 @@ namespace thekogans {
                         if (schema_version.empty ()) {
                             schema_version = util::ui32Tostring (SOURCES_XML_SCHEMA_VERSION);
                         }
-                        if (atoi (schema_version.c_str ()) > SOURCES_XML_SCHEMA_VERSION) {
+                        if (util::stringToui32 (schema_version.c_str ()) > SOURCES_XML_SCHEMA_VERSION) {
                             THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
                                 "%s schema version (%s) is greater then we support (%u). "
                                 "Please update your version (%s) of thekogans_make.",
@@ -113,7 +113,7 @@ namespace thekogans {
                                 }
                             }
                         }
-                        if (atoi (schema_version.c_str ()) != SOURCES_XML_SCHEMA_VERSION) {
+                        if (util::stringToui32 (schema_version.c_str ()) != SOURCES_XML_SCHEMA_VERSION) {
                             schema_version = util::ui32Tostring (SOURCES_XML_SCHEMA_VERSION);
                         }
                     }

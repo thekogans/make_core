@@ -72,7 +72,7 @@ namespace thekogans {
                             buffer.data,
                             buffer.readOffset);
                     }
-                    return atoi (index.c_str ());
+                    return util::stringToui32 (index.c_str ());
                 }
 
                 Function::Identifier ParseIdentifier (

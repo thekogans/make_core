@@ -179,9 +179,9 @@ namespace thekogans {
                         case Value::TYPE_bool:
                             return token.value.ToString () == VALUE_TRUE;
                         case Value::TYPE_int:
-                            return atoi (token.value.ToString ().c_str ()) != 0;
+                            return util::stringToi32 (token.value.ToString ().c_str ()) != 0;
                         case Value::TYPE_float:
-                            return atof (token.value.ToString ().c_str ()) != 0.0f;
+                            return util::stringTof32 (token.value.ToString ().c_str ()) != 0.0f;
                         case Value::TYPE_string:
                         case Value::TYPE_GUID:
                         case Value::TYPE_Version:
@@ -195,13 +195,13 @@ namespace thekogans {
                         const Tokenizer::Token &right) {
                     if (left.value.type == Value::TYPE_int ||
                             right.value.type == Value::TYPE_int) {
-                        return atoi (left.value.ToString ().c_str ()) ==
-                            atoi (right.value.ToString ().c_str ());
+                        return util::stringToi32 (left.value.ToString ().c_str ()) ==
+                            util::stringToi32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_float ||
                             right.value.type == Value::TYPE_float) {
-                        return atof (left.value.ToString ().c_str ()) ==
-                            atof (right.value.ToString ().c_str ());
+                        return util::stringTof32 (left.value.ToString ().c_str ()) ==
+                            util::stringTof32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_Version ||
                             right.value.type == Value::TYPE_Version) {
@@ -216,13 +216,13 @@ namespace thekogans {
                         const Tokenizer::Token &right) {
                     if (left.value.type == Value::TYPE_int ||
                             right.value.type == Value::TYPE_int) {
-                        return atoi (left.value.ToString ().c_str ()) !=
-                            atoi (right.value.ToString ().c_str ());
+                        return util::stringToi32 (left.value.ToString ().c_str ()) !=
+                            util::stringToi32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_float ||
                             right.value.type == Value::TYPE_float) {
-                        return atof (left.value.ToString ().c_str ()) !=
-                            atof (right.value.ToString ().c_str ());
+                        return util::stringTof32 (left.value.ToString ().c_str ()) !=
+                            util::stringTof32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_Version ||
                             right.value.type == Value::TYPE_Version) {
@@ -242,13 +242,13 @@ namespace thekogans {
                     }
                     else if (left.value.type == Value::TYPE_int ||
                             right.value.type == Value::TYPE_int) {
-                        return atoi (left.value.ToString ().c_str ()) <
-                            atoi (right.value.ToString ().c_str ());
+                        return util::stringToi32 (left.value.ToString ().c_str ()) <
+                            util::stringToi32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_float ||
                             right.value.type == Value::TYPE_float) {
-                        return atof (left.value.ToString ().c_str ()) <
-                            atof (right.value.ToString ().c_str ());
+                        return util::stringTof32 (left.value.ToString ().c_str ()) <
+                            util::stringTof32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_Version ||
                             right.value.type == Value::TYPE_Version) {
@@ -268,13 +268,13 @@ namespace thekogans {
                     }
                     else if (left.value.type == Value::TYPE_int ||
                             right.value.type == Value::TYPE_int) {
-                        return atoi (left.value.ToString ().c_str ()) >
-                            atoi (right.value.ToString ().c_str ());
+                        return util::stringToi32 (left.value.ToString ().c_str ()) >
+                            util::stringToi32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_float ||
                             right.value.type == Value::TYPE_float) {
-                        return atof (left.value.ToString ().c_str ()) >
-                            atof (right.value.ToString ().c_str ());
+                        return util::stringTof32 (left.value.ToString ().c_str ()) >
+                            util::stringTof32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_Version ||
                             right.value.type == Value::TYPE_Version) {
@@ -294,13 +294,13 @@ namespace thekogans {
                     }
                     else if (left.value.type == Value::TYPE_int ||
                             right.value.type == Value::TYPE_int) {
-                        return atoi (left.value.ToString ().c_str ()) <=
-                            atoi (right.value.ToString ().c_str ());
+                        return util::stringToi32 (left.value.ToString ().c_str ()) <=
+                            util::stringToi32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_float ||
                             right.value.type == Value::TYPE_float) {
-                        return atof (left.value.ToString ().c_str ()) <=
-                            atof (right.value.ToString ().c_str ());
+                        return util::stringTof32 (left.value.ToString ().c_str ()) <=
+                            util::stringTof32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_Version ||
                             right.value.type == Value::TYPE_Version) {
@@ -320,13 +320,13 @@ namespace thekogans {
                     }
                     else if (left.value.type == Value::TYPE_int ||
                             right.value.type == Value::TYPE_int) {
-                        return atoi (left.value.ToString ().c_str ()) >=
-                            atoi (right.value.ToString ().c_str ());
+                        return util::stringToi32 (left.value.ToString ().c_str ()) >=
+                            util::stringToi32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_float ||
                             right.value.type == Value::TYPE_float) {
-                        return atof (left.value.ToString ().c_str ()) >=
-                            atof (right.value.ToString ().c_str ());
+                        return util::stringTof32 (left.value.ToString ().c_str ()) >=
+                            util::stringTof32 (right.value.ToString ().c_str ());
                     }
                     else if (left.value.type == Value::TYPE_Version ||
                             right.value.type == Value::TYPE_Version) {

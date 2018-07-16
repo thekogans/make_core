@@ -553,7 +553,7 @@ namespace thekogans {
                 if (schema_version.empty ()) {
                     schema_version = util::ui32Tostring (SOURCE_XML_SCHEMA_VERSION);
                 }
-                if (atoi (schema_version.c_str ()) <= SOURCE_XML_SCHEMA_VERSION) {
+                if (util::stringToui32 (schema_version.c_str ()) <= SOURCE_XML_SCHEMA_VERSION) {
                     for (pugi::xml_node child = node.first_child ();
                             !child.empty (); child = child.next_sibling ()) {
                         if (child.type () == pugi::node_element) {
