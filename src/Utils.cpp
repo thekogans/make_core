@@ -507,7 +507,7 @@ namespace thekogans {
                         util::Directory::Entry (fromPath).mode);
                 #endif // defined (TOOLCHAIN_OS_Windows)
                     util::FixedArray<util::ui8, 4096> buffer;
-                    for (util::ui32 count = fromFile.Read (buffer.array, 4096);
+                    for (std::size_t count = fromFile.Read (buffer.array, 4096);
                             count != 0;
                             count = fromFile.Read (buffer.array, 4096)) {
                         toFile.Write (buffer.array, count);
