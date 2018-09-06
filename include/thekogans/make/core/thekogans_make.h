@@ -399,6 +399,8 @@ namespace thekogans {
                 std::list<FileList::Ptr> rc_sources;
                 std::string subsystem;
                 std::string def_file;
+                // OSX specific.
+                std::string info_plist;
                 SymbolTable globalSymbolTable;
                 SymbolTable localSymbolTable;
 
