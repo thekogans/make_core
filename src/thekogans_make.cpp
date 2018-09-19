@@ -165,6 +165,13 @@ namespace thekogans {
             const char * const thekogans_make::TAG_RC_SOURCE = "rc_source";
             const char * const thekogans_make::TAG_SUBSYSTEM = "subsystem";
             const char * const thekogans_make::TAG_DEF_FILE = "def_file";
+            const char * const thekogans_make::TAG_BUNDLE = "bundle";
+            const char * const thekogans_make::TAG_INFO_PLIST = "info_plist";
+            const char * const thekogans_make::TAG_FRAMEWORKS = "frameworks";
+            const char * const thekogans_make::TAG_PLUGINS = "plugins";
+            const char * const thekogans_make::TAG_PLUGIN = "plugin";
+            const char * const thekogans_make::TAG_SHARED_SUPPORTS = "shared_supports";
+            const char * const thekogans_make::TAG_SHARED_SUPPORT = "shared_support";
             const char * const thekogans_make::TAG_IF = "if";
             const char * const thekogans_make::TAG_CHOOSE = "choose";
             const char * const thekogans_make::TAG_WHEN = "when";
@@ -2221,6 +2228,10 @@ namespace thekogans {
                         else if (childName == TAG_DEF_FILE) {
                             def_file = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
                         }
+                        // These five are only available on OS X.
+                        else if (childName == TAG_BUNDLE) {
+                            Parsebundle (child, root);
+                        }
                         else {
                             ParseDefault (child, root);
                         }
@@ -2733,6 +2744,32 @@ namespace thekogans {
                 if (!dependencies.empty ()) {
                     localSymbolTable[TAG_DEPENDENCIES] =
                         Value (Value::TYPE_string, dependencies);
+                }
+            }
+
+            void thekogans_make::Parsebundle (
+                    const pugi::xml_node &node,
+                    pugi::xml_node &parent) {
+                for (pugi::xml_node child = node.first_child ();
+                        !child.empty (); child = child.next_sibling ()) {
+                    if (child.type () == pugi::node_element) {
+                        std::string childName = child.name ();
+                        if (childName == TAG_INFO_PLIST) {
+                            bundle.info_plist = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
+                        }
+                        else if (childName == TAG_FRAMEWORKS) {
+                            Parselist (child, TAG_FRAMEWORK, bundle.frameworks);
+                        }
+                        else if (childName == TAG_PLUGINS) {
+                            Parselist (child, TAG_PLUGIN, bundle.plugins);
+                        }
+                        else if (childName == TAG_SHARED_SUPPORTS) {
+                            Parselist (child, TAG_SHARED_SUPPORT, bundle.shared_supports);
+                        }
+                        else {
+                            ParseDefault (node, parent);
+                        }
+                    }
                 }
             }
 

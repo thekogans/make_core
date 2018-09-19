@@ -172,6 +172,13 @@ namespace thekogans {
                 static const char * const TAG_RC_SOURCE;
                 static const char * const TAG_SUBSYSTEM;
                 static const char * const TAG_DEF_FILE;
+                static const char * const TAG_BUNDLE;
+                static const char * const TAG_INFO_PLIST;
+                static const char * const TAG_FRAMEWORKS;
+                static const char * const TAG_PLUGINS;
+                static const char * const TAG_PLUGIN;
+                static const char * const TAG_SHARED_SUPPORTS;
+                static const char * const TAG_SHARED_SUPPORT;
                 static const char * const TAG_IF;
                 static const char * const TAG_CHOOSE;
                 static const char * const TAG_WHEN;
@@ -400,7 +407,13 @@ namespace thekogans {
                 std::string subsystem;
                 std::string def_file;
                 // OSX specific.
-                std::string info_plist;
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL Bunde {
+                    std::string info_plist;
+                    std::list<std::string> resources;
+                    std::list<std::string> frameworks;
+                    std::list<std::string> plugins;
+                    std::list<std::string> shared_supports;
+                } bundle;
                 SymbolTable globalSymbolTable;
                 SymbolTable localSymbolTable;
 
@@ -540,6 +553,9 @@ namespace thekogans {
                     pugi::xml_node &node,
                     FileList &fileList,
                     FileList::File::CustomBuild &customBuild);
+                void Parsebundle (
+                    const pugi::xml_node &node,
+                    pugi::xml_node &parent);
                 bool Parseif (
                     const pugi::xml_node &node,
                     pugi::xml_node &parent);
