@@ -89,8 +89,7 @@ namespace thekogans {
 
             Source::Source (const std::string &organization) {
                 std::list<std::string> components;
-                components.push_back (_DEVELOPMENT_ROOT);
-                components.push_back (SOURCES_DIR);
+                components.push_back (_SOURCES_ROOT);
                 components.push_back (organization);
                 components.push_back (SOURCE_XML);
                 std::string sourceFilePath = ToSystemPath (MakePath (components, false));
@@ -142,25 +141,12 @@ namespace thekogans {
             void Source::Create (
                     const std::string &organization,
                     const std::string &url) {
-                std::list<std::string> components;
-                components.push_back (_DEVELOPMENT_ROOT);
-                components.push_back (SOURCES_DIR);
-                components.push_back (organization);
-                components.push_back (SOURCE_XML);
-                std::string sourceFilePath = ToSystemPath (MakePath (components, false));
+                std::string sourceDirectory = MakePath (_SOURCES_ROOT, organization);
+                std::string sourceFilePath = MakePath (sourceDirectory, SOURCE_XML);
                 if (!util::Path (sourceFilePath).Exists ()) {
                     std::cout << "Adding " << organization << " - " << url << std::endl;
-                    std::string directory = util::Path (sourceFilePath).GetDirectory ();
-                    if (!util::Path (directory).Exists ()) {
-                        util::Directory::Create (directory);
-                    }
-                    std::string projectsDirectory = util::MakePath (directory, PROJECTS_DIR);
-                    if (!util::Path (projectsDirectory).Exists ()) {
-                        util::Directory::Create (projectsDirectory);
-                    }
-                    std::string toolchainDirectory = util::MakePath (directory, TOOLCHAIN_DIR);
-                    if (!util::Path (toolchainDirectory).Exists ()) {
-                        util::Directory::Create (toolchainDirectory);
+                    if (!util::Path (sourceDirectory).Exists ()) {
+                        util::Directory::Create (sourceDirectory);
                     }
                     std::fstream sourceFile (
                         sourceFilePath.c_str (),
@@ -183,14 +169,18 @@ namespace thekogans {
                             sourceFilePath.c_str ());
                     }
                 }
+                std::string sourceProjectsDirectory = util::MakePath (sourceDirectory, PROJECTS_DIR);
+                if (!util::Path (sourceProjectsDirectory).Exists ()) {
+                    util::Directory::Create (sourceProjectsDirectory);
+                }
+                std::string sourceToolchainDirectory = util::MakePath (sourceDirectory, TOOLCHAIN_DIR);
+                if (!util::Path (sourceToolchainDirectory).Exists ()) {
+                    util::Directory::Create (sourceToolchainDirectory);
+                }
             }
 
             void Source::Destroy (const std::string &organization) {
-                std::list<std::string> components;
-                components.push_back (_DEVELOPMENT_ROOT);
-                components.push_back (SOURCES_DIR);
-                components.push_back (organization);
-                std::string sourcePath = ToSystemPath (MakePath (components, false));
+                std::string sourcePath = MakePath (_SOURCES_ROOT, organization);
                 if (util::Path (sourcePath).Exists ()) {
                     std::cout << "Deleting " << sourcePath << std::endl;
                     util::Directory::Delete (sourcePath);
@@ -198,17 +188,15 @@ namespace thekogans {
             }
 
             void Source::GetSources (std::set<std::string> &sources) {
-                std::string sourcePath = ToSystemPath (MakePath (_DEVELOPMENT_ROOT, SOURCES_DIR));
-                if (util::Path (sourcePath).Exists ()) {
-                    util::Directory directory (sourcePath);
+                if (util::Path (_SOURCES_ROOT).Exists ()) {
+                    util::Directory directory (_SOURCES_ROOT);
                     util::Directory::Entry entry;
                     for (bool gotEntry = directory.GetFirstEntry (entry);
                             gotEntry; gotEntry = directory.GetNextEntry (entry)) {
                         if (entry.type == util::Directory::Entry::Folder &&
                                 !util::IsDotOrDotDot (entry.name.c_str ())) {
                             std::list<std::string> components;
-                            components.push_back (_DEVELOPMENT_ROOT);
-                            components.push_back (SOURCES_DIR);
+                            components.push_back (_SOURCES_ROOT);
                             components.push_back (entry.name);
                             components.push_back (SOURCE_XML);
                             if (util::Path (ToSystemPath (MakePath (components, false))).Exists ()) {
@@ -519,8 +507,7 @@ namespace thekogans {
 
             void Source::Save () const {
                 std::list<std::string> components;
-                components.push_back (_DEVELOPMENT_ROOT);
-                components.push_back (SOURCES_DIR);
+                components.push_back (_SOURCES_ROOT);
                 components.push_back (organization);
                 components.push_back (SOURCE_XML);
                 std::string sourceFilePath = ToSystemPath (MakePath (components, false));

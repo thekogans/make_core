@@ -120,6 +120,7 @@ namespace thekogans {
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_PROGRAM_SUFFIX;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_SHARED_LIBRARY_SUFFIX;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_STATIC_LIBRARY_SUFFIX;
+            extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _SOURCES_ROOT;
 
             typedef std::map<std::string, Value> SymbolTable;
 
