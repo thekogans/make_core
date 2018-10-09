@@ -140,20 +140,30 @@ namespace thekogans {
                 std::cout.flush ();
             }
 
-            void Sources::UpdateSources () {
+            void Sources::UpdateSources (const std::string &organization) {
                 if (!sources.empty ()) {
-                    for (std::list<Source::Ptr>::iterator
-                            it = sources.begin (),
-                            end = sources.end (); it != end; ++it) {
-                        THEKOGANS_UTIL_TRY {
-                            std::cout << "Updating " << **it << std::endl;
+                    if (!organization.empty ()) {
+                        Source *source = GetSource (organization);
+                        if (source != 0) {
+                            std::cout << "Updating " << *source << std::endl;
                             std::cout.flush ();
-                            UpdateSource (**it);
+                            UpdateSource (*source);
                         }
-                        THEKOGANS_UTIL_CATCH (util::Exception) {
-                            std::cout << "Unable to update " << **it <<
-                                "(" << exception.what () << "), skipping.\n";
-                            std::cout.flush ();
+                    }
+                    else {
+                        for (std::list<Source::Ptr>::iterator
+                                it = sources.begin (),
+                                end = sources.end (); it != end; ++it) {
+                            THEKOGANS_UTIL_TRY {
+                                std::cout << "Updating " << **it << std::endl;
+                                std::cout.flush ();
+                                UpdateSource (**it);
+                            }
+                            THEKOGANS_UTIL_CATCH (util::Exception) {
+                                std::cout << "Unable to update " << **it <<
+                                    "(" << exception.what () << "), skipping.\n";
+                                std::cout.flush ();
+                            }
                         }
                     }
                     Save ();

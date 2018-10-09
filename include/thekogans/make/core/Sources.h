@@ -56,7 +56,7 @@ namespace thekogans {
                     ToSystemPath (MakePath (_TOOLCHAIN_ROOT, SOURCES_XML)));
 
                 void ListSources () const;
-                void UpdateSources ();
+                void UpdateSources (const std::string &organization);
 
                 void GetSources (std::set<std::string> &sources) const;
                 void AddSource (
