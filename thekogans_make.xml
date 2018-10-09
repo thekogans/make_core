@@ -3,7 +3,7 @@
                 project_type = "library"
                 major_version = "0"
                 minor_version = "8"
-                patch_version = "0"
+                patch_version = "1"
                 build_type = "Shared"
                 guid = "5171bfe46480363ac0a3fab41b5addf5"
                 schema_version = "2">

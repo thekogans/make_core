@@ -596,14 +596,17 @@ namespace thekogans {
                             util::Attribute (
                                 thekogans_make::ATTR_NAMING_CONVENTION,
                                 config.naming_convention));
-                        attributes.push_back (
-                            util::Attribute (
-                                thekogans_make::ATTR_BUILD_CONFIG,
-                                install_config));
-                        attributes.push_back (
-                            util::Attribute (
-                                thekogans_make::ATTR_BUILD_TYPE,
-                                install_type));
+                        // NOTE: We don't tag the config file with install_config and
+                        // install_type because, unlike libraries (and plugins), program
+                        // dependency is config and type independent.
+//                         attributes.push_back (
+//                             util::Attribute (
+//                                 thekogans_make::ATTR_BUILD_CONFIG,
+//                                 install_config));
+//                         attributes.push_back (
+//                             util::Attribute (
+//                                 thekogans_make::ATTR_BUILD_TYPE,
+//                                 install_type));
                         attributes.push_back (
                             util::Attribute (
                                 thekogans_make::ATTR_GUID,
