@@ -79,26 +79,31 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &project,
                     std::list<std::string> &versions) {
-                util::Version latestVersion (0, 0, 0);
                 std::string path = ToSystemPath (MakePath (_TOOLCHAIN_DIR, CONFIG_DIR));
                 if (util::Path (path).Exists ()) {
                     util::Directory directory (path);
                     util::Directory::Entry entry;
-                    std::string fileTemplate =
-                        GetFileName (organization, project, std::string (), "%u.%u.%u", XML_EXT);
                     for (bool gotEntry = directory.GetFirstEntry (entry);
                             gotEntry; gotEntry = directory.GetNextEntry (entry)) {
                         if (entry.type == util::Directory::Entry::File) {
-                            util::ui32 major_version = 0;
-                            util::ui32 minor_version = 0;
-                            util::ui32 patch_version = 0;
-                            if (sscanf (entry.name.c_str (), fileTemplate.c_str (),
-                                    &major_version, &minor_version, &patch_version) == 3) {
-                                versions.push_back (
-                                    util::Version (
-                                        major_version,
-                                        minor_version,
-                                        patch_version).ToString ());
+                            std::string entryOrganization;
+                            std::string entryProject;
+                            std::string entryBranch;
+                            std::string entryVersion;
+                            std::string entryExt;
+                            if (ParseFileName (
+                                    entry.name,
+                                    entryOrganization,
+                                    entryProject,
+                                    entryBranch,
+                                    entryVersion,
+                                    entryExt) == 5 &&
+                                    organization == entryOrganization &&
+                                    project == entryProject &&
+                                    entryExt == XML_EXT) {
+                                // Toolchain config files are branchless.
+                                assert (entryBranch.empty ());
+                                versions.push_back (entryVersion);
                             }
                         }
                     }
@@ -113,17 +118,27 @@ namespace thekogans {
                 if (util::Path (path).Exists ()) {
                     util::Directory directory (path);
                     util::Directory::Entry entry;
-                    std::string fileTemplate =
-                        GetFileName (organization, project, std::string (), "%u.%u.%u", XML_EXT);
                     for (bool gotEntry = directory.GetFirstEntry (entry);
                             gotEntry; gotEntry = directory.GetNextEntry (entry)) {
                         if (entry.type == util::Directory::Entry::File) {
-                            util::ui32 major_version = 0;
-                            util::ui32 minor_version = 0;
-                            util::ui32 patch_version = 0;
-                            if (sscanf (entry.name.c_str (), fileTemplate.c_str (),
-                                    &major_version, &minor_version, &patch_version) == 3) {
-                                util::Version version (major_version, minor_version, patch_version);
+                            std::string entryOrganization;
+                            std::string entryProject;
+                            std::string entryBranch;
+                            std::string entryVersion;
+                            std::string entryExt;
+                            if (ParseFileName (
+                                    entry.name,
+                                    entryOrganization,
+                                    entryProject,
+                                    entryBranch,
+                                    entryVersion,
+                                    entryExt) == 5 &&
+                                    organization == entryOrganization &&
+                                    project == entryProject &&
+                                    entryExt == XML_EXT) {
+                                // Toolchain config files are branchless.
+                                assert (entryBranch.empty ());
+                                util::Version version (entryVersion);
                                 if (latestVersion < version) {
                                     latestVersion = version;
                                 }
@@ -200,64 +215,25 @@ namespace thekogans {
             void Toolchain::Cleanup (
                     const std::string &organization,
                     const std::string &project) {
-                if (!organization.empty () && !project.empty ()) {
-                    std::list<std::string> versions;
-                    GetVersions (organization, project, versions);
-                    if (versions.size () > 1) {
-                        util::Version latestVersion (0, 0, 0);
-                        for (std::list<std::string>::const_iterator
-                                it = versions.begin (),
-                                end = versions.end (); it != end; ++it) {
-                            util::Version version (*it);
-                            if (latestVersion < version) {
-                                latestVersion = version;
-                            }
-                        }
-                        std::set<std::string> visitedDependencies;
-                        for (std::list<std::string>::const_iterator
-                                it = versions.begin (),
-                                end = versions.end (); it != end; ++it) {
-                            if (util::Version (*it) != latestVersion) {
-                                Uninstall (organization, project, *it, true, visitedDependencies);
-                            }
+                std::list<std::string> versions;
+                GetVersions (organization, project, versions);
+                if (versions.size () > 1) {
+                    util::Version latestVersion (0, 0, 0);
+                    for (std::list<std::string>::const_iterator
+                            it = versions.begin (),
+                            end = versions.end (); it != end; ++it) {
+                        util::Version version (*it);
+                        if (latestVersion < version) {
+                            latestVersion = version;
                         }
                     }
-                }
-                else {
-                    typedef std::pair<std::string, std::string> OrganizationProject;
-                    typedef std::set<OrganizationProject> OrganizationProjectSet;
-                    OrganizationProjectSet organizationProjectSet;
-                    std::string path = ToSystemPath (MakePath (_TOOLCHAIN_DIR, CONFIG_DIR));
-                    if (util::Path (path).Exists ()) {
-                        util::Directory directory (path);
-                        util::Directory::Entry entry;
-                        std::string fileTemplate = GetFileName (
-                            !organization.empty () ? organization : "%s",
-                            !project.empty () ? project : "%s",
-                            std::string (),
-                            "%u.%u.%u",
-                            XML_EXT);
-                        for (bool gotEntry = directory.GetFirstEntry (entry);
-                                gotEntry; gotEntry = directory.GetNextEntry (entry)) {
-                            if (entry.type == util::Directory::Entry::File) {
-                                util::Array<char> organization (entry.name.size ());
-                                util::Array<char> project (entry.name.size ());
-                                util::ui32 major_version = 0;
-                                util::ui32 minor_version = 0;
-                                util::ui32 patch_version = 0;
-                                if (sscanf (entry.name.c_str (), fileTemplate.c_str (),
-                                        organization.array, project.array,
-                                        &major_version, &minor_version, &patch_version) == 3) {
-                                    organizationProjectSet.insert (
-                                        OrganizationProject (organization.array, project.array));
-                                }
-                            }
+                    std::set<std::string> visitedDependencies;
+                    for (std::list<std::string>::const_iterator
+                            it = versions.begin (),
+                            end = versions.end (); it != end; ++it) {
+                        if (util::Version (*it) != latestVersion) {
+                            Uninstall (organization, project, *it, true, visitedDependencies);
                         }
-                    }
-                    for (OrganizationProjectSet::const_iterator
-                            it = organizationProjectSet.begin (),
-                            end = organizationProjectSet.end (); it != end; ++it) {
-                        Toolchain::Cleanup ((*it).first, (*it).second);
                     }
                 }
             }
