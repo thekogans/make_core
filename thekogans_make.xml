@@ -23,9 +23,7 @@
       <toolchain organization = "thekogans"
                  name = "curllib"/>
       <toolchain organization = "thekogans"
-                 name = "curl"
-                 config = "Release"
-                 type = "Static"/>
+                 name = "curl"/>
     </if>
   </dependencies>
   <cpp_preprocessor_definitions>
