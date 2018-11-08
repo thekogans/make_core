@@ -172,6 +172,7 @@ namespace thekogans {
                 static const char * const TAG_RC_SOURCE;
                 static const char * const TAG_SUBSYSTEM;
                 static const char * const TAG_DEF_FILE;
+                static const char * const TAG_RUNTIME_LIBRARY;
                 static const char * const TAG_BUNDLE;
                 static const char * const TAG_INFO_PLIST;
                 static const char * const TAG_FRAMEWORKS;
@@ -406,6 +407,7 @@ namespace thekogans {
                 std::list<FileList::Ptr> rc_sources;
                 std::string subsystem;
                 std::string def_file;
+                std::string runtime_library;
                 // OSX specific.
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL Bunde {
                     std::string info_plist;

@@ -165,6 +165,7 @@ namespace thekogans {
             const char * const thekogans_make::TAG_RC_SOURCE = "rc_source";
             const char * const thekogans_make::TAG_SUBSYSTEM = "subsystem";
             const char * const thekogans_make::TAG_DEF_FILE = "def_file";
+            const char * const thekogans_make::TAG_RUNTIME_LIBRARY = "runtime_library";
             const char * const thekogans_make::TAG_BUNDLE = "bundle";
             const char * const thekogans_make::TAG_INFO_PLIST = "info_plist";
             const char * const thekogans_make::TAG_FRAMEWORKS = "frameworks";
@@ -2227,6 +2228,9 @@ namespace thekogans {
                         }
                         else if (childName == TAG_DEF_FILE) {
                             def_file = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
+                        }
+                        else if (childName == TAG_RUNTIME_LIBRARY) {
+                            runtime_library = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
                         }
                         // These five are only available on OS X.
                         else if (childName == TAG_BUNDLE) {
