@@ -212,6 +212,25 @@ namespace thekogans {
                     return featureList;
                 }
 
+                std::string SanitizeName (const std::string &name) {
+                    std::string sanitizedName;
+                    if (!name.empty ()) {
+                        // Identifiers can't begin with a number.
+                        if (isdigit (name[0])) {
+                            sanitizedName = "_";
+                        }
+                        for (std::size_t i = 0, count = name.size (); i < count; ++i) {
+                            if (isalnum (name[i])) {
+                                sanitizedName += name[i];
+                            }
+                            else {
+                                sanitizedName += "_";
+                            }
+                        }
+                    }
+                    return sanitizedName;
+                }
+
                 struct ProjectDependency : public thekogans_make::Dependency {
                     std::string organization;
                     std::string name;
@@ -394,6 +413,31 @@ namespace thekogans {
                                     end = config.dependencies.end (); it != end; ++it) {
                                 (*it)->SetMinVersion (versions, visitedDependencies);
                             }
+                        }
+                    }
+
+                    virtual void GetPreprocessorDefinitions (
+                            std::list<std::string> &preprocessorDefinitions) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        if (config.project_type == PROJECT_TYPE_LIBRARY) {
+                            std::string ORGANIZATION =
+                                util::StringToUpper (SanitizeName (organization).c_str ());
+                            std::string NAME =
+                                util::StringToUpper (SanitizeName (name).c_str ());
+                            std::string PREFIX = ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + NAME;
+                            if (!example.empty ()) {
+                                std::string EXAMPLE =
+                                    util::StringToUpper (SanitizeName (example).c_str ());
+                                PREFIX += PROJECT_EXAMPLE_SEPARATOR + EXAMPLE;
+                            }
+                            preprocessorDefinitions.push_back (PREFIX + "_CONFIG_" + GetConfig ());
+                            preprocessorDefinitions.push_back (PREFIX + "_TYPE_" + GetType ());
                         }
                     }
 
@@ -715,6 +759,26 @@ namespace thekogans {
                         }
                     }
 
+                    virtual void GetPreprocessorDefinitions (
+                            std::list<std::string> &preprocessorDefinitions) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        if (config.project_type == PROJECT_TYPE_LIBRARY) {
+                            std::string ORGANIZATION =
+                                util::StringToUpper (SanitizeName (organization).c_str ());
+                            std::string NAME =
+                                util::StringToUpper (SanitizeName (name).c_str ());
+                            std::string PREFIX = ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + NAME;
+                            preprocessorDefinitions.push_back (PREFIX + "_CONFIG_" + GetConfig ());
+                            preprocessorDefinitions.push_back (PREFIX + "_TYPE_" + GetType ());
+                        }
+                    }
+
                     virtual void GetFeatures (
                             std::set<std::string> &features) const {
                         const thekogans_make &config =
@@ -967,6 +1031,10 @@ namespace thekogans {
                             std::set<std::string> & /*visitedDependencies*/) const {
                     }
 
+                    virtual void GetPreprocessorDefinitions (
+                            std::list<std::string> & /*preprocessorDefinitions*/) const {
+                    }
+
                     virtual void  GetFeatures (
                             std::set<std::string> & /*features*/) const {
                     }
@@ -1056,6 +1124,10 @@ namespace thekogans {
                             std::set<std::string> & /*visitedDependencies*/) const {
                     }
 
+                    virtual void GetPreprocessorDefinitions (
+                            std::list<std::string> & /*preprocessorDefinitions*/) const {
+                    }
+
                     virtual void  GetFeatures (
                             std::set<std::string> & /*features*/) const {
                     }
@@ -1138,6 +1210,10 @@ namespace thekogans {
                     virtual void SetMinVersion (
                             Versions & /*versions*/,
                             std::set<std::string> & /*visitedDependencies*/) const {
+                    }
+
+                    virtual void GetPreprocessorDefinitions (
+                            std::list<std::string> & /*preprocessorDefinitions*/) const {
                     }
 
                     virtual void  GetFeatures (
@@ -1717,66 +1793,57 @@ namespace thekogans {
                     std::string ();
             }
 
-            namespace {
-                std::string SanitizeName (const std::string &name) {
-                    std::string sanitizedName;
-                    for (std::size_t i = 0, count = name.size (); i < count; ++i) {
-                        if (isalnum (name[i])) {
-                            sanitizedName += name[i];
-                        }
-                        else {
-                            sanitizedName += "_";
-                        }
-                    }
-                    return sanitizedName;
-                }
-            }
-
             void thekogans_make::GetCommonPreprocessorDefinitions (
                     std::list<std::string> &preprocessorDefinitions) const {
                 std::string ORGANIZATION =
                     util::StringToUpper (SanitizeName (organization).c_str ());
                 std::string PROJECT =
                     util::StringToUpper (SanitizeName (project).c_str ());
+                std::string PREFIX = ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + PROJECT;
             #if defined (TOOLCHAIN_OS_Windows)
                 if (project_type == PROJECT_TYPE_LIBRARY ||
                         project_type == PROJECT_TYPE_PLUGIN) {
                     preprocessorDefinitions.push_back (
-                        "_LIB_" + ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + PROJECT + "_BUILD");
+                        "_LIB_" + PREFIX + "_BUILD");
                 }
             #endif // defined (TOOLCHAIN_OS_Windows)
                 preprocessorDefinitions.push_back (
                     "TOOLCHAIN_NAMING_CONVENTION=\\\"" + Expand ("$(naming_convention)") + "\\\"");
                 preprocessorDefinitions.push_back (
-                    Expand ("TOOLCHAIN_OS_$(TOOLCHAIN_OS)"));
+                    "TOOLCHAIN_OS_" + Expand ("$(TOOLCHAIN_OS)"));
                 preprocessorDefinitions.push_back (
-                    Expand ("TOOLCHAIN_ARCH_$(TOOLCHAIN_ARCH)"));
+                    "TOOLCHAIN_ARCH_" + Expand ("$(TOOLCHAIN_ARCH)"));
                 preprocessorDefinitions.push_back (
-                    Expand ("TOOLCHAIN_COMPILER_$(TOOLCHAIN_COMPILER)"));
+                    "TOOLCHAIN_COMPILER_" + Expand ("$(TOOLCHAIN_COMPILER)"));
                 preprocessorDefinitions.push_back (
-                    Expand ("TOOLCHAIN_ENDIAN_$(TOOLCHAIN_ENDIAN)"));
+                    "TOOLCHAIN_ENDIAN_" + Expand ("$(TOOLCHAIN_ENDIAN)"));
                 preprocessorDefinitions.push_back (
-                    Expand ("TOOLCHAIN_CONFIG_$(config)"));
+                    "TOOLCHAIN_CONFIG_" + Expand ("$(config)"));
                 preprocessorDefinitions.push_back (
-                    Expand ("TOOLCHAIN_TYPE_$(type)"));
+                    "TOOLCHAIN_TYPE_" + Expand ("$(type)"));
                 preprocessorDefinitions.push_back (
                     "TOOLCHAIN_TRIPLET=\\\"" + Expand ("$(TOOLCHAIN_TRIPLET)") + "\\\"");
                 preprocessorDefinitions.push_back (
-                    Expand (
-                        (ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + PROJECT + "_MAJOR_VERSION=$(major_version)").c_str ()));
+                    PREFIX + "_MAJOR_VERSION=" + Expand ("$(major_version)"));
                 preprocessorDefinitions.push_back (
-                    Expand (
-                        (ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + PROJECT + "_MINOR_VERSION=$(minor_version)").c_str ()));
+                    PREFIX + "_MINOR_VERSION=" + Expand ("$(minor_version)"));
                 preprocessorDefinitions.push_back (
-                    Expand (
-                        (ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + PROJECT + "_PATCH_VERSION=$(patch_version)").c_str ()));
+                    PREFIX + "_PATCH_VERSION=" + Expand ("$(patch_version)"));
                 preprocessorDefinitions.push_back (
-                    util::FormatString ("%s_%s_VERSION=0x%08x",
-                        ORGANIZATION.c_str (),
-                        PROJECT.c_str (),
+                    util::FormatString ("%s_VERSION=0x%08x",
+                        PREFIX.c_str (),
                         (util::stringToui32 (major_version.c_str ()) << 16) +
                         (util::stringToui32 (minor_version.c_str ()) << 8) +
                         util::stringToui32 (patch_version.c_str ())));
+                for (std::list<Dependency::Ptr>::const_iterator
+                        it = dependencies.begin (),
+                        end = dependencies.end (); it != end; ++it) {
+                    (*it)->GetPreprocessorDefinitions (preprocessorDefinitions);
+                }
+                if (project_type == PROJECT_TYPE_LIBRARY) {
+                    preprocessorDefinitions.push_back (PREFIX + "_CONFIG_" + Expand ("$(config)"));
+                    preprocessorDefinitions.push_back (PREFIX + "_TYPE_" + Expand ("$(type)"));
+                }
             }
 
             std::string thekogans_make::GetGoalFileName () const {

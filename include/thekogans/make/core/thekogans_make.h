@@ -243,6 +243,8 @@ namespace thekogans {
                         Versions & /*versions*/,
                         std::set<std::string> & /*visitedDependencies*/) const = 0;
 
+                    virtual void GetPreprocessorDefinitions (
+                        std::list<std::string> & /*preprocessorDefinitions*/) const = 0;
                     virtual void GetFeatures (
                         std::set<std::string> & /*features*/) const = 0;
 

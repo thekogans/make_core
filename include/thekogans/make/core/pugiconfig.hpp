@@ -15,7 +15,7 @@
 #define HEADER_PUGICONFIG_HPP
 
 #if defined (TOOLCHAIN_OS_Windows)
-    #if defined (TOOLCHAIN_TYPE_Shared)
+    #if defined (THEKOGANS_PUGIXML_TYPE_Shared)
         #if defined (_LIB_THEKOGANS_PUGIXML_BUILD)
             #define PUGIXML_API __declspec (dllexport)
             #define PUGIXML_CLASS __declspec (dllexport)
@@ -23,10 +23,10 @@
             #define PUGIXML_API __declspec (dllimport)
             #define PUGIXML_CLASS __declspec (dllimport)
         #endif // defined (_LIB_THEKOGANS_PUGIXML_BUILD)
-    #else // defined (TOOLCHAIN_TYPE_Shared)
+    #else // defined (THEKOGANS_PUGIXML_TYPE_Shared)
         #define PUGIXML_API
         #define PUGIXML_CLASS
-    #endif // defined (TOOLCHAIN_TYPE_Shared)
+    #endif // defined (THEKOGANS_PUGIXML_TYPE_Shared)
 #else // defined (TOOLCHAIN_OS_Windows)
     #define PUGIXML_API
     #define PUGIXML_CLASS
