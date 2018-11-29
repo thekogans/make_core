@@ -2,7 +2,7 @@
                 project = "make_core"
                 project_type = "library"
                 major_version = "0"
-                minor_version = "10"
+                minor_version = "11"
                 patch_version = "0"
                 build_type = "Shared"
                 guid = "5171bfe46480363ac0a3fab41b5addf5"
