@@ -48,6 +48,7 @@ namespace thekogans {
             const char * const thekogans_make::ATTR_NAMING_CONVENTION = "naming_convention";
             const char * const thekogans_make::ATTR_BUILD_CONFIG = "build_config";
             const char * const thekogans_make::ATTR_BUILD_TYPE = "build_type";
+            const char * const thekogans_make::ATTR_BUILD_RUNTIME_TYPE = "build_runtime_type";
             const char * const thekogans_make::ATTR_GUID = "guid";
             const char * const thekogans_make::ATTR_SCHEMA_VERSION = "schema_version";
             const char * const thekogans_make::ATTR_CONDITION = "condition";
@@ -61,6 +62,7 @@ namespace thekogans {
             const char * const thekogans_make::ATTR_EXAMPLE = "example";
             const char * const thekogans_make::ATTR_CONFIG = "config";
             const char * const thekogans_make::ATTR_TYPE = "type";
+            const char * const thekogans_make::ATTR_RUNTIME_TYPE = "runtime_type";
             const char * const thekogans_make::ATTR_FLAGS = "flags";
 
             const char * const thekogans_make::TAG_THEKOGANS_MAKE = "thekogans_make";
@@ -165,7 +167,6 @@ namespace thekogans {
             const char * const thekogans_make::TAG_RC_SOURCE = "rc_source";
             const char * const thekogans_make::TAG_SUBSYSTEM = "subsystem";
             const char * const thekogans_make::TAG_DEF_FILE = "def_file";
-            const char * const thekogans_make::TAG_RUNTIME_LIBRARY = "runtime_library";
             const char * const thekogans_make::TAG_BUNDLE = "bundle";
             const char * const thekogans_make::TAG_INFO_PLIST = "info_plist";
             const char * const thekogans_make::TAG_FRAMEWORKS = "frameworks";
@@ -186,6 +187,7 @@ namespace thekogans {
             const char * const thekogans_make::VAR_GENERATOR = "generator";
             const char * const thekogans_make::VAR_CONFIG = "config";
             const char * const thekogans_make::VAR_TYPE = "type";
+            const char * const thekogans_make::VAR_RUNTIME_TYPE = "runtime_type";
             const char * const thekogans_make::VAR_PROJECT_DIRECTORY = "project_directory";
             const char * const thekogans_make::VAR_BUILD_DIRECTORY = "build_directory";
             const char * const thekogans_make::VAR_VERSION = "version";
@@ -239,6 +241,7 @@ namespace thekogans {
                     std::string example;
                     std::string config;
                     std::string type;
+                    std::string runtime_type;
                     std::set<std::string> features;
                     const thekogans_make &dependent;
 
@@ -250,6 +253,7 @@ namespace thekogans {
                             const std::string &example_,
                             const std::string &config_,
                             const std::string &type_,
+                            const std::string &runtime_type_,
                             const std::set<std::string> &features_,
                             const thekogans_make &dependent_) :
                             organization (organization_),
@@ -259,6 +263,7 @@ namespace thekogans {
                             example (example_),
                             config (config_),
                             type (type_),
+                            runtime_type (runtime_type_),
                             features (features_),
                             dependent (dependent_) {
                         if (Project::Find (organization, name, branch, version, example)) {
@@ -269,7 +274,8 @@ namespace thekogans {
                                         GetConfigFile (),
                                         GetGenerator (),
                                         GetConfig (),
-                                        GetType ());
+                                        GetType (),
+                                        GetRuntimeType ());
                                 std::set<std::string> missingFeatures;
                                 for (std::set<std::string>::const_iterator
                                         it = features.begin (),
@@ -317,6 +323,10 @@ namespace thekogans {
                         return !type.empty () ? type : dependent.type;
                     }
 
+                    virtual std::string GetRuntimeType () const {
+                        return !runtime_type.empty () ? runtime_type : dependent.runtime_type;
+                    }
+
                     virtual bool EquivalentTo (const Dependency &dependency) const {
                         return dependency.GetProjectRoot () == GetProjectRoot ();
                     }
@@ -328,7 +338,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_PROGRAM ||
                                 config.project_type == PROJECT_TYPE_PLUGIN) {
                             config.CheckDependencies ();
@@ -363,7 +374,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             std::string projectName =
                                 GetFileName (
@@ -424,7 +436,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             std::string ORGANIZATION =
                                 util::StringToUpper (SanitizeName (organization).c_str ());
@@ -449,7 +462,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             for (std::set<std::string>::const_iterator
                                     it = config.features.begin (),
@@ -472,7 +486,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             for (std::list<thekogans_make::IncludeDirectories::Ptr>::const_iterator
                                     it = config.include_directories.begin (),
@@ -503,7 +518,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (config.HasGoal ()) {
                                 link_libraries.push_back (config.GetProjectLinkLibrary ());
@@ -525,7 +541,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (GetType () == TYPE_SHARED && config.HasGoal ()) {
                                 shared_libraries.insert (config.GetProjectGoal ());
@@ -559,7 +576,8 @@ namespace thekogans {
                                     GetConfigFile (),
                                     GetGenerator (),
                                     GetConfig (),
-                                    GetType ()).GetVersion () :
+                                    GetType (),
+                                    GetRuntimeType ()).GetVersion () :
                                 version));
                         if (!config.empty ()) {
                             attributes.push_back (
@@ -572,6 +590,12 @@ namespace thekogans {
                                 util::Attribute (
                                     thekogans_make::ATTR_TYPE,
                                     type));
+                        }
+                        if (!runtime_type.empty ()) {
+                            attributes.push_back (
+                                util::Attribute (
+                                    thekogans_make::ATTR_RUNTIME_TYPE,
+                                    runtime_type));
                         }
                         return util::OpenTag (
                             indentationLevel,
@@ -592,7 +616,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         for (std::list<Dependency::Ptr>::const_iterator
                                 it = config.dependencies.begin (),
                                 end = config.dependencies.end (); it != end; ++it) {
@@ -607,6 +632,7 @@ namespace thekogans {
                     mutable std::string version;
                     std::string config;
                     std::string type;
+                    std::string runtime_type;
                     std::set<std::string> features;
                     const thekogans_make &dependent;
 
@@ -616,6 +642,7 @@ namespace thekogans {
                             const std::string &version_,
                             const std::string &config_,
                             const std::string &type_,
+                            const std::string &runtime_type_,
                             const std::set<std::string> &features_,
                             const thekogans_make &dependent_) :
                             organization (organization_),
@@ -623,6 +650,7 @@ namespace thekogans {
                             version (version_),
                             config (config_),
                             type (type_),
+                            runtime_type (runtime_type_),
                             features (features_),
                             dependent (dependent_) {
                         if (Toolchain::Find (organization, name, version)) {
@@ -633,7 +661,8 @@ namespace thekogans {
                                         GetConfigFile (),
                                         GetGenerator (),
                                         GetConfig (),
-                                        GetType ());
+                                        GetType (),
+                                        GetRuntimeType ());
                                 std::set<std::string> missingFeatures;
                                 for (std::set<std::string>::const_iterator
                                         it = features.begin (),
@@ -683,6 +712,10 @@ namespace thekogans {
                         return !type.empty () ? type : dependent.type;
                     }
 
+                    virtual std::string GetRuntimeType () const {
+                        return !runtime_type.empty () ? runtime_type : dependent.runtime_type;
+                    }
+
                     virtual bool EquivalentTo (const Dependency &dependency) const {
                         return dependency.GetConfigFile () == GetConfigFile ();
                     }
@@ -694,7 +727,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_PROGRAM ||
                                 config.project_type == PROJECT_TYPE_PLUGIN) {
                             config.CheckDependencies ();
@@ -725,7 +759,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             std::string projectName =
                                 GetFileName (
@@ -767,7 +802,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             std::string ORGANIZATION =
                                 util::StringToUpper (SanitizeName (organization).c_str ());
@@ -787,7 +823,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             for (std::set<std::string>::const_iterator
                                     it = config.features.begin (),
@@ -810,7 +847,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (!config.include_directories.empty ()) {
                                 for (std::list<thekogans_make::IncludeDirectories::Ptr>::const_iterator
@@ -847,7 +885,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (!config.link_libraries.empty ()) {
                                 for (std::list<thekogans_make::LinkLibraries::Ptr>::const_iterator
@@ -885,7 +924,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (GetType () == TYPE_SHARED) {
                                 if (!config.link_libraries.empty ()) {
@@ -955,6 +995,12 @@ namespace thekogans {
                                     thekogans_make::ATTR_TYPE,
                                     type));
                         }
+                        if (!runtime_type.empty ()) {
+                            attributes.push_back (
+                                util::Attribute (
+                                    thekogans_make::ATTR_RUNTIME_TYPE,
+                                    runtime_type));
+                        }
                         return util::OpenTag (
                             indentationLevel,
                             thekogans_make::TAG_TOOLCHAIN,
@@ -974,7 +1020,8 @@ namespace thekogans {
                                 GetConfigFile (),
                                 GetGenerator (),
                                 GetConfig (),
-                                GetType ());
+                                GetType (),
+                                GetRuntimeType ());
                         for (std::list<Dependency::Ptr>::const_iterator
                                 it = config.dependencies.begin (),
                                 end = config.dependencies.end (); it != end; ++it) {
@@ -1013,6 +1060,10 @@ namespace thekogans {
                     }
 
                     virtual std::string GetType () const {
+                        return std::string ();
+                    }
+
+                    virtual std::string GetRuntimeType () const {
                         return std::string ();
                     }
 
@@ -1109,6 +1160,10 @@ namespace thekogans {
                         return std::string ();
                     }
 
+                    virtual std::string GetRuntimeType () const {
+                        return std::string ();
+                    }
+
                     virtual bool EquivalentTo (const Dependency &dependency) const {
                         const FrameworkDependency *frameworkDependency =
                             dynamic_cast<const FrameworkDependency *> (&dependency);
@@ -1194,6 +1249,10 @@ namespace thekogans {
                     }
 
                     virtual std::string GetType () const {
+                        return std::string ();
+                    }
+
+                    virtual std::string GetRuntimeType () const {
                         return std::string ();
                     }
 
@@ -1284,6 +1343,7 @@ namespace thekogans {
                     config_file,
                     std::string (),
                     std::string (),
+                    std::string (),
                     std::string ()).organization;
             }
 
@@ -1293,6 +1353,7 @@ namespace thekogans {
                 return GetConfig (
                     project_root,
                     config_file,
+                    std::string (),
                     std::string (),
                     std::string (),
                     std::string ()).project;
@@ -1306,6 +1367,7 @@ namespace thekogans {
                     config_file,
                     std::string (),
                     std::string (),
+                    std::string (),
                     std::string ()).project_type;
             }
 
@@ -1315,6 +1377,7 @@ namespace thekogans {
                 const thekogans_make &config = GetConfig (
                     project_root,
                     config_file,
+                    std::string (),
                     std::string (),
                     std::string (),
                     std::string ());
@@ -1331,6 +1394,7 @@ namespace thekogans {
                     config_file,
                     std::string (),
                     std::string (),
+                    std::string (),
                     std::string ()).naming_convention;
                 return naming_convention.empty () ?
                     _TOOLCHAIN_NAMING_CONVENTION :
@@ -1345,6 +1409,7 @@ namespace thekogans {
                     config_file,
                     std::string (),
                     std::string (),
+                    std::string (),
                     std::string ()).build_config;
             }
 
@@ -1356,6 +1421,7 @@ namespace thekogans {
                     config_file,
                     std::string (),
                     std::string (),
+                    std::string (),
                     std::string ());
                 if (config.build_type.empty ()) {
                     if (config.project_type == PROJECT_TYPE_PLUGIN) {
@@ -1365,12 +1431,25 @@ namespace thekogans {
                 return config.build_type;
             }
 
+            std::string thekogans_make::GetBuildRuntimeType (
+                    const std::string &project_root,
+                    const std::string &config_file) {
+                return GetConfig (
+                    project_root,
+                    config_file,
+                    std::string (),
+                    std::string (),
+                    std::string (),
+                    std::string ()).build_runtime_type;
+            }
+
             util::GUID thekogans_make::GetGUID (
                     const std::string &project_root,
                     const std::string &config_file) {
                 return GetConfig (
                     project_root,
                     config_file,
+                    std::string (),
                     std::string (),
                     std::string (),
                     std::string ()).guid;
@@ -1382,6 +1461,7 @@ namespace thekogans {
                 return GetConfig (
                     project_root,
                     config_file,
+                    std::string (),
                     std::string (),
                     std::string (),
                     std::string ()).schema_version;
@@ -1401,10 +1481,17 @@ namespace thekogans {
                     const std::string &config_file,
                     const std::string &generator,
                     const std::string &config,
-                    const std::string &type) {
+                    const std::string &type,
+                    const std::string &runtime_type) {
                 ConfigMap &configMap = GetConfigMap ();
                 std::string configKey =
-                    GetConfigKey (project_root, config_file, generator, config, type);
+                    GetConfigKey (
+                        project_root,
+                        config_file,
+                        generator,
+                        config,
+                        type,
+                        runtime_type);
                 ConfigMap::iterator it = configMap.lower_bound (configKey);
                 if (it == configMap.end () ||
                         configKey.size () > it->first.size () ||
@@ -1422,7 +1509,8 @@ namespace thekogans {
                                         config_file,
                                         generator,
                                         config,
-                                        type))));
+                                        type,
+                                        runtime_type))));
                     if (result.second) {
                         it = result.first;
                     }
@@ -1647,7 +1735,7 @@ namespace thekogans {
                 return project_type == PROJECT_TYPE_PROGRAM ?
                     Expand (naming_convention == NAMING_CONVENTION_FLAT ?
                         "$(project_root)/$(BIN_DIR)" :
-                        "$(project_root)/$(BIN_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)") :
+                        "$(project_root)/$(BIN_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(runtime_type)") :
                     std::string ();
             }
 
@@ -1655,7 +1743,7 @@ namespace thekogans {
                 return project_type == PROJECT_TYPE_LIBRARY || project_type == PROJECT_TYPE_PLUGIN ?
                     Expand (naming_convention == NAMING_CONVENTION_FLAT ?
                         "$(project_root)/$(LIB_DIR)" :
-                        "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)") :
+                        "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(runtime_type)") :
                     std::string ();
             }
 
@@ -1685,27 +1773,27 @@ namespace thekogans {
                 #if defined (TOOLCHAIN_OS_Windows)
                     if (type == TYPE_SHARED) {
                         goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                            "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
+                            "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                            "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(runtime_type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
                     }
                     else {
                 #endif // defined (TOOLCHAIN_OS_Windows)
                         goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
-                            "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)";
+                            "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(link_library_suffix)" :
+                            "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(runtime_type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)";
                 #if defined (TOOLCHAIN_OS_Windows)
                     }
                 #endif // defined (TOOLCHAIN_OS_Windows)
                 }
                 else if (project_type == PROJECT_TYPE_PROGRAM) {
                     goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(project_root)/$(BIN_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)" :
-                        "$(project_root)/$(BIN_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(organization)_$(project).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)";
+                        "$(project_root)/$(BIN_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)" :
+                        "$(project_root)/$(BIN_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(runtime_type)/$(organization)_$(project).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)";
                 }
                 else if (project_type == PROJECT_TYPE_PLUGIN) {
                     goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(project_root)/$(LIB_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                        "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
+                        "$(project_root)/$(LIB_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                        "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(runtime_type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
                 }
                 return Expand (goal);
             }
@@ -1713,8 +1801,8 @@ namespace thekogans {
             std::string thekogans_make::GetProjectLinkLibrary () const {
                 return project_type == PROJECT_TYPE_LIBRARY ?
                     Expand (naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
-                        "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)") :
+                        "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(link_library_suffix)" :
+                        "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(runtime_type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)") :
                     std::string ();
             }
 
@@ -1732,7 +1820,7 @@ namespace thekogans {
                 return project_type == PROJECT_TYPE_LIBRARY ?
                     Expand (naming_convention == NAMING_CONVENTION_FLAT ?
                         "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)" :
-                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)") :
+                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(runtime_type)") :
                     std::string ();
             }
 
@@ -1762,14 +1850,14 @@ namespace thekogans {
                 #if defined (TOOLCHAIN_OS_Windows)
                     if (type == TYPE_SHARED) {
                         goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
+                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(runtime_type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
                     }
                     else {
                 #endif // defined (TOOLCHAIN_OS_Windows)
                         goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)";
+                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(link_library_suffix)" :
+                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(runtime_type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)";
                 #if defined (TOOLCHAIN_OS_Windows)
                     }
                 #endif // defined (TOOLCHAIN_OS_Windows)
@@ -1779,8 +1867,8 @@ namespace thekogans {
                 }
                 else if (project_type == PROJECT_TYPE_PLUGIN) {
                     goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
+                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(runtime_type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
                 }
                 return Expand (goal);
             }
@@ -1788,8 +1876,8 @@ namespace thekogans {
             std::string thekogans_make::GetToolchainLinkLibrary () const {
                 return project_type == PROJECT_TYPE_LIBRARY ?
                     Expand (naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
-                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)") :
+                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(link_library_suffix)" :
+                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(runtime_type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)") :
                     std::string ();
             }
 
@@ -1822,6 +1910,8 @@ namespace thekogans {
                 preprocessorDefinitions.push_back (
                     "TOOLCHAIN_TYPE_" + Expand ("$(type)"));
                 preprocessorDefinitions.push_back (
+                    Expand ("TOOLCHAIN_RUNTIME_TYPE_$(runtime_type)"));
+                preprocessorDefinitions.push_back (
                     "TOOLCHAIN_TRIPLET=\\\"" + Expand ("$(TOOLCHAIN_TRIPLET)") + "\\\"");
                 preprocessorDefinitions.push_back (
                     PREFIX + "_MAJOR_VERSION=" + Expand ("$(major_version)"));
@@ -1852,13 +1942,13 @@ namespace thekogans {
                 #if defined (TOOLCHAIN_OS_Windows)
                     if (type == TYPE_SHARED) {
                         goalFileName = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                            "$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
                             "$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
                     }
                     else {
                 #endif // defined (TOOLCHAIN_OS_Windows)
                         goalFileName = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
+                            "$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(link_library_suffix)" :
                             "$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)";
                 #if defined (TOOLCHAIN_OS_Windows)
                     }
@@ -1866,12 +1956,12 @@ namespace thekogans {
                 }
                 else if (project_type == PROJECT_TYPE_PROGRAM) {
                     goalFileName = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)" :
+                        "$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)" :
                         "$(organization)_$(project).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)";
                 }
                 else if (project_type == PROJECT_TYPE_PLUGIN) {
                     goalFileName = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                        "$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type)-$(runtime_type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
                         "$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
                 }
                 return Expand (goalFileName);
@@ -1882,12 +1972,14 @@ namespace thekogans {
                     const std::string &config_file_,
                     const std::string &generator_,
                     const std::string &config_,
-                    const std::string &type_) :
+                    const std::string &type_,
+                    const std::string &runtime_type_) :
                     project_root (project_root_),
                     config_file (config_file_),
                     generator (generator_),
                     config (config_),
                     type (type_),
+                    runtime_type (runtime_type_),
                     guid (util::GUID::Empty) {
                 if (generator.empty ()) {
                     generator = MAKE;
@@ -1960,6 +2052,19 @@ namespace thekogans {
                             "type (%s)/build_type (%s) mismatch in: %s",
                             type.c_str (),
                             build_type.c_str (),
+                            MakePath (project_root, config_file).c_str ());
+                    }
+                }
+                build_runtime_type = root.attribute (ATTR_BUILD_RUNTIME_TYPE).value ();
+                if (!build_runtime_type.empty ()) {
+                    if (runtime_type.empty ()) {
+                        runtime_type = build_runtime_type;
+                    }
+                    else if (runtime_type != build_runtime_type) {
+                        THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
+                            "runtime_type (%s)/build_runtime_type (%s) mismatch in: %s",
+                            runtime_type.c_str (),
+                            build_runtime_type.c_str (),
                             MakePath (project_root, config_file).c_str ());
                     }
                 }
@@ -2296,9 +2401,6 @@ namespace thekogans {
                         else if (childName == TAG_DEF_FILE) {
                             def_file = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
                         }
-                        else if (childName == TAG_RUNTIME_LIBRARY) {
-                            runtime_library = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
-                        }
                         // These five are only available on OS X.
                         else if (childName == TAG_BUNDLE) {
                             Parsebundle (child, root);
@@ -2356,6 +2458,7 @@ namespace thekogans {
                             std::string version = Expand (child.attribute (ATTR_VERSION).value ());
                             std::string config = Expand (child.attribute (ATTR_CONFIG).value ());
                             std::string type = Expand (child.attribute (ATTR_TYPE).value ());
+                            std::string runtime_type = Expand (child.attribute (ATTR_RUNTIME_TYPE).value ());
                             std::set<std::string> features;
                             Parsedependencyfeatures (child, features);
                             if (Project::Find (organization, name, branch, version, std::string ())) {
@@ -2369,6 +2472,7 @@ namespace thekogans {
                                             std::string (),
                                             config,
                                             type,
+                                            runtime_type,
                                             features,
                                             *this)));
                             }
@@ -2381,6 +2485,7 @@ namespace thekogans {
                                             version,
                                             config,
                                             type,
+                                            runtime_type,
                                             features,
                                             *this)));
                             }
@@ -2405,6 +2510,7 @@ namespace thekogans {
                             std::string example = Expand (child.attribute (ATTR_EXAMPLE).value ());
                             std::string config = Expand (child.attribute (ATTR_CONFIG).value ());
                             std::string type = Expand (child.attribute (ATTR_TYPE).value ());
+                            std::string runtime_type = Expand (child.attribute (ATTR_RUNTIME_TYPE).value ());
                             std::set<std::string> features;
                             Parsedependencyfeatures (child, features);
                             dependencies.push_back (
@@ -2417,6 +2523,7 @@ namespace thekogans {
                                         example,
                                         config,
                                         type,
+                                        runtime_type,
                                         features,
                                         *this)));
                         }
@@ -2435,6 +2542,7 @@ namespace thekogans {
                             std::string version = Expand (child.attribute (ATTR_VERSION).value ());
                             std::string config = Expand (child.attribute (ATTR_CONFIG).value ());
                             std::string type = Expand (child.attribute (ATTR_TYPE).value ());
+                            std::string runtime_type = Expand (child.attribute (ATTR_RUNTIME_TYPE).value ());
                             std::set<std::string> features;
                             Parsedependencyfeatures (child, features);
                             dependencies.push_back (
@@ -2445,6 +2553,7 @@ namespace thekogans {
                                         version,
                                         config,
                                         type,
+                                        runtime_type,
                                         features,
                                         *this)));
                         }
@@ -2742,7 +2851,7 @@ namespace thekogans {
                     MakePath (
                         MakePath (
                             project_root,
-                            GetBuildDirectory (generator, config, type)),
+                            GetBuildDirectory (generator, config, type, runtime_type)),
                         fileList.prefix);
                 for (pugi::xml_node child = node.first_child ();
                         !child.empty (); child = child.next_sibling ()) {
@@ -2936,12 +3045,13 @@ namespace thekogans {
                 globalSymbolTable[VAR_GENERATOR] = Value (generator);
                 globalSymbolTable[VAR_CONFIG] = Value (config);
                 globalSymbolTable[VAR_TYPE] = Value (type);
+                globalSymbolTable[VAR_RUNTIME_TYPE] = Value (runtime_type);
                 // root tag (thekogans_make) attributes.
                 globalSymbolTable[ATTR_ORGANIZATION] = Value (organization);
                 globalSymbolTable[ATTR_PROJECT] = Value (project);
                 globalSymbolTable[ATTR_PROJECT_TYPE] = Value (project_type);
                 globalSymbolTable[VAR_PROJECT_DIRECTORY] = Value (GetDirectoryFromName (project));
-                globalSymbolTable[VAR_BUILD_DIRECTORY] = Value (GetBuildDirectory (generator, config, type));
+                globalSymbolTable[VAR_BUILD_DIRECTORY] = Value (GetBuildDirectory (generator, config, type, runtime_type));
                 globalSymbolTable[ATTR_MAJOR_VERSION] = Value (Value::TYPE_int, major_version);
                 globalSymbolTable[ATTR_MINOR_VERSION] = Value (Value::TYPE_int, minor_version);
                 globalSymbolTable[ATTR_PATCH_VERSION] = Value (Value::TYPE_int, patch_version);
@@ -2949,6 +3059,7 @@ namespace thekogans {
                 globalSymbolTable[ATTR_NAMING_CONVENTION] = Value (naming_convention);
                 globalSymbolTable[ATTR_BUILD_CONFIG] = Value (build_config);
                 globalSymbolTable[ATTR_BUILD_TYPE] = Value (build_type);
+                globalSymbolTable[ATTR_BUILD_RUNTIME_TYPE] = Value (build_runtime_type);
                 globalSymbolTable[ATTR_GUID] = Value (guid);
                 globalSymbolTable[ATTR_SCHEMA_VERSION] = Value (Value::TYPE_int, schema_version);
                 // config/type dependent.

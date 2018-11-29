@@ -48,6 +48,9 @@ namespace thekogans {
             #define PROJECT_TYPE_PROGRAM "program"
             #define PROJECT_TYPE_PLUGIN "plugin"
 
+            #define ARCH_i386 "i386"
+            #define ARCH_x86_64 "x86_64"
+
             #define CONFIG_DEBUG "Debug"
             #define CONFIG_RELEASE "Release"
 
@@ -157,22 +160,26 @@ namespace thekogans {
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API GetBuildDirectory (
                 const std::string &generator,
                 const std::string &config,
-                const std::string &type);
+                const std::string &type,
+                const std::string &runtime_type);
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API GetBuildRoot (
                 const std::string &project_root,
                 const std::string &generator,
                 const std::string &config,
-                const std::string &type);
+                const std::string &type,
+                const std::string &runtime_type);
             _LIB_THEKOGANS_MAKE_CORE_DECL bool _LIB_THEKOGANS_MAKE_CORE_API BuildRootExists (
                 const std::string &project_root,
                 const std::string &generator,
                 const std::string &config,
-                const std::string &type);
+                const std::string &type,
+                const std::string &runtime_type);
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API CreateBuildRoot (
                 const std::string &project_root,
                 const std::string &generator,
                 const std::string &config,
-                const std::string &type);
+                const std::string &type,
+                const std::string &runtime_type);
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API GetDirectoryFromName (
                 const std::string &name);
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API GetNameFromDirectory (
@@ -188,7 +195,8 @@ namespace thekogans {
                 const std::string &config_file,
                 const std::string &generator,
                 const std::string &config,
-                const std::string &type);
+                const std::string &type,
+                const std::string &runtime_type);
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API MakePath (
                 const std::string &path1,
                 const std::string &path2);
@@ -230,10 +238,12 @@ namespace thekogans {
                 const std::string &project_root,
                 const std::string &config,
                 const std::string &type,
+                const std::string &runtime_type,
                 const std::string &destination = std::string ());
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API CopyPlugin (
                 const std::string &project_root,
-                const std::string &config);
+                const std::string &config,
+                const std::string &runtime_type);
 
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API GetGeneratorList (
                 const std::string &separator);
@@ -242,6 +252,7 @@ namespace thekogans {
                 const std::string &generator,
                 const std::string &config,
                 const std::string &type,
+                const std::string &runtime_type,
                 bool generateDependencies,
                 bool force);
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API DeleteBuildSystem (
@@ -249,11 +260,13 @@ namespace thekogans {
                 const std::string &generator,
                 const std::string &config,
                 const std::string &type,
+                const std::string &runtime_type,
                 bool deleteDependencies);
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API BuildProject (
                 const std::string &project_root,
                 const std::string &config,
                 const std::string &type,
+                const std::string &runtime_type,
                 const std::string &mode,
                 bool hide_commands,
                 bool parallel_build,

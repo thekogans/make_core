@@ -118,7 +118,8 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &version,
                     const std::string &config = std::string (),
-                    const std::string &type = std::string ()) const;
+                    const std::string &type = std::string (),
+                    const std::string &runtime_type = std::string ()) const;
 
             private:
                 Source *GetSource (const std::string &organization) const;

@@ -31,6 +31,7 @@ namespace thekogans {
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Installer {
                 std::string config;
                 std::string type;
+                std::string runtime_type;
                 bool hide_commands;
                 bool parallel_build;
                 std::set<std::string> installedProjects;
@@ -38,10 +39,12 @@ namespace thekogans {
                 Installer (
                     const std::string &config_,
                     const std::string &type_,
+                    const std::string &runtime_type_,
                     bool hide_commands_,
                     bool parallel_build_) :
                     config (config_),
                     type (type_),
+                    runtime_type (runtime_type_),
                     hide_commands (hide_commands_),
                     parallel_build (parallel_build_) {}
 
@@ -52,10 +55,14 @@ namespace thekogans {
 
             private:
                 void InstallLibrary (
-                    const thekogans_make &DebugShared,
-                    const thekogans_make &DebugStatic,
-                    const thekogans_make &ReleaseShared,
-                    const thekogans_make &ReleaseStatic);
+                    const thekogans_make &DebugSharedShared,
+                    const thekogans_make &DebugSharedStatic,
+                    const thekogans_make &DebugStaticShared,
+                    const thekogans_make &DebugStaticStatic,
+                    const thekogans_make &ReleaseSharedShared,
+                    const thekogans_make &ReleaseSharedStatic,
+                    const thekogans_make &ReleaseStaticShared,
+                    const thekogans_make &ReleaseStaticStatic);
                 void InstallDependency (const thekogans_make &dependency);
             };
 
