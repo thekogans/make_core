@@ -157,7 +157,12 @@ namespace thekogans {
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (CONFIG_DIR);
                 components.push_back (
-                    GetFileName (organization, project, std::string (), version, XML_EXT));
+                    GetFileName (
+                        organization,
+                        project,
+                        std::string (),
+                        version,
+                        XML_EXT));
                 return MakePath (components, false);
             }
 
@@ -210,9 +215,19 @@ namespace thekogans {
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (BIN_DIR);
                 components.push_back (
-                    GetFileName (organization, project, std::string (), version, std::string ()));
+                    GetFileName (
+                        organization,
+                        project,
+                        std::string (),
+                        version,
+                        std::string ()));
                 components.push_back (
-                    GetFileName (organization, project, std::string (), std::string (), _TOOLCHAIN_PROGRAM_SUFFIX));
+                    GetFileName (
+                        organization,
+                        project,
+                        std::string (),
+                        std::string (),
+                        _TOOLCHAIN_PROGRAM_SUFFIX));
                 return MakePath (components, false);
             }
 

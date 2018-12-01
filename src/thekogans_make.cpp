@@ -1259,8 +1259,7 @@ namespace thekogans {
                     virtual bool EquivalentTo (const Dependency &dependency) const {
                         const SystemDependency *systemDependency =
                             dynamic_cast<const SystemDependency *> (&dependency);
-                        return systemDependency != 0 &&
-                            systemDependency->library == library;
+                        return systemDependency != 0 && systemDependency->library == library;
                     }
 
                     virtual void CollectVersions (

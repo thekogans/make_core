@@ -1532,11 +1532,14 @@ namespace thekogans {
                             type,
                             runtime_type);
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
-                        if (host_config.project_type == PROJECT_TYPE_PROGRAM) {
+                        if (host_config.project_type == PROJECT_TYPE_LIBRARY) {
+                            InstallLibrary ((*it)->GetProjectRoot ());
+                        }
+                        else if (host_config.project_type == PROJECT_TYPE_PROGRAM) {
                             InstallProgram ((*it)->GetProjectRoot ());
                         }
-                        else if (host_config.project_type == PROJECT_TYPE_LIBRARY) {
-                            InstallLibrary ((*it)->GetProjectRoot ());
+                        else if (host_config.project_type == PROJECT_TYPE_PLUGIN) {
+                            InstallPlugin ((*it)->GetProjectRoot ());
                         }
                     }
                 }
