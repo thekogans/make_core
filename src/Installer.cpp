@@ -37,58 +37,102 @@ namespace thekogans {
 
             namespace {
                 void GetCommonFeatures (
-                        const thekogans_make &DebugShared,
-                        const thekogans_make &DebugStatic,
-                        const thekogans_make &ReleaseShared,
-                        const thekogans_make &ReleaseStatic,
+                        const thekogans_make &DebugSharedShared,
+                        const thekogans_make &DebugSharedStatic,
+                        const thekogans_make &DebugStaticShared,
+                        const thekogans_make &DebugStaticStatic,
+                        const thekogans_make &ReleaseSharedShared,
+                        const thekogans_make &ReleaseSharedStatic,
+                        const thekogans_make &ReleaseStaticShared,
+                        const thekogans_make &ReleaseStaticStatic,
                         std::set<std::string> &commonFeatures) {
                     for (std::set<std::string>::const_iterator
-                            it = DebugShared.features.begin (),
-                            end = DebugShared.features.end (); it != end; ++it) {
-                        if (DebugStatic.features.find (*it) != DebugStatic.features.end () &&
-                                ReleaseShared.features.find (*it) != ReleaseShared.features.end () &&
-                                ReleaseStatic.features.find (*it) != ReleaseStatic.features.end ()) {
+                            it = DebugSharedShared.features.begin (),
+                            end = DebugSharedShared.features.end (); it != end; ++it) {
+                        if (DebugSharedStatic.features.find (*it) != DebugSharedStatic.features.end () &&
+                                DebugStaticShared.features.find (*it) != DebugStaticShared.features.end () &&
+                                DebugStaticStatic.features.find (*it) != DebugStaticStatic.features.end () &&
+                                ReleaseSharedShared.features.find (*it) != ReleaseSharedShared.features.end () &&
+                                ReleaseSharedStatic.features.find (*it) != ReleaseSharedStatic.features.end () &&
+                                ReleaseStaticShared.features.find (*it) != ReleaseStaticShared.features.end () &&
+                                ReleaseStaticStatic.features.find (*it) != ReleaseStaticStatic.features.end ()) {
                             commonFeatures.insert (*it);
                         }
                     }
                 }
 
                 void GetUniqueFeatures (
-                        const thekogans_make &DebugShared,
-                        const thekogans_make &DebugStatic,
-                        const thekogans_make &ReleaseShared,
-                        const thekogans_make &ReleaseStatic,
+                        const thekogans_make &DebugSharedShared,
+                        const thekogans_make &DebugSharedStatic,
+                        const thekogans_make &DebugStaticShared,
+                        const thekogans_make &DebugStaticStatic,
+                        const thekogans_make &ReleaseSharedShared,
+                        const thekogans_make &ReleaseSharedStatic,
+                        const thekogans_make &ReleaseStaticShared,
+                        const thekogans_make &ReleaseStaticStatic,
                         const std::set<std::string> &commonFeatures,
-                        std::set<std::string> &DebugSharedFeatures,
-                        std::set<std::string> &DebugStaticFeatures,
-                        std::set<std::string> &ReleaseSharedFeatures,
-                        std::set<std::string> &ReleaseStaticFeatures) {
+                        std::set<std::string> &DebugSharedSharedFeatures,
+                        std::set<std::string> &DebugSharedStaticFeatures,
+                        std::set<std::string> &DebugStaticSharedFeatures,
+                        std::set<std::string> &DebugStaticStaticFeatures,
+                        std::set<std::string> &ReleaseSharedSharedFeatures,
+                        std::set<std::string> &ReleaseSharedStaticFeatures,
+                        std::set<std::string> &ReleaseStaticSharedFeatures,
+                        std::set<std::string> &ReleaseStaticStaticFeatures) {
                     for (std::set<std::string>::const_iterator
-                            it = DebugShared.features.begin (),
-                            end = DebugShared.features.end (); it != end; ++it) {
+                            it = DebugSharedShared.features.begin (),
+                            end = DebugSharedShared.features.end (); it != end; ++it) {
                         if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            DebugSharedFeatures.insert (*it);
+                            DebugSharedSharedFeatures.insert (*it);
                         }
                     }
                     for (std::set<std::string>::const_iterator
-                            it = DebugStatic.features.begin (),
-                            end = DebugStatic.features.end (); it != end; ++it) {
+                            it = DebugSharedStatic.features.begin (),
+                            end = DebugSharedStatic.features.end (); it != end; ++it) {
                         if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            DebugStaticFeatures.insert (*it);
+                            DebugSharedStaticFeatures.insert (*it);
                         }
                     }
                     for (std::set<std::string>::const_iterator
-                            it = ReleaseShared.features.begin (),
-                            end = ReleaseShared.features.end (); it != end; ++it) {
+                            it = DebugStaticShared.features.begin (),
+                            end = DebugStaticShared.features.end (); it != end; ++it) {
                         if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            ReleaseSharedFeatures.insert (*it);
+                            DebugStaticSharedFeatures.insert (*it);
                         }
                     }
                     for (std::set<std::string>::const_iterator
-                            it = ReleaseStatic.features.begin (),
-                            end = ReleaseStatic.features.end (); it != end; ++it) {
+                            it = DebugStaticStatic.features.begin (),
+                            end = DebugStaticStatic.features.end (); it != end; ++it) {
                         if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            ReleaseStaticFeatures.insert (*it);
+                            DebugStaticStaticFeatures.insert (*it);
+                        }
+                    }
+                    for (std::set<std::string>::const_iterator
+                            it = ReleaseSharedShared.features.begin (),
+                            end = ReleaseSharedShared.features.end (); it != end; ++it) {
+                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
+                            ReleaseSharedSharedFeatures.insert (*it);
+                        }
+                    }
+                    for (std::set<std::string>::const_iterator
+                            it = ReleaseSharedStatic.features.begin (),
+                            end = ReleaseSharedStatic.features.end (); it != end; ++it) {
+                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
+                            ReleaseSharedStaticFeatures.insert (*it);
+                        }
+                    }
+                    for (std::set<std::string>::const_iterator
+                            it = ReleaseStaticShared.features.begin (),
+                            end = ReleaseStaticShared.features.end (); it != end; ++it) {
+                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
+                            ReleaseStaticSharedFeatures.insert (*it);
+                        }
+                    }
+                    for (std::set<std::string>::const_iterator
+                            it = ReleaseStaticStatic.features.begin (),
+                            end = ReleaseStaticStatic.features.end (); it != end; ++it) {
+                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
+                            ReleaseStaticStaticFeatures.insert (*it);
                         }
                     }
                 }
@@ -107,17 +151,25 @@ namespace thekogans {
                 }
 
                 void GetCommonDependencies (
-                        const thekogans_make &DebugShared,
-                        const thekogans_make &DebugStatic,
-                        const thekogans_make &ReleaseShared,
-                        const thekogans_make &ReleaseStatic,
+                        const thekogans_make &DebugSharedShared,
+                        const thekogans_make &DebugSharedStatic,
+                        const thekogans_make &DebugStaticShared,
+                        const thekogans_make &DebugStaticStatic,
+                        const thekogans_make &ReleaseSharedShared,
+                        const thekogans_make &ReleaseSharedStatic,
+                        const thekogans_make &ReleaseStaticShared,
+                        const thekogans_make &ReleaseStaticStatic,
                         std::list<thekogans_make::Dependency *> &commonDependencies) {
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = DebugShared.dependencies.begin (),
-                            end = DebugShared.dependencies.end (); it != end; ++it) {
-                        if (ContainsDependency (DebugStatic, **it) &&
-                                ContainsDependency (ReleaseShared, **it) &&
-                                ContainsDependency (ReleaseStatic, **it)) {
+                            it = DebugSharedShared.dependencies.begin (),
+                            end = DebugSharedShared.dependencies.end (); it != end; ++it) {
+                        if (ContainsDependency (DebugSharedStatic, **it) &&
+                                ContainsDependency (DebugStaticShared, **it) &&
+                                ContainsDependency (DebugStaticStatic, **it) &&
+                                ContainsDependency (ReleaseSharedShared, **it) &&
+                                ContainsDependency (ReleaseSharedStatic, **it) &&
+                                ContainsDependency (ReleaseStaticShared, **it) &&
+                                ContainsDependency (ReleaseStaticStatic, **it)) {
                             commonDependencies.push_back ((*it).get ());
                         }
                     }
@@ -137,41 +189,77 @@ namespace thekogans {
                 }
 
                 void GetUniqueDependencies (
-                        const thekogans_make &DebugShared,
-                        const thekogans_make &DebugStatic,
-                        const thekogans_make &ReleaseShared,
-                        const thekogans_make &ReleaseStatic,
+                        const thekogans_make &DebugSharedShared,
+                        const thekogans_make &DebugSharedStatic,
+                        const thekogans_make &DebugStaticShared,
+                        const thekogans_make &DebugStaticStatic,
+                        const thekogans_make &ReleaseSharedShared,
+                        const thekogans_make &ReleaseSharedStatic,
+                        const thekogans_make &ReleaseStaticShared,
+                        const thekogans_make &ReleaseStaticStatic,
                         const std::list<thekogans_make::Dependency *> &commonDependencies,
-                        std::list<thekogans_make::Dependency *> &DebugSharedDependencies,
-                        std::list<thekogans_make::Dependency *> &DebugStaticDependencies,
-                        std::list<thekogans_make::Dependency *> &ReleaseSharedDependencies,
-                        std::list<thekogans_make::Dependency *> &ReleaseStaticDependencies) {
+                        std::list<thekogans_make::Dependency *> &DebugSharedSharedDependencies,
+                        std::list<thekogans_make::Dependency *> &DebugSharedStaticDependencies,
+                        std::list<thekogans_make::Dependency *> &DebugStaticSharedDependencies,
+                        std::list<thekogans_make::Dependency *> &DebugStaticStaticDependencies,
+                        std::list<thekogans_make::Dependency *> &ReleaseSharedSharedDependencies,
+                        std::list<thekogans_make::Dependency *> &ReleaseSharedStaticDependencies,
+                        std::list<thekogans_make::Dependency *> &ReleaseStaticSharedDependencies,
+                        std::list<thekogans_make::Dependency *> &ReleaseStaticStaticDependencies) {
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = DebugShared.dependencies.begin (),
-                            end = DebugShared.dependencies.end (); it != end; ++it) {
+                            it = DebugSharedShared.dependencies.begin (),
+                            end = DebugSharedShared.dependencies.end (); it != end; ++it) {
                         if (DoesNotContainDependency (commonDependencies, **it)) {
-                            DebugSharedDependencies.push_back ((*it).get ());
+                            DebugSharedSharedDependencies.push_back ((*it).get ());
                         }
                     }
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = DebugStatic.dependencies.begin (),
-                            end = DebugStatic.dependencies.end (); it != end; ++it) {
+                            it = DebugSharedStatic.dependencies.begin (),
+                            end = DebugSharedStatic.dependencies.end (); it != end; ++it) {
                         if (DoesNotContainDependency (commonDependencies, **it)) {
-                            DebugStaticDependencies.push_back ((*it).get ());
+                            DebugSharedStaticDependencies.push_back ((*it).get ());
                         }
                     }
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = ReleaseShared.dependencies.begin (),
-                            end = ReleaseShared.dependencies.end (); it != end; ++it) {
+                            it = DebugStaticShared.dependencies.begin (),
+                            end = DebugStaticShared.dependencies.end (); it != end; ++it) {
                         if (DoesNotContainDependency (commonDependencies, **it)) {
-                            ReleaseSharedDependencies.push_back ((*it).get ());
+                            DebugStaticSharedDependencies.push_back ((*it).get ());
                         }
                     }
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = ReleaseStatic.dependencies.begin (),
-                            end = ReleaseStatic.dependencies.end (); it != end; ++it) {
+                            it = DebugStaticStatic.dependencies.begin (),
+                            end = DebugStaticStatic.dependencies.end (); it != end; ++it) {
                         if (DoesNotContainDependency (commonDependencies, **it)) {
-                            ReleaseStaticDependencies.push_back ((*it).get ());
+                            DebugStaticStaticDependencies.push_back ((*it).get ());
+                        }
+                    }
+                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                            it = ReleaseSharedShared.dependencies.begin (),
+                            end = ReleaseSharedShared.dependencies.end (); it != end; ++it) {
+                        if (DoesNotContainDependency (commonDependencies, **it)) {
+                            ReleaseSharedSharedDependencies.push_back ((*it).get ());
+                        }
+                    }
+                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                            it = ReleaseSharedStatic.dependencies.begin (),
+                            end = ReleaseSharedStatic.dependencies.end (); it != end; ++it) {
+                        if (DoesNotContainDependency (commonDependencies, **it)) {
+                            ReleaseSharedStaticDependencies.push_back ((*it).get ());
+                        }
+                    }
+                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                            it = ReleaseStaticShared.dependencies.begin (),
+                            end = ReleaseStaticShared.dependencies.end (); it != end; ++it) {
+                        if (DoesNotContainDependency (commonDependencies, **it)) {
+                            ReleaseStaticSharedDependencies.push_back ((*it).get ());
+                        }
+                    }
+                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                            it = ReleaseStaticStatic.dependencies.begin (),
+                            end = ReleaseStaticStatic.dependencies.end (); it != end; ++it) {
+                        if (DoesNotContainDependency (commonDependencies, **it)) {
+                            ReleaseStaticStaticDependencies.push_back ((*it).get ());
                         }
                     }
                 }
@@ -201,7 +289,11 @@ namespace thekogans {
                                         MakePath (
                                             MakePath (
                                                 config.project_root,
-                                                GetBuildDirectory (config.generator, config.config, config.type)),
+                                                GetBuildDirectory (
+                                                    config.generator,
+                                                    config.config,
+                                                    config.type,
+                                                    config.runtime_type)),
                                             (*it)->prefix);
                                     for (std::vector<std::string>::const_iterator
                                             kt = (*jt)->customBuild->outputs.begin (),
@@ -256,54 +348,333 @@ namespace thekogans {
                         install_type =
                             thekogans_make::GetBuildType (project_root, THEKOGANS_MAKE_XML);
                     }
-                    if (!install_config.empty () && !install_type.empty ()) {
+                    std::string install_runtime_type = runtime_type;
+                    if (install_runtime_type.empty ()) {
+                        install_runtime_type =
+                            thekogans_make::GetBuildRuntimeType (project_root, THEKOGANS_MAKE_XML);
+                    }
+                    if (!install_config.empty () && !install_type.empty () && !install_runtime_type.empty ()) {
                         BuildProject (
                             project_root,
                             install_config,
                             install_type,
+                            install_runtime_type,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
                             TARGET_ALL);
-                        const thekogans_make &DebugShared =
+                        const thekogans_make &config =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 install_config,
-                                install_type);
-                        const thekogans_make &DebugStatic =
-                            thekogans_make::GetConfig (
-                                project_root,
-                                THEKOGANS_MAKE_XML,
-                                MAKE,
-                                install_config,
-                                install_type);
-                        const thekogans_make &ReleaseShared =
-                            thekogans_make::GetConfig (
-                                project_root,
-                                THEKOGANS_MAKE_XML,
-                                MAKE,
-                                install_config,
-                                install_type);
-                        const thekogans_make &ReleaseStatic =
-                            thekogans_make::GetConfig (
-                                project_root,
-                                THEKOGANS_MAKE_XML,
-                                MAKE,
-                                install_config,
-                                install_type);
+                                install_type,
+                                install_runtime_type);
                         InstallLibrary (
-                            DebugShared,
-                            DebugStatic,
-                            ReleaseShared,
-                            ReleaseStatic);
+                            config,
+                            config,
+                            config,
+                            config,
+                            config,
+                            config,
+                            config,
+                            config);
+                    }
+                    else if (!install_config.empty () && !install_type.empty ()) {
+                        BuildProject (
+                            project_root,
+                            install_config,
+                            install_type,
+                            TYPE_SHARED,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            install_config,
+                            install_type,
+                            TYPE_STATIC,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        const thekogans_make &DebugSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &DebugSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_STATIC);
+                        const thekogans_make &DebugStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &DebugStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_STATIC);
+                        const thekogans_make &ReleaseSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_STATIC);
+                        const thekogans_make &ReleaseStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                install_type,
+                                TYPE_STATIC);
+                        InstallLibrary (
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic);
+                    }
+                    else if (!install_config.empty () && !install_runtime_type.empty ()) {
+                        BuildProject (
+                            project_root,
+                            install_config,
+                            TYPE_SHARED,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            install_config,
+                            TYPE_STATIC,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        const thekogans_make &DebugSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &DebugSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &DebugStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        const thekogans_make &DebugStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        InstallLibrary (
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic);
+                    }
+                    else if (!install_type.empty () && !install_runtime_type.empty ()) {
+                        BuildProject (
+                            project_root,
+                            CONFIG_DEBUG,
+                            install_type,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_RELEASE,
+                            install_type,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        const thekogans_make &DebugSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                install_type,
+                                install_runtime_type);
+                        const thekogans_make &DebugSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                install_type,
+                                install_runtime_type);
+                        const thekogans_make &DebugStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                install_type,
+                                install_runtime_type);
+                        const thekogans_make &DebugStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                install_type,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                install_type,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                install_type,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                install_type,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                install_type,
+                                install_runtime_type);
+                        InstallLibrary (
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic);
                     }
                     else if (!install_config.empty ()) {
                         BuildProject (
                             project_root,
                             install_config,
                             TYPE_SHARED,
+                            TYPE_SHARED,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            install_config,
+                            TYPE_SHARED,
+                            TYPE_STATIC,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
@@ -312,45 +683,109 @@ namespace thekogans {
                             project_root,
                             install_config,
                             TYPE_STATIC,
+                            TYPE_SHARED,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
                             TARGET_ALL);
-                        const thekogans_make &DebugShared =
+                        BuildProject (
+                            project_root,
+                            install_config,
+                            TYPE_STATIC,
+                            TYPE_STATIC,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        const thekogans_make &DebugSharedShared =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 install_config,
+                                TYPE_SHARED,
                                 TYPE_SHARED);
-                        const thekogans_make &DebugStatic =
+                        const thekogans_make &DebugSharedStatic =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 install_config,
+                                TYPE_SHARED,
                                 TYPE_STATIC);
-                        const thekogans_make &ReleaseShared =
+                        const thekogans_make &DebugStaticShared =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 install_config,
+                                TYPE_STATIC,
                                 TYPE_SHARED);
-                        const thekogans_make &ReleaseStatic =
+                        const thekogans_make &DebugStaticStatic =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 install_config,
+                                TYPE_STATIC,
                                 TYPE_STATIC);
-                        InstallLibrary (DebugShared, DebugStatic, ReleaseShared, ReleaseStatic);
+                        const thekogans_make &ReleaseSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_SHARED,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_SHARED,
+                                TYPE_STATIC);
+                        const thekogans_make &ReleaseStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_STATIC,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                install_config,
+                                TYPE_STATIC,
+                                TYPE_STATIC);
+                        InstallLibrary (
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic);
                     }
                     else if (!install_type.empty ()) {
                         BuildProject (
                             project_root,
                             CONFIG_DEBUG,
                             install_type,
+                            TYPE_SHARED,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_DEBUG,
+                            install_type,
+                            TYPE_STATIC,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
@@ -359,49 +794,211 @@ namespace thekogans {
                             project_root,
                             CONFIG_RELEASE,
                             install_type,
+                            TYPE_SHARED,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
                             TARGET_ALL);
-                        const thekogans_make &DebugShared =
+                        BuildProject (
+                            project_root,
+                            CONFIG_RELEASE,
+                            install_type,
+                            TYPE_STATIC,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        const thekogans_make &DebugSharedShared =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 CONFIG_DEBUG,
-                                install_type);
-                        const thekogans_make &DebugStatic =
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &DebugSharedStatic =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 CONFIG_DEBUG,
-                                install_type);
-                        const thekogans_make &ReleaseShared =
+                                install_type,
+                                TYPE_STATIC);
+                        const thekogans_make &DebugStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &DebugStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                install_type,
+                                TYPE_STATIC);
+                        const thekogans_make &ReleaseSharedShared =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 CONFIG_RELEASE,
-                                install_type);
-                        const thekogans_make &ReleaseStatic =
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseSharedStatic =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 CONFIG_RELEASE,
-                                install_type);
+                                install_type,
+                                TYPE_STATIC);
+                        const thekogans_make &ReleaseStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                install_type,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                install_type,
+                                TYPE_STATIC);
                         InstallLibrary (
-                            DebugShared,
-                            DebugStatic,
-                            ReleaseShared,
-                            ReleaseStatic);
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic);
+                    }
+                    else if (!install_runtime_type.empty ()) {
+                        BuildProject (
+                            project_root,
+                            CONFIG_DEBUG,
+                            TYPE_SHARED,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_DEBUG,
+                            TYPE_STATIC,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_RELEASE,
+                            TYPE_SHARED,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_RELEASE,
+                            TYPE_STATIC,
+                            install_runtime_type,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        const thekogans_make &DebugSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &DebugSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &DebugStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        const thekogans_make &DebugStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseSharedShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                TYPE_SHARED,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        const thekogans_make &ReleaseStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                TYPE_STATIC,
+                                install_runtime_type);
+                        InstallLibrary (
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic);
                     }
                     else {
                         BuildProject (
                             project_root,
                             CONFIG_DEBUG,
                             TYPE_SHARED,
+                            TYPE_SHARED,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
@@ -409,6 +1006,25 @@ namespace thekogans {
                         BuildProject (
                             project_root,
                             CONFIG_DEBUG,
+                            TYPE_SHARED,
+                            TYPE_STATIC,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_DEBUG,
+                            TYPE_STATIC,
+                            TYPE_SHARED,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_DEBUG,
+                            TYPE_STATIC,
                             TYPE_STATIC,
                             MODE_INSTALL,
                             hide_commands,
@@ -418,6 +1034,16 @@ namespace thekogans {
                             project_root,
                             CONFIG_RELEASE,
                             TYPE_SHARED,
+                            TYPE_SHARED,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        BuildProject (
+                            project_root,
+                            CONFIG_RELEASE,
+                            TYPE_SHARED,
+                            TYPE_STATIC,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
@@ -426,43 +1052,93 @@ namespace thekogans {
                             project_root,
                             CONFIG_RELEASE,
                             TYPE_STATIC,
+                            TYPE_SHARED,
                             MODE_INSTALL,
                             hide_commands,
                             parallel_build,
                             TARGET_ALL);
-                        const thekogans_make &DebugShared =
+                        BuildProject (
+                            project_root,
+                            CONFIG_RELEASE,
+                            TYPE_STATIC,
+                            TYPE_STATIC,
+                            MODE_INSTALL,
+                            hide_commands,
+                            parallel_build,
+                            TARGET_ALL);
+                        const thekogans_make &DebugSharedShared =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 CONFIG_DEBUG,
+                                TYPE_SHARED,
                                 TYPE_SHARED);
-                        const thekogans_make &DebugStatic =
+                        const thekogans_make &DebugSharedStatic =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 CONFIG_DEBUG,
+                                TYPE_SHARED,
                                 TYPE_STATIC);
-                        const thekogans_make &ReleaseShared =
+                        const thekogans_make &DebugStaticShared =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
-                                CONFIG_RELEASE,
+                                CONFIG_DEBUG,
+                                TYPE_STATIC,
                                 TYPE_SHARED);
-                        const thekogans_make &ReleaseStatic =
+                        const thekogans_make &DebugStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_DEBUG,
+                                TYPE_STATIC,
+                                TYPE_STATIC);
+                        const thekogans_make &ReleaseSharedShared =
                             thekogans_make::GetConfig (
                                 project_root,
                                 THEKOGANS_MAKE_XML,
                                 MAKE,
                                 CONFIG_RELEASE,
+                                TYPE_SHARED,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseSharedStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                TYPE_SHARED,
+                                TYPE_STATIC);
+                        const thekogans_make &ReleaseStaticShared =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                TYPE_STATIC,
+                                TYPE_SHARED);
+                        const thekogans_make &ReleaseStaticStatic =
+                            thekogans_make::GetConfig (
+                                project_root,
+                                THEKOGANS_MAKE_XML,
+                                MAKE,
+                                CONFIG_RELEASE,
+                                TYPE_STATIC,
                                 TYPE_STATIC);
                         InstallLibrary (
-                            DebugShared,
-                            DebugStatic,
-                            ReleaseShared,
-                            ReleaseStatic);
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic);
                     }
                 }
             }
@@ -490,10 +1166,21 @@ namespace thekogans {
                             install_type = TYPE_STATIC;
                         }
                     }
+                    std::string install_runtime_type = runtime_type;
+                    if (install_runtime_type.empty ()) {
+                        install_runtime_type =
+                            thekogans_make::GetBuildRuntimeType (
+                                project_root,
+                                THEKOGANS_MAKE_XML);
+                        if (install_runtime_type.empty ()) {
+                            install_runtime_type = TYPE_SHARED;
+                        }
+                    }
                     BuildProject (
                         project_root,
                         install_config,
                         install_type,
+                        install_runtime_type,
                         MODE_INSTALL,
                         hide_commands,
                         parallel_build,
@@ -504,7 +1191,8 @@ namespace thekogans {
                             THEKOGANS_MAKE_XML,
                             MAKE,
                             install_config,
-                            install_type);
+                            install_type,
+                            install_runtime_type);
                     std::list<std::string> dependencies;
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
                             it = config.dependencies.begin (),
@@ -515,7 +1203,8 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 (*it)->GetConfig (),
-                                (*it)->GetType ());
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ());
                             if (dependency.project_type == PROJECT_TYPE_PROGRAM ||
                                     dependency.project_type == PROJECT_TYPE_PLUGIN) {
                                 InstallDependency (dependency);
@@ -549,6 +1238,7 @@ namespace thekogans {
                         project_root,
                         install_config,
                         install_type,
+                        install_runtime_type,
                         config.GetToolchainBinDirectory ());
                     std::string config_file =
                         MakePath (
@@ -596,9 +1286,9 @@ namespace thekogans {
                             util::Attribute (
                                 thekogans_make::ATTR_NAMING_CONVENTION,
                                 config.naming_convention));
-                        // NOTE: We don't tag the config file with install_config and
-                        // install_type because, unlike libraries (and plugins), program
-                        // dependency is config and type independent.
+                        // NOTE: We don't tag the config file with install_config, install_type
+                        // and install_runtime_type because, unlike libraries (and plugins), program
+                        // dependency is config, type and runtime_type independent.
 //                         attributes.push_back (
 //                             util::Attribute (
 //                                 thekogans_make::ATTR_BUILD_CONFIG,
@@ -607,6 +1297,10 @@ namespace thekogans {
 //                             util::Attribute (
 //                                 thekogans_make::ATTR_BUILD_TYPE,
 //                                 install_type));
+//                         attributes.push_back (
+//                             util::Attribute (
+//                                 thekogans_make::ATTR_BUILD_RUNTIME_TYPE,
+//                                 install_runtime_type));
                         attributes.push_back (
                             util::Attribute (
                                 thekogans_make::ATTR_GUID,
@@ -721,10 +1415,21 @@ namespace thekogans {
                             install_type = TYPE_SHARED;
                         }
                     }
+                    std::string install_runtime_type = runtime_type;
+                    if (install_runtime_type.empty ()) {
+                        install_runtime_type =
+                            thekogans_make::GetBuildRuntimeType (
+                                project_root,
+                                THEKOGANS_MAKE_XML);
+                        if (install_runtime_type.empty ()) {
+                            install_runtime_type = TYPE_SHARED;
+                        }
+                    }
                     BuildProject (
                         project_root,
                         install_config,
                         install_type,
+                        install_runtime_type,
                         MODE_INSTALL,
                         hide_commands,
                         parallel_build,
@@ -735,7 +1440,8 @@ namespace thekogans {
                             THEKOGANS_MAKE_XML,
                             MAKE,
                             install_config,
-                            install_type);
+                            install_type,
+                            install_runtime_type);
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
                             it = plugin_config.plugin_hosts.begin (),
                             end = plugin_config.plugin_hosts.end (); it != end; ++it) {
@@ -745,7 +1451,8 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 install_config,
-                                install_type);
+                                install_type,
+                                install_runtime_type);
                         std::string toDirectory = host_config.project_type == PROJECT_TYPE_PROGRAM ?
                             host_config.GetToolchainBinDirectory () :
                             host_config.GetToolchainLibDirectory ();
@@ -780,6 +1487,7 @@ namespace thekogans {
                                     plugin_config.project_root,
                                     plugin_config.config,
                                     plugin_config.type,
+                                    plugin_config.runtime_type,
                                     toDirectory);
                                 util::Plugins::Plugin::Dependencies dependencies;
                                 {
@@ -810,7 +1518,8 @@ namespace thekogans {
                         THEKOGANS_MAKE_XML,
                         MAKE,
                         config,
-                        type);
+                        type,
+                        runtime_type);
                 for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
                         it = plugin_config.plugin_hosts.begin (),
                         end = plugin_config.plugin_hosts.end (); it != end; ++it) {
@@ -820,13 +1529,17 @@ namespace thekogans {
                             (*it)->GetConfigFile (),
                             (*it)->GetGenerator (),
                             config,
-                            type);
+                            type,
+                            runtime_type);
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
-                        if (host_config.project_type == PROJECT_TYPE_PROGRAM) {
+                        if (host_config.project_type == PROJECT_TYPE_LIBRARY) {
+                            InstallLibrary ((*it)->GetProjectRoot ());
+                        }
+                        else if (host_config.project_type == PROJECT_TYPE_PROGRAM) {
                             InstallProgram ((*it)->GetProjectRoot ());
                         }
-                        else if (host_config.project_type == PROJECT_TYPE_LIBRARY) {
-                            InstallLibrary ((*it)->GetProjectRoot ());
+                        else if (host_config.project_type == PROJECT_TYPE_PLUGIN) {
+                            InstallPlugin ((*it)->GetProjectRoot ());
                         }
                     }
                 }
@@ -841,31 +1554,51 @@ namespace thekogans {
             }
 
             void Installer::InstallLibrary (
-                    const thekogans_make &DebugShared,
-                    const thekogans_make &DebugStatic,
-                    const thekogans_make &ReleaseShared,
-                    const thekogans_make &ReleaseStatic) {
+                    const thekogans_make &DebugSharedShared,
+                    const thekogans_make &DebugSharedStatic,
+                    const thekogans_make &DebugStaticShared,
+                    const thekogans_make &DebugStaticStatic,
+                    const thekogans_make &ReleaseSharedShared,
+                    const thekogans_make &ReleaseSharedStatic,
+                    const thekogans_make &ReleaseStaticShared,
+                    const thekogans_make &ReleaseStaticStatic) {
                 std::list<thekogans_make::Dependency *> commonDependencies;
                 GetCommonDependencies (
-                    DebugShared,
-                    DebugStatic,
-                    ReleaseShared,
-                    ReleaseStatic,
+                    DebugSharedShared,
+                    DebugSharedStatic,
+                    DebugStaticShared,
+                    DebugStaticStatic,
+                    ReleaseSharedShared,
+                    ReleaseSharedStatic,
+                    ReleaseStaticShared,
+                    ReleaseStaticStatic,
                     commonDependencies);
-                std::list<thekogans_make::Dependency *> DebugSharedDependencies;
-                std::list<thekogans_make::Dependency *> DebugStaticDependencies;
-                std::list<thekogans_make::Dependency *> ReleaseSharedDependencies;
-                std::list<thekogans_make::Dependency *> ReleaseStaticDependencies;
+                std::list<thekogans_make::Dependency *> DebugSharedSharedDependencies;
+                std::list<thekogans_make::Dependency *> DebugSharedStaticDependencies;
+                std::list<thekogans_make::Dependency *> DebugStaticSharedDependencies;
+                std::list<thekogans_make::Dependency *> DebugStaticStaticDependencies;
+                std::list<thekogans_make::Dependency *> ReleaseSharedSharedDependencies;
+                std::list<thekogans_make::Dependency *> ReleaseSharedStaticDependencies;
+                std::list<thekogans_make::Dependency *> ReleaseStaticSharedDependencies;
+                std::list<thekogans_make::Dependency *> ReleaseStaticStaticDependencies;
                 GetUniqueDependencies (
-                    DebugShared,
-                    DebugStatic,
-                    ReleaseShared,
-                    ReleaseStatic,
+                    DebugSharedShared,
+                    DebugSharedStatic,
+                    DebugStaticShared,
+                    DebugStaticStatic,
+                    ReleaseSharedShared,
+                    ReleaseSharedStatic,
+                    ReleaseStaticShared,
+                    ReleaseStaticStatic,
                     commonDependencies,
-                    DebugSharedDependencies,
-                    DebugStaticDependencies,
-                    ReleaseSharedDependencies,
-                    ReleaseStaticDependencies);
+                    DebugSharedSharedDependencies,
+                    DebugSharedStaticDependencies,
+                    DebugStaticSharedDependencies,
+                    DebugStaticStaticDependencies,
+                    ReleaseSharedSharedDependencies,
+                    ReleaseSharedStaticDependencies,
+                    ReleaseStaticSharedDependencies,
+                    ReleaseStaticStaticDependencies);
                 for (std::list<thekogans_make::Dependency *>::const_iterator
                         it = commonDependencies.begin (),
                         end = commonDependencies.end (); it != end; ++it) {
@@ -876,12 +1609,13 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 (*it)->GetConfig (),
-                                (*it)->GetType ()));
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
                     }
                 }
                 for (std::list<thekogans_make::Dependency *>::const_iterator
-                        it = DebugSharedDependencies.begin (),
-                        end = DebugSharedDependencies.end (); it != end; ++it) {
+                        it = DebugSharedSharedDependencies.begin (),
+                        end = DebugSharedSharedDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
                         InstallDependency (
                             thekogans_make::GetConfig (
@@ -889,12 +1623,13 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 (*it)->GetConfig (),
-                                (*it)->GetType ()));
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
                     }
                 }
                 for (std::list<thekogans_make::Dependency *>::const_iterator
-                        it = DebugStaticDependencies.begin (),
-                        end = DebugStaticDependencies.end (); it != end; ++it) {
+                        it = DebugSharedStaticDependencies.begin (),
+                        end = DebugSharedStaticDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
                         InstallDependency (
                             thekogans_make::GetConfig (
@@ -902,12 +1637,13 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 (*it)->GetConfig (),
-                                (*it)->GetType ()));
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
                     }
                 }
                 for (std::list<thekogans_make::Dependency *>::const_iterator
-                        it = ReleaseSharedDependencies.begin (),
-                        end = ReleaseSharedDependencies.end (); it != end; ++it) {
+                        it = DebugStaticSharedDependencies.begin (),
+                        end = DebugStaticSharedDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
                         InstallDependency (
                             thekogans_make::GetConfig (
@@ -915,12 +1651,13 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 (*it)->GetConfig (),
-                                (*it)->GetType ()));
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
                     }
                 }
                 for (std::list<thekogans_make::Dependency *>::const_iterator
-                        it = ReleaseStaticDependencies.begin (),
-                        end = ReleaseStaticDependencies.end (); it != end; ++it) {
+                        it = DebugStaticStaticDependencies.begin (),
+                        end = DebugStaticStaticDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
                         InstallDependency (
                             thekogans_make::GetConfig (
@@ -928,58 +1665,155 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 (*it)->GetConfig (),
-                                (*it)->GetType ()));
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
+                    }
+                }
+                for (std::list<thekogans_make::Dependency *>::const_iterator
+                        it = ReleaseSharedSharedDependencies.begin (),
+                        end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                    if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
+                        InstallDependency (
+                            thekogans_make::GetConfig (
+                                (*it)->GetProjectRoot (),
+                                (*it)->GetConfigFile (),
+                                (*it)->GetGenerator (),
+                                (*it)->GetConfig (),
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
+                    }
+                }
+                for (std::list<thekogans_make::Dependency *>::const_iterator
+                        it = ReleaseSharedStaticDependencies.begin (),
+                        end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                    if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
+                        InstallDependency (
+                            thekogans_make::GetConfig (
+                                (*it)->GetProjectRoot (),
+                                (*it)->GetConfigFile (),
+                                (*it)->GetGenerator (),
+                                (*it)->GetConfig (),
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
+                    }
+                }
+                for (std::list<thekogans_make::Dependency *>::const_iterator
+                        it = ReleaseStaticSharedDependencies.begin (),
+                        end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                    if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
+                        InstallDependency (
+                            thekogans_make::GetConfig (
+                                (*it)->GetProjectRoot (),
+                                (*it)->GetConfigFile (),
+                                (*it)->GetGenerator (),
+                                (*it)->GetConfig (),
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
+                    }
+                }
+                for (std::list<thekogans_make::Dependency *>::const_iterator
+                        it = ReleaseStaticStaticDependencies.begin (),
+                        end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                    if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
+                        InstallDependency (
+                            thekogans_make::GetConfig (
+                                (*it)->GetProjectRoot (),
+                                (*it)->GetConfigFile (),
+                                (*it)->GetGenerator (),
+                                (*it)->GetConfig (),
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ()));
                     }
                 }
                 // Uninstall old version
                 UninstallLibrary (
-                    DebugShared.organization,
-                    DebugShared.project,
-                    DebugShared.GetVersion (),
+                    DebugSharedShared.organization,
+                    DebugSharedShared.project,
+                    DebugSharedShared.GetVersion (),
                     false);
-                std::cout << "Installing " << DebugShared.project_root << std::endl;
+                std::cout << "Installing " << DebugSharedShared.project_root << std::endl;
                 std::cout.flush ();
                 // install = "yes"
                 std::set<InstallPaths> installPaths;
-                GetInstallPaths (DebugShared, installPaths);
-                GetInstallPaths (DebugStatic, installPaths);
-                GetInstallPaths (ReleaseShared, installPaths);
-                GetInstallPaths (ReleaseStatic, installPaths);
-                if (DebugShared.HasGoal ()) {
+                GetInstallPaths (DebugSharedShared, installPaths);
+                GetInstallPaths (DebugSharedStatic, installPaths);
+                GetInstallPaths (DebugStaticShared, installPaths);
+                GetInstallPaths (DebugStaticStatic, installPaths);
+                GetInstallPaths (ReleaseSharedShared, installPaths);
+                GetInstallPaths (ReleaseSharedStatic, installPaths);
+                GetInstallPaths (ReleaseStaticShared, installPaths);
+                GetInstallPaths (ReleaseStaticStatic, installPaths);
+                if (DebugSharedShared.HasGoal ()) {
                     installPaths.insert (
                         InstallPaths (
-                            DebugShared.GetProjectGoal (),
-                            DebugShared.GetToolchainGoal ()));
+                            DebugSharedShared.GetProjectGoal (),
+                            DebugSharedShared.GetToolchainGoal ()));
                 #if defined (TOOLCHAIN_OS_Windows)
                     installPaths.insert (
                         InstallPaths (
-                            DebugShared.GetProjectLinkLibrary (),
-                            DebugShared.GetToolchainLinkLibrary ()));
+                            DebugSharedShared.GetProjectLinkLibrary (),
+                            DebugSharedShared.GetToolchainLinkLibrary ()));
                 #endif // defined (TOOLCHAIN_OS_Windows)
                 }
-                if (DebugStatic.HasGoal ()) {
+                if (DebugSharedStatic.HasGoal ()) {
                     installPaths.insert (
                         InstallPaths (
-                            DebugStatic.GetProjectGoal (),
-                            DebugStatic.GetToolchainGoal ()));
-                }
-                if (ReleaseShared.HasGoal ()) {
-                    installPaths.insert (
-                        InstallPaths (
-                            ReleaseShared.GetProjectGoal (),
-                            ReleaseShared.GetToolchainGoal ()));
+                            DebugSharedStatic.GetProjectGoal (),
+                            DebugSharedStatic.GetToolchainGoal ()));
                 #if defined (TOOLCHAIN_OS_Windows)
                     installPaths.insert (
                         InstallPaths (
-                            ReleaseShared.GetProjectLinkLibrary (),
-                            ReleaseShared.GetToolchainLinkLibrary ()));
+                            DebugSharedStatic.GetProjectLinkLibrary (),
+                            DebugSharedStatic.GetToolchainLinkLibrary ()));
                 #endif // defined (TOOLCHAIN_OS_Windows)
                 }
-                if (ReleaseStatic.HasGoal ()) {
+                if (DebugStaticShared.HasGoal ()) {
                     installPaths.insert (
                         InstallPaths (
-                            ReleaseStatic.GetProjectGoal (),
-                            ReleaseStatic.GetToolchainGoal ()));
+                            DebugStaticShared.GetProjectGoal (),
+                            DebugStaticShared.GetToolchainGoal ()));
+                }
+                if (DebugStaticStatic.HasGoal ()) {
+                    installPaths.insert (
+                        InstallPaths (
+                            DebugStaticStatic.GetProjectGoal (),
+                            DebugStaticStatic.GetToolchainGoal ()));
+                }
+                if (ReleaseSharedShared.HasGoal ()) {
+                    installPaths.insert (
+                        InstallPaths (
+                            ReleaseSharedShared.GetProjectGoal (),
+                            ReleaseSharedShared.GetToolchainGoal ()));
+                #if defined (TOOLCHAIN_OS_Windows)
+                    installPaths.insert (
+                        InstallPaths (
+                            ReleaseSharedShared.GetProjectLinkLibrary (),
+                            ReleaseSharedShared.GetToolchainLinkLibrary ()));
+                #endif // defined (TOOLCHAIN_OS_Windows)
+                }
+                if (ReleaseSharedStatic.HasGoal ()) {
+                    installPaths.insert (
+                        InstallPaths (
+                            ReleaseSharedStatic.GetProjectGoal (),
+                            ReleaseSharedStatic.GetToolchainGoal ()));
+                #if defined (TOOLCHAIN_OS_Windows)
+                    installPaths.insert (
+                        InstallPaths (
+                            ReleaseSharedStatic.GetProjectLinkLibrary (),
+                            ReleaseSharedStatic.GetToolchainLinkLibrary ()));
+                #endif // defined (TOOLCHAIN_OS_Windows)
+                }
+                if (ReleaseStaticShared.HasGoal ()) {
+                    installPaths.insert (
+                        InstallPaths (
+                            ReleaseStaticShared.GetProjectGoal (),
+                            ReleaseStaticShared.GetToolchainGoal ()));
+                }
+                if (ReleaseStaticStatic.HasGoal ()) {
+                    installPaths.insert (
+                        InstallPaths (
+                            ReleaseStaticStatic.GetProjectGoal (),
+                            ReleaseStaticStatic.GetToolchainGoal ()));
                 }
                 for (std::set<InstallPaths>::const_iterator
                         it = installPaths.begin (),
@@ -990,10 +1824,10 @@ namespace thekogans {
                     MakePath (
                         MakePath (_TOOLCHAIN_DIR, CONFIG_DIR),
                         GetFileName (
-                            DebugShared.organization,
-                            DebugShared.project,
+                            DebugSharedShared.organization,
+                            DebugSharedShared.project,
                             std::string (),
-                            DebugShared.GetVersion (),
+                            DebugSharedShared.GetVersion (),
                             XML_EXT));
                 std::cout << "Creating " << config_file << "\n";
                 std::cout.flush ();
@@ -1007,34 +1841,34 @@ namespace thekogans {
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_ORGANIZATION,
-                            DebugShared.organization));
+                            DebugSharedShared.organization));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_PROJECT,
-                            DebugShared.project));
+                            DebugSharedShared.project));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_PROJECT_TYPE,
-                            DebugShared.project_type));
+                            DebugSharedShared.project_type));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_MAJOR_VERSION,
-                            DebugShared.major_version));
+                            DebugSharedShared.major_version));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_MINOR_VERSION,
-                            DebugShared.minor_version));
+                            DebugSharedShared.minor_version));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_PATCH_VERSION,
-                            DebugShared.patch_version));
+                            DebugSharedShared.patch_version));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_NAMING_CONVENTION,
-                            DebugShared.naming_convention));
+                            DebugSharedShared.naming_convention));
                     std::string build_config = config;
                     if (build_config.empty ()) {
-                        build_config = DebugShared.build_config;
+                        build_config = DebugSharedShared.build_config;
                     }
                     if (!build_config.empty ()) {
                         attributes.push_back (
@@ -1044,7 +1878,7 @@ namespace thekogans {
                     }
                     std::string build_type = type;
                     if (build_type.empty ()) {
-                        build_type = DebugShared.build_type;
+                        build_type = DebugSharedShared.build_type;
                     }
                     if (!build_type.empty ()) {
                         attributes.push_back (
@@ -1052,10 +1886,20 @@ namespace thekogans {
                                 thekogans_make::ATTR_BUILD_TYPE,
                                 build_type));
                     }
+                    std::string build_runtime_type = runtime_type;
+                    if (build_runtime_type.empty ()) {
+                        build_runtime_type = DebugSharedShared.build_runtime_type;
+                    }
+                    if (!build_runtime_type.empty ()) {
+                        attributes.push_back (
+                            util::Attribute (
+                                thekogans_make::ATTR_BUILD_RUNTIME_TYPE,
+                                build_runtime_type));
+                    }
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_GUID,
-                            DebugShared.guid.ToString ()));
+                            DebugSharedShared.guid.ToString ()));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_SCHEMA_VERSION,
@@ -1063,15 +1907,27 @@ namespace thekogans {
                     configFile << util::OpenTag (0, thekogans_make::TAG_THEKOGANS_MAKE,
                         attributes, false, true);
                     // features
-                    if (!DebugShared.features.empty () ||
-                            !DebugStatic.features.empty () ||
-                            !ReleaseShared.features.empty () ||
-                            !ReleaseStatic.features.empty ()) {
+                    if (!DebugSharedShared.features.empty () ||
+                            !DebugSharedStatic.features.empty () ||
+                            !DebugStaticShared.features.empty () ||
+                            !DebugStaticStatic.features.empty () ||
+                            !ReleaseSharedShared.features.empty () ||
+                            !ReleaseSharedStatic.features.empty () ||
+                            !ReleaseStaticShared.features.empty () ||
+                            !ReleaseStaticStatic.features.empty ()) {
                         configFile << util::OpenTag (1, thekogans_make::TAG_FEATURES,
                             util::Attributes (), false, true);
                         std::set<std::string> commonFeatures;
-                        GetCommonFeatures (DebugShared, DebugStatic,
-                            ReleaseShared, ReleaseStatic, commonFeatures);
+                        GetCommonFeatures (
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic,
+                            commonFeatures);
                         for (std::set<std::string>::const_iterator
                                 it = commonFeatures.begin (),
                                 end = commonFeatures.end (); it != end; ++it) {
@@ -1080,25 +1936,46 @@ namespace thekogans {
                                 *it <<
                                 util::CloseTag (0, thekogans_make::TAG_FEATURE);
                         }
-                        std::set<std::string> DebugSharedFeatures;
-                        std::set<std::string> DebugStaticFeatures;
-                        std::set<std::string> ReleaseSharedFeatures;
-                        std::set<std::string> ReleaseStaticFeatures;
+                        std::set<std::string> DebugSharedSharedFeatures;
+                        std::set<std::string> DebugSharedStaticFeatures;
+                        std::set<std::string> DebugStaticSharedFeatures;
+                        std::set<std::string> DebugStaticStaticFeatures;
+                        std::set<std::string> ReleaseSharedSharedFeatures;
+                        std::set<std::string> ReleaseSharedStaticFeatures;
+                        std::set<std::string> ReleaseStaticSharedFeatures;
+                        std::set<std::string> ReleaseStaticStaticFeatures;
                         GetUniqueFeatures (
-                            DebugShared,
-                            DebugStatic,
-                            ReleaseShared,
-                            ReleaseStatic,
+                            DebugSharedShared,
+                            DebugSharedStatic,
+                            DebugStaticShared,
+                            DebugStaticStatic,
+                            ReleaseSharedShared,
+                            ReleaseSharedStatic,
+                            ReleaseStaticShared,
+                            ReleaseStaticStatic,
                             commonFeatures,
-                            DebugSharedFeatures,
-                            DebugStaticFeatures,
-                            ReleaseSharedFeatures,
-                            ReleaseStaticFeatures);
-                        if ((!DebugSharedFeatures.empty () || !DebugStaticFeatures.empty ()) &&
-                                (!ReleaseSharedFeatures.empty () || !ReleaseStaticFeatures.empty ())) {
+                            DebugSharedSharedFeatures,
+                            DebugSharedStaticFeatures,
+                            DebugStaticSharedFeatures,
+                            DebugStaticStaticFeatures,
+                            ReleaseSharedSharedFeatures,
+                            ReleaseSharedStaticFeatures,
+                            ReleaseStaticSharedFeatures,
+                            ReleaseStaticStaticFeatures);
+                        // debug && release
+                        if ((!DebugSharedSharedFeatures.empty () ||
+                                !DebugSharedStaticFeatures.empty () ||
+                                !DebugStaticSharedFeatures.empty () ||
+                                !DebugStaticStaticFeatures.empty ()) &&
+                            (!ReleaseSharedSharedFeatures.empty () ||
+                                !ReleaseSharedStaticFeatures.empty () ||
+                                !ReleaseStaticSharedFeatures.empty () ||
+                                !ReleaseStaticStaticFeatures.empty ())) {
+                            // choose
                             configFile << util::OpenTag (2, thekogans_make::TAG_CHOOSE,
                                 util::Attributes (), false, true);
                             {
+                                // when debug
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1106,10 +1983,14 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_CONFIG, CONFIG_DEBUG)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_WHEN,
                                     attributes, false, true);
-                                if (!DebugSharedFeatures.empty () && !DebugStaticFeatures.empty ()) {
+                                // shared && static
+                                if ((!DebugSharedSharedFeatures.empty () || !DebugSharedStaticFeatures.empty ()) &&
+                                        (!DebugStaticSharedFeatures.empty () || !DebugStaticStaticFeatures.empty ())) {
+                                    // choose
                                     configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
                                         util::Attributes (), false, true);
                                     {
+                                        // when shared
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
@@ -1117,17 +1998,95 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::set<std::string>::const_iterator
-                                                it = DebugSharedFeatures.begin (),
-                                                end = DebugSharedFeatures.end (); it != end; ++it) {
-                                            configFile <<
-                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
-                                                *it <<
-                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        // shared && static
+                                        if (!DebugSharedSharedFeatures.empty () && !DebugSharedStaticFeatures.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = DebugSharedSharedFeatures.begin (),
+                                                        end = DebugSharedSharedFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = DebugSharedStaticFeatures.begin (),
+                                                        end = DebugSharedStaticFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!DebugSharedSharedFeatures.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = DebugSharedSharedFeatures.begin (),
+                                                    end = DebugSharedSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = DebugSharedStaticFeatures.begin (),
+                                                     end = DebugSharedStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
                                         }
                                         configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
                                     }
                                     {
+                                        // when static
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
@@ -1135,19 +2094,98 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::set<std::string>::const_iterator
-                                                it = DebugStaticFeatures.begin (),
-                                                end = DebugStaticFeatures.end (); it != end; ++it) {
-                                            configFile <<
-                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
-                                                *it <<
-                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        // shared && static
+                                        if (!DebugStaticSharedFeatures.empty () && !DebugStaticStaticFeatures.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = DebugStaticSharedFeatures.begin (),
+                                                        end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = DebugStaticStaticFeatures.begin (),
+                                                        end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!DebugStaticSharedFeatures.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = DebugStaticSharedFeatures.begin (),
+                                                    end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = DebugStaticStaticFeatures.begin (),
+                                                     end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
                                         }
                                         configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
                                     }
-                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
-                                else if (!DebugSharedFeatures.empty ()) {
+                                // shared
+                                else if (!DebugSharedSharedFeatures.empty () || !DebugSharedStaticFeatures.empty ()) {
+                                    // if shared
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1155,17 +2193,95 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::set<std::string>::const_iterator
-                                            it = DebugSharedFeatures.begin (),
-                                            end = DebugSharedFeatures.end (); it != end; ++it) {
-                                        configFile <<
-                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
-                                            *it <<
-                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    // shared && static
+                                    if (!DebugSharedSharedFeatures.empty () && !DebugSharedStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = DebugSharedSharedFeatures.begin (),
+                                                    end = DebugSharedSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = DebugSharedStaticFeatures.begin (),
+                                                    end = DebugSharedStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugSharedSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugSharedSharedFeatures.begin (),
+                                                end = DebugSharedSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugSharedStaticFeatures.begin (),
+                                                end = DebugSharedStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
+                                // static
                                 else {
+                                    // if static
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1173,19 +2289,96 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::set<std::string>::const_iterator
-                                            it = DebugStaticFeatures.begin (),
-                                            end = DebugStaticFeatures.end (); it != end; ++it) {
-                                        configFile <<
-                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
-                                            *it <<
-                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    // shared && static
+                                    if (!DebugStaticSharedFeatures.empty () && !DebugStaticStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = DebugStaticSharedFeatures.begin (),
+                                                    end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = DebugStaticStaticFeatures.begin (),
+                                                    end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugStaticSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugStaticSharedFeatures.begin (),
+                                                end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugStaticStaticFeatures.begin (),
+                                                end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
                             }
                             {
+                                // when release
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1193,10 +2386,14 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_CONFIG, CONFIG_RELEASE)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_WHEN,
                                     attributes, false, true);
-                                if (!ReleaseSharedFeatures.empty () && !ReleaseStaticFeatures.empty ()) {
+                                // shared && static
+                                if ((!ReleaseSharedSharedFeatures.empty () || !ReleaseSharedStaticFeatures.empty ()) &&
+                                        (!ReleaseStaticSharedFeatures.empty () || !ReleaseStaticStaticFeatures.empty ())) {
+                                    // choose
                                     configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
                                         util::Attributes (), false, true);
                                     {
+                                        // when shared
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
@@ -1204,9 +2401,627 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
+                                        // shared && static
+                                        if (!ReleaseSharedSharedFeatures.empty () && !ReleaseSharedStaticFeatures.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = ReleaseSharedSharedFeatures.begin (),
+                                                        end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = ReleaseSharedStaticFeatures.begin (),
+                                                        end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!ReleaseSharedSharedFeatures.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = ReleaseSharedSharedFeatures.begin (),
+                                                    end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = ReleaseSharedStaticFeatures.begin (),
+                                                     end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        // shared && static
+                                        if (!ReleaseStaticSharedFeatures.empty () && !ReleaseStaticStaticFeatures.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = ReleaseStaticSharedFeatures.begin (),
+                                                        end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::set<std::string>::const_iterator
+                                                        it = ReleaseStaticStaticFeatures.begin (),
+                                                        end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                                    configFile <<
+                                                        util::OpenTag (8, thekogans_make::TAG_FEATURE) <<
+                                                        *it <<
+                                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!ReleaseStaticSharedFeatures.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = ReleaseStaticSharedFeatures.begin (),
+                                                    end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = ReleaseStaticStaticFeatures.begin (),
+                                                     end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
+                                }
+                                // shared
+                                else if (!ReleaseSharedSharedFeatures.empty () || !ReleaseSharedStaticFeatures.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    // shared && static
+                                    if (!ReleaseSharedSharedFeatures.empty () && !ReleaseSharedStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = ReleaseSharedSharedFeatures.begin (),
+                                                    end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = ReleaseSharedStaticFeatures.begin (),
+                                                    end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseSharedSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
                                         for (std::set<std::string>::const_iterator
-                                                it = ReleaseSharedFeatures.begin (),
-                                                end = ReleaseSharedFeatures.end (); it != end; ++it) {
+                                                it = ReleaseSharedSharedFeatures.begin (),
+                                                end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseSharedStaticFeatures.begin (),
+                                                end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                // static
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    // shared && static
+                                    if (!ReleaseStaticSharedFeatures.empty () && !ReleaseStaticStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = ReleaseStaticSharedFeatures.begin (),
+                                                    end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                    it = ReleaseStaticStaticFeatures.begin (),
+                                                    end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseStaticSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseStaticSharedFeatures.begin (),
+                                                end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseStaticStaticFeatures.begin (),
+                                                end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
+                            }
+                            configFile << util::CloseTag (2, thekogans_make::TAG_CHOOSE);
+                        }
+                        // debug
+                        else if (!DebugSharedSharedFeatures.empty () ||
+                                !DebugSharedStaticFeatures.empty () ||
+                                !DebugStaticSharedFeatures.empty () ||
+                                !DebugStaticStaticFeatures.empty ()) {
+                            // if debug
+                            util::Attributes attributes;
+                            attributes.push_back (
+                                util::Attribute (
+                                    thekogans_make::ATTR_CONDITION,
+                                    VariableTest (thekogans_make::VAR_CONFIG, CONFIG_DEBUG)));
+                            configFile << util::OpenTag (2, thekogans_make::TAG_IF,
+                                attributes, false, true);
+                            // shared && static
+                            if ((!DebugSharedSharedFeatures.empty () || !DebugSharedStaticFeatures.empty ()) &&
+                                    (!DebugStaticSharedFeatures.empty () || !DebugStaticStaticFeatures.empty ())) {
+                                // choose
+                                configFile << util::OpenTag (3, thekogans_make::TAG_CHOOSE,
+                                    util::Attributes (), false, true);
+                                {
+                                    // when shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
+                                        attributes, false, true);
+                                    // shared && static
+                                    if (!DebugSharedSharedFeatures.empty () && !DebugSharedStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = DebugSharedSharedFeatures.begin (),
+                                                     end = DebugSharedSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = DebugSharedStaticFeatures.begin (),
+                                                     end = DebugSharedStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugSharedSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                 it = DebugSharedSharedFeatures.begin (),
+                                                 end = DebugSharedSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                 it = DebugSharedStaticFeatures.begin (),
+                                                 end = DebugSharedStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
+                                }
+                                {
+                                    // when static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
+                                        attributes, false, true);
+                                    // shared && static
+                                    if (!DebugStaticSharedFeatures.empty () && !DebugStaticStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = DebugStaticSharedFeatures.begin (),
+                                                     end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = DebugStaticStaticFeatures.begin (),
+                                                     end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugStaticSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugStaticSharedFeatures.begin (),
+                                                end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugStaticStaticFeatures.begin (),
+                                                end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
+                                }
+                                configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
+                            }
+                            // shared
+                            else if (!DebugSharedSharedFeatures.empty () || !DebugSharedStaticFeatures.empty ()) {
+                                // if shared
+                                util::Attributes attributes;
+                                attributes.push_back (
+                                    util::Attribute (
+                                        thekogans_make::ATTR_CONDITION,
+                                        VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
+                                configFile << util::OpenTag (3, thekogans_make::TAG_IF,
+                                    attributes, false, true);
+                                // shared && static
+                                if (!DebugSharedSharedFeatures.empty () && !DebugSharedStaticFeatures.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugSharedSharedFeatures.begin (),
+                                                end = DebugSharedSharedFeatures.end (); it != end; ++it) {
                                             configFile <<
                                                 util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
                                                 *it <<
@@ -1215,16 +3030,17 @@ namespace thekogans {
                                         configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
                                     }
                                     {
+                                        // when static
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
                                                 thekogans_make::ATTR_CONDITION,
-                                                VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
                                         for (std::set<std::string>::const_iterator
-                                                it = ReleaseStaticFeatures.begin (),
-                                                end = ReleaseStaticFeatures.end (); it != end; ++it) {
+                                                it = DebugSharedStaticFeatures.begin (),
+                                                end = DebugSharedStaticFeatures.end (); it != end; ++it) {
                                             configFile <<
                                                 util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
                                                 *it <<
@@ -1234,17 +3050,19 @@ namespace thekogans {
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
                                 }
-                                else if (!ReleaseSharedFeatures.empty ()) {
+                                // shared
+                                else if (!DebugSharedSharedFeatures.empty ()) {
+                                    // if shared
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
                                             thekogans_make::ATTR_CONDITION,
-                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
                                     for (std::set<std::string>::const_iterator
-                                            it = ReleaseSharedFeatures.begin (),
-                                            end = ReleaseSharedFeatures.end (); it != end; ++it) {
+                                            it = DebugSharedSharedFeatures.begin (),
+                                            end = DebugSharedSharedFeatures.end (); it != end; ++it) {
                                         configFile <<
                                             util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
                                             *it <<
@@ -1253,16 +3071,17 @@ namespace thekogans {
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 else {
+                                    // if static
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
                                             thekogans_make::ATTR_CONDITION,
-                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
                                     for (std::set<std::string>::const_iterator
-                                            it = ReleaseStaticFeatures.begin (),
-                                            end = ReleaseStaticFeatures.end (); it != end; ++it) {
+                                            it = DebugSharedStaticFeatures.begin (),
+                                            end = DebugSharedStaticFeatures.end (); it != end; ++it) {
                                         configFile <<
                                             util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
                                             *it <<
@@ -1270,78 +3089,11 @@ namespace thekogans {
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
-                                configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
-                            }
-                            configFile << util::CloseTag (2, thekogans_make::TAG_CHOOSE);
-                        }
-                        else if (!DebugSharedFeatures.empty () || !DebugStaticFeatures.empty ()) {
-                            util::Attributes attributes;
-                            attributes.push_back (
-                                util::Attribute (
-                                    thekogans_make::ATTR_CONDITION,
-                                    VariableTest (thekogans_make::VAR_CONFIG, CONFIG_DEBUG)));
-                            configFile << util::OpenTag (2, thekogans_make::TAG_IF,
-                                attributes, false, true);
-                            if (!DebugSharedFeatures.empty () && !DebugStaticFeatures.empty ()) {
-                                configFile << util::OpenTag (3, thekogans_make::TAG_CHOOSE,
-                                    attributes, false, true);
-                                {
-                                    util::Attributes attributes;
-                                    attributes.push_back (
-                                        util::Attribute (
-                                            thekogans_make::ATTR_CONDITION,
-                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
-                                    configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
-                                        attributes, false, true);
-                                    for (std::set<std::string>::const_iterator
-                                            it = DebugSharedFeatures.begin (),
-                                            end = DebugSharedFeatures.end (); it != end; ++it) {
-                                        configFile <<
-                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
-                                            *it <<
-                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
-                                    }
-                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
-                                }
-                                {
-                                    util::Attributes attributes;
-                                    attributes.push_back (
-                                        util::Attribute (
-                                            thekogans_make::ATTR_CONDITION,
-                                            VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
-                                    configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
-                                        attributes, false, true);
-                                    for (std::set<std::string>::const_iterator
-                                            it = DebugStaticFeatures.begin (),
-                                            end = DebugStaticFeatures.end (); it != end; ++it) {
-                                        configFile <<
-                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
-                                            *it <<
-                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
-                                    }
-                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
-                                }
-                                configFile << util::CloseTag (3, thekogans_make::TAG_CHOOSE);
-                            }
-                            else if (!DebugSharedFeatures.empty ()) {
-                                util::Attributes attributes;
-                                attributes.push_back (
-                                    util::Attribute (
-                                        thekogans_make::ATTR_CONDITION,
-                                        VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
-                                configFile << util::OpenTag (3, thekogans_make::TAG_IF,
-                                    attributes, false, true);
-                                for (std::set<std::string>::const_iterator
-                                        it = DebugSharedFeatures.begin (),
-                                        end = DebugSharedFeatures.end (); it != end; ++it) {
-                                    configFile <<
-                                        util::OpenTag (4, thekogans_make::TAG_FEATURE) <<
-                                        *it <<
-                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
-                                }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }
+                            // static
                             else {
+                                // if static
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1349,19 +3101,100 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::set<std::string>::const_iterator
-                                        it = DebugStaticFeatures.begin (),
-                                        end = DebugStaticFeatures.end (); it != end; ++it) {
-                                    configFile <<
-                                        util::OpenTag (4, thekogans_make::TAG_FEATURE) <<
-                                        *it <<
-                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                // shared && static
+                                if (!DebugStaticSharedFeatures.empty () && !DebugStaticStaticFeatures.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugStaticSharedFeatures.begin (),
+                                                end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = DebugStaticStaticFeatures.begin (),
+                                                end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                }
+                                // shared
+                                else if (!DebugStaticSharedFeatures.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::set<std::string>::const_iterator
+                                            it = DebugStaticSharedFeatures.begin (),
+                                            end = DebugStaticSharedFeatures.end (); it != end; ++it) {
+                                        configFile <<
+                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
+                                            *it <<
+                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::set<std::string>::const_iterator
+                                            it = DebugStaticStaticFeatures.begin (),
+                                            end = DebugStaticStaticFeatures.end (); it != end; ++it) {
+                                        configFile <<
+                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
+                                            *it <<
+                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }
                             configFile << util::CloseTag (2, thekogans_make::TAG_IF);
                         }
-                        else if (!ReleaseSharedFeatures.empty () || !ReleaseStaticFeatures.empty ()) {
+                        // release
+                        else if (!ReleaseSharedSharedFeatures.empty () ||
+                                !ReleaseSharedStaticFeatures.empty () ||
+                                !ReleaseStaticSharedFeatures.empty () ||
+                                !ReleaseStaticStaticFeatures.empty ()) {
+                            // if release
                             util::Attributes attributes;
                             attributes.push_back (
                                 util::Attribute (
@@ -1369,10 +3202,14 @@ namespace thekogans {
                                     VariableTest (thekogans_make::VAR_CONFIG, CONFIG_RELEASE)));
                             configFile << util::OpenTag (2, thekogans_make::TAG_IF,
                                 attributes, false, true);
-                            if (!ReleaseSharedFeatures.empty () && !ReleaseStaticFeatures.empty ()) {
+                            // shared && static
+                            if ((!ReleaseSharedSharedFeatures.empty () || !ReleaseSharedStaticFeatures.empty ()) &&
+                                    (!ReleaseStaticSharedFeatures.empty () || !ReleaseStaticStaticFeatures.empty ())) {
+                                // choose
                                 configFile << util::OpenTag (3, thekogans_make::TAG_CHOOSE,
                                     util::Attributes (), false, true);
                                 {
+                                    // when shared
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1380,17 +3217,95 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::set<std::string>::const_iterator
-                                            it = ReleaseSharedFeatures.begin (),
-                                            end = ReleaseSharedFeatures.end (); it != end; ++it) {
-                                        configFile <<
-                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
-                                            *it <<
-                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    // shared && static
+                                    if (!ReleaseSharedSharedFeatures.empty () && !ReleaseSharedStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = ReleaseSharedSharedFeatures.begin (),
+                                                     end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = ReleaseSharedStaticFeatures.begin (),
+                                                     end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseSharedSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                 it = ReleaseSharedSharedFeatures.begin (),
+                                                 end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                 it = ReleaseSharedStaticFeatures.begin (),
+                                                 end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
                                 {
+                                    // when static
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1398,19 +3313,98 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::set<std::string>::const_iterator
-                                            it = ReleaseStaticFeatures.begin (),
-                                            end = ReleaseStaticFeatures.end (); it != end; ++it) {
-                                        configFile <<
-                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
-                                            *it <<
-                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    // shared && static
+                                    if (!ReleaseStaticSharedFeatures.empty () && !ReleaseStaticStaticFeatures.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = ReleaseStaticSharedFeatures.begin (),
+                                                     end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::set<std::string>::const_iterator
+                                                     it = ReleaseStaticStaticFeatures.begin (),
+                                                     end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                                configFile <<
+                                                    util::OpenTag (7, thekogans_make::TAG_FEATURE) <<
+                                                    *it <<
+                                                    util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseStaticSharedFeatures.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseStaticSharedFeatures.begin (),
+                                                end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseStaticStaticFeatures.begin (),
+                                                end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
-                                configFile << util::CloseTag (3, thekogans_make::TAG_CHOOSE);
+                                configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
                             }
-                            else if (!ReleaseSharedFeatures.empty ()) {
+                            // shared
+                            else if (!ReleaseSharedSharedFeatures.empty () || !ReleaseSharedStaticFeatures.empty ()) {
+                                // if shared
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1418,17 +3412,95 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::set<std::string>::const_iterator
-                                        it = ReleaseSharedFeatures.begin (),
-                                        end = ReleaseSharedFeatures.end (); it != end; ++it) {
-                                    configFile <<
-                                        util::OpenTag (4, thekogans_make::TAG_FEATURE) <<
-                                        *it <<
-                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                // shared && static
+                                if (!ReleaseSharedSharedFeatures.empty () && !ReleaseSharedStaticFeatures.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseSharedSharedFeatures.begin (),
+                                                end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseSharedStaticFeatures.begin (),
+                                                end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                }
+                                // shared
+                                else if (!ReleaseSharedSharedFeatures.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::set<std::string>::const_iterator
+                                            it = ReleaseSharedSharedFeatures.begin (),
+                                            end = ReleaseSharedSharedFeatures.end (); it != end; ++it) {
+                                        configFile <<
+                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
+                                            *it <<
+                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::set<std::string>::const_iterator
+                                            it = ReleaseSharedStaticFeatures.begin (),
+                                            end = ReleaseSharedStaticFeatures.end (); it != end; ++it) {
+                                        configFile <<
+                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
+                                            *it <<
+                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }
+                            // static
                             else {
+                                // if static
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1436,13 +3508,89 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::set<std::string>::const_iterator
-                                        it = ReleaseStaticFeatures.begin (),
-                                        end = ReleaseStaticFeatures.end (); it != end; ++it) {
-                                    configFile <<
-                                        util::OpenTag (4, thekogans_make::TAG_FEATURE) <<
-                                        *it <<
-                                        util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                // shared && static
+                                if (!ReleaseStaticSharedFeatures.empty () && !ReleaseStaticStaticFeatures.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseStaticSharedFeatures.begin (),
+                                                end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::set<std::string>::const_iterator
+                                                it = ReleaseStaticStaticFeatures.begin (),
+                                                end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                            configFile <<
+                                                util::OpenTag (6, thekogans_make::TAG_FEATURE) <<
+                                                *it <<
+                                                util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                }
+                                // shared
+                                else if (!ReleaseStaticSharedFeatures.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::set<std::string>::const_iterator
+                                            it = ReleaseStaticSharedFeatures.begin (),
+                                            end = ReleaseStaticSharedFeatures.end (); it != end; ++it) {
+                                        configFile <<
+                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
+                                            *it <<
+                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::set<std::string>::const_iterator
+                                            it = ReleaseStaticStaticFeatures.begin (),
+                                            end = ReleaseStaticStaticFeatures.end (); it != end; ++it) {
+                                        configFile <<
+                                            util::OpenTag (5, thekogans_make::TAG_FEATURE) <<
+                                            *it <<
+                                            util::CloseTag (0, thekogans_make::TAG_FEATURE);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }
@@ -1452,10 +3600,14 @@ namespace thekogans {
                     }
                     // dependencies
                     if (!commonDependencies.empty () ||
-                            !DebugSharedDependencies.empty () ||
-                            !DebugStaticDependencies.empty () ||
-                            !ReleaseSharedDependencies.empty () ||
-                            !ReleaseStaticDependencies.empty ()) {
+                            !DebugSharedSharedDependencies.empty () ||
+                            !DebugSharedStaticDependencies.empty () ||
+                            !DebugStaticSharedDependencies.empty () ||
+                            !DebugStaticStaticDependencies.empty () ||
+                            !ReleaseSharedSharedDependencies.empty () ||
+                            !ReleaseSharedStaticDependencies.empty () ||
+                            !ReleaseStaticSharedDependencies.empty () ||
+                            !ReleaseStaticStaticDependencies.empty ()) {
                         configFile << util::OpenTag (1, thekogans_make::TAG_DEPENDENCIES,
                             util::Attributes (), false, true);
                         for (std::list<thekogans_make::Dependency *>::const_iterator
@@ -1463,11 +3615,20 @@ namespace thekogans {
                                 end = commonDependencies.end (); it != end; ++it) {
                             configFile << (*it)->ToString (2);
                         }
-                        if ((!DebugSharedDependencies.empty () || !DebugStaticDependencies.empty ()) &&
-                                (!ReleaseSharedDependencies.empty () || !ReleaseStaticDependencies.empty ())) {
+                        // debug && release
+                        if ((!DebugSharedSharedDependencies.empty () ||
+                                !DebugSharedStaticDependencies.empty () ||
+                                !DebugStaticSharedDependencies.empty () ||
+                                !DebugStaticStaticDependencies.empty ()) &&
+                            (!ReleaseSharedSharedDependencies.empty () ||
+                                !ReleaseSharedStaticDependencies.empty () ||
+                                !ReleaseStaticSharedDependencies.empty () ||
+                                !ReleaseStaticStaticDependencies.empty ())) {
+                            // choose
                             configFile << util::OpenTag (2, thekogans_make::TAG_CHOOSE,
                                 util::Attributes (), false, true);
                             {
+                                // when debug
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1475,10 +3636,14 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_CONFIG, CONFIG_DEBUG)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_WHEN,
                                     attributes, false, true);
-                                if (!DebugSharedDependencies.empty () && !DebugStaticDependencies.empty ()) {
+                                // shared && static
+                                if ((!DebugSharedSharedDependencies.empty () || !DebugSharedStaticDependencies.empty ()) &&
+                                        (!DebugStaticSharedDependencies.empty () || !DebugStaticStaticDependencies.empty ())) {
+                                    // choose
                                     configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
                                         util::Attributes (), false, true);
                                     {
+                                        // when shared
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
@@ -1486,14 +3651,83 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
-                                                it = DebugSharedDependencies.begin (),
-                                                end = DebugSharedDependencies.end (); it != end; ++it) {
-                                            configFile << (*it)->ToString (6);
+                                        // shared && static
+                                        if (!DebugSharedSharedDependencies.empty () && !DebugSharedStaticDependencies.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = DebugSharedSharedDependencies.begin (),
+                                                        end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = DebugSharedStaticDependencies.begin (),
+                                                        end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!DebugSharedSharedDependencies.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = DebugSharedSharedDependencies.begin (),
+                                                    end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = DebugSharedStaticDependencies.begin (),
+                                                     end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
                                         }
                                         configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
                                     }
                                     {
+                                        // when static
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
@@ -1501,16 +3735,86 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
-                                                it = DebugStaticDependencies.begin (),
-                                                end = DebugStaticDependencies.end (); it != end; ++it) {
-                                            configFile << (*it)->ToString (6);
+                                        // shared && static
+                                        if (!DebugStaticSharedDependencies.empty () && !DebugStaticStaticDependencies.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = DebugStaticSharedDependencies.begin (),
+                                                        end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = DebugStaticStaticDependencies.begin (),
+                                                        end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!DebugStaticSharedDependencies.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = DebugStaticSharedDependencies.begin (),
+                                                    end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = DebugStaticStaticDependencies.begin (),
+                                                     end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
                                         }
                                         configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
                                     }
-                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
-                                else if (!DebugSharedDependencies.empty ()) {
+                                // shared
+                                else if (!DebugSharedSharedDependencies.empty () || !DebugSharedStaticDependencies.empty ()) {
+                                    // if shared
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1518,14 +3822,83 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = DebugSharedDependencies.begin (),
-                                            end = DebugSharedDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!DebugSharedSharedDependencies.empty () && !DebugSharedStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = DebugSharedSharedDependencies.begin (),
+                                                    end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = DebugSharedStaticDependencies.begin (),
+                                                    end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugSharedSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugSharedSharedDependencies.begin (),
+                                                end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugSharedStaticDependencies.begin (),
+                                                end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
+                                // static
                                 else {
+                                    // if static
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1533,16 +3906,84 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = DebugStaticDependencies.begin (),
-                                            end = DebugStaticDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!DebugStaticSharedDependencies.empty () && !DebugStaticStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = DebugStaticSharedDependencies.begin (),
+                                                    end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = DebugStaticStaticDependencies.begin (),
+                                                    end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugStaticSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugStaticSharedDependencies.begin (),
+                                                end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugStaticStaticDependencies.begin (),
+                                                end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
                             }
                             {
+                                // when release
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1550,10 +3991,14 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_CONFIG, CONFIG_RELEASE)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_WHEN,
                                     attributes, false, true);
-                                if (!ReleaseSharedDependencies.empty () && !ReleaseStaticDependencies.empty ()) {
+                                // shared && static
+                                if ((!ReleaseSharedSharedDependencies.empty () || !ReleaseSharedStaticDependencies.empty ()) &&
+                                        (!ReleaseStaticSharedDependencies.empty () || !ReleaseStaticStaticDependencies.empty ())) {
+                                    // choose
                                     configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
                                         util::Attributes (), false, true);
                                     {
+                                        // when shared
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
@@ -1561,14 +4006,83 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
-                                                it = ReleaseSharedDependencies.begin (),
-                                                end = ReleaseSharedDependencies.end (); it != end; ++it) {
-                                            configFile << (*it)->ToString (6);
+                                        // shared && static
+                                        if (!ReleaseSharedSharedDependencies.empty () && !ReleaseSharedStaticDependencies.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = ReleaseSharedSharedDependencies.begin (),
+                                                        end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = ReleaseSharedStaticDependencies.begin (),
+                                                        end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!ReleaseSharedSharedDependencies.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = ReleaseSharedSharedDependencies.begin (),
+                                                    end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = ReleaseSharedStaticDependencies.begin (),
+                                                     end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
                                         }
                                         configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
                                     }
                                     {
+                                        // when static
                                         util::Attributes attributes;
                                         attributes.push_back (
                                             util::Attribute (
@@ -1576,16 +4090,86 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
-                                                it = ReleaseStaticDependencies.begin (),
-                                                end = ReleaseStaticDependencies.end (); it != end; ++it) {
-                                            configFile << (*it)->ToString (6);
+                                        // shared && static
+                                        if (!ReleaseStaticSharedDependencies.empty () && !ReleaseStaticStaticDependencies.empty ()) {
+                                            // choose
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_CHOOSE,
+                                                util::Attributes (), false, true);
+                                            {
+                                                // when shared
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = ReleaseStaticSharedDependencies.begin (),
+                                                        end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            {
+                                                // when static
+                                                util::Attributes attributes;
+                                                attributes.push_back (
+                                                    util::Attribute (
+                                                        thekogans_make::ATTR_CONDITION,
+                                                        VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                                configFile << util::OpenTag (7, thekogans_make::TAG_WHEN,
+                                                    attributes, false, true);
+                                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                        it = ReleaseStaticStaticDependencies.begin (),
+                                                        end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                                    configFile << (*it)->ToString (8);
+                                                }
+                                                configFile << util::CloseTag (7, thekogans_make::TAG_WHEN);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_CHOOSE);
+                                        }
+                                        // shared
+                                        else if (!ReleaseStaticSharedDependencies.empty ()) {
+                                            // if shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = ReleaseStaticSharedDependencies.begin (),
+                                                    end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
+                                        }
+                                        // static
+                                        else {
+                                            // if static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_IF,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = ReleaseStaticStaticDependencies.begin (),
+                                                     end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_IF);
                                         }
                                         configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
                                     }
-                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
-                                else if (!ReleaseSharedDependencies.empty ()) {
+                                // shared
+                                else if (!ReleaseSharedSharedDependencies.empty () || !ReleaseSharedStaticDependencies.empty ()) {
+                                    // if shared
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1593,14 +4177,83 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = ReleaseSharedDependencies.begin (),
-                                            end = ReleaseSharedDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!ReleaseSharedSharedDependencies.empty () && !ReleaseSharedStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = ReleaseSharedSharedDependencies.begin (),
+                                                    end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = ReleaseSharedStaticDependencies.begin (),
+                                                    end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseSharedSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseSharedSharedDependencies.begin (),
+                                                end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseSharedStaticDependencies.begin (),
+                                                end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
+                                // static
                                 else {
+                                    // if static
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1608,10 +4261,77 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = ReleaseStaticDependencies.begin (),
-                                            end = ReleaseStaticDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!ReleaseStaticSharedDependencies.empty () && !ReleaseStaticStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = ReleaseStaticSharedDependencies.begin (),
+                                                    end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                    it = ReleaseStaticStaticDependencies.begin (),
+                                                    end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseStaticSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseStaticSharedDependencies.begin (),
+                                                end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseStaticStaticDependencies.begin (),
+                                                end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
@@ -1619,7 +4339,12 @@ namespace thekogans {
                             }
                             configFile << util::CloseTag (2, thekogans_make::TAG_CHOOSE);
                         }
-                        else if (!DebugSharedDependencies.empty () || !DebugStaticDependencies.empty ()) {
+                        // debug
+                        else if (!DebugSharedSharedDependencies.empty () ||
+                                !DebugSharedStaticDependencies.empty () ||
+                                !DebugStaticSharedDependencies.empty () ||
+                                !DebugStaticStaticDependencies.empty ()) {
+                            // if debug
                             util::Attributes attributes;
                             attributes.push_back (
                                 util::Attribute (
@@ -1627,10 +4352,14 @@ namespace thekogans {
                                     VariableTest (thekogans_make::VAR_CONFIG, CONFIG_DEBUG)));
                             configFile << util::OpenTag (2, thekogans_make::TAG_IF,
                                 attributes, false, true);
-                            if (!DebugSharedDependencies.empty () && !DebugStaticDependencies.empty ()) {
+                            // shared && static
+                            if ((!DebugSharedSharedDependencies.empty () || !DebugSharedStaticDependencies.empty ()) &&
+                                    (!DebugStaticSharedDependencies.empty () || !DebugStaticStaticDependencies.empty ())) {
+                                // choose
                                 configFile << util::OpenTag (3, thekogans_make::TAG_CHOOSE,
                                     util::Attributes (), false, true);
                                 {
+                                    // when shared
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1638,14 +4367,83 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = DebugSharedDependencies.begin (),
-                                            end = DebugSharedDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!DebugSharedSharedDependencies.empty () && !DebugSharedStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = DebugSharedSharedDependencies.begin (),
+                                                     end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = DebugSharedStaticDependencies.begin (),
+                                                     end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugSharedSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                 it = DebugSharedSharedDependencies.begin (),
+                                                 end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                 it = DebugSharedStaticDependencies.begin (),
+                                                 end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
                                 {
+                                    // when static
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1653,16 +4451,86 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = DebugStaticDependencies.begin (),
-                                            end = DebugStaticDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!DebugStaticSharedDependencies.empty () && !DebugStaticStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = DebugStaticSharedDependencies.begin (),
+                                                     end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = DebugStaticStaticDependencies.begin (),
+                                                     end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!DebugStaticSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugStaticSharedDependencies.begin (),
+                                                end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugStaticStaticDependencies.begin (),
+                                                end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
-                                configFile << util::CloseTag (3, thekogans_make::TAG_CHOOSE);
+                                configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
                             }
-                            else if (!DebugSharedDependencies.empty ()) {
+                            // shared
+                            else if (!DebugSharedSharedDependencies.empty () || !DebugSharedStaticDependencies.empty ()) {
+                                // if shared
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1670,14 +4538,83 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
-                                        it = DebugSharedDependencies.begin (),
-                                        end = DebugSharedDependencies.end (); it != end; ++it) {
-                                    configFile << (*it)->ToString (4);
+                                // shared && static
+                                if (!DebugSharedSharedDependencies.empty () && !DebugSharedStaticDependencies.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugSharedSharedDependencies.begin (),
+                                                end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugSharedStaticDependencies.begin (),
+                                                end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                }
+                                // shared
+                                else if (!DebugSharedSharedDependencies.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = DebugSharedSharedDependencies.begin (),
+                                            end = DebugSharedSharedDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = DebugSharedStaticDependencies.begin (),
+                                            end = DebugSharedStaticDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }
+                            // static
                             else {
+                                // if static
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1685,16 +4622,88 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
-                                        it = DebugStaticDependencies.begin (),
-                                        end = DebugStaticDependencies.end (); it != end; ++it) {
-                                    configFile << (*it)->ToString (4);
+                                // shared && static
+                                if (!DebugStaticSharedDependencies.empty () && !DebugStaticStaticDependencies.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugStaticSharedDependencies.begin (),
+                                                end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = DebugStaticStaticDependencies.begin (),
+                                                end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                }
+                                // shared
+                                else if (!DebugStaticSharedDependencies.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = DebugStaticSharedDependencies.begin (),
+                                            end = DebugStaticSharedDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = DebugStaticStaticDependencies.begin (),
+                                            end = DebugStaticStaticDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }
                             configFile << util::CloseTag (2, thekogans_make::TAG_IF);
                         }
-                        else if (!ReleaseSharedDependencies.empty () || !ReleaseStaticDependencies.empty ()) {
+                        // release
+                        else if (!ReleaseSharedSharedDependencies.empty () ||
+                                !ReleaseSharedStaticDependencies.empty () ||
+                                !ReleaseStaticSharedDependencies.empty () ||
+                                !ReleaseStaticStaticDependencies.empty ()) {
+                            // if release
                             util::Attributes attributes;
                             attributes.push_back (
                                 util::Attribute (
@@ -1702,10 +4711,14 @@ namespace thekogans {
                                     VariableTest (thekogans_make::VAR_CONFIG, CONFIG_RELEASE)));
                             configFile << util::OpenTag (2, thekogans_make::TAG_IF,
                                 attributes, false, true);
-                            if (!ReleaseSharedDependencies.empty () && !ReleaseStaticDependencies.empty ()) {
+                            // shared && static
+                            if ((!ReleaseSharedSharedDependencies.empty () || !ReleaseSharedStaticDependencies.empty ()) &&
+                                    (!ReleaseStaticSharedDependencies.empty () || !ReleaseStaticStaticDependencies.empty ())) {
+                                // choose
                                 configFile << util::OpenTag (3, thekogans_make::TAG_CHOOSE,
                                     util::Attributes (), false, true);
                                 {
+                                    // when shared
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1713,14 +4726,83 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = ReleaseSharedDependencies.begin (),
-                                            end = ReleaseSharedDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!ReleaseSharedSharedDependencies.empty () && !ReleaseSharedStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = ReleaseSharedSharedDependencies.begin (),
+                                                     end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = ReleaseSharedStaticDependencies.begin (),
+                                                     end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseSharedSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                 it = ReleaseSharedSharedDependencies.begin (),
+                                                 end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                 it = ReleaseSharedStaticDependencies.begin (),
+                                                 end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
                                 {
+                                    // when static
                                     util::Attributes attributes;
                                     attributes.push_back (
                                         util::Attribute (
@@ -1728,16 +4810,86 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                                            it = ReleaseStaticDependencies.begin (),
-                                            end = ReleaseStaticDependencies.end (); it != end; ++it) {
-                                        configFile << (*it)->ToString (5);
+                                    // shared && static
+                                    if (!ReleaseStaticSharedDependencies.empty () && !ReleaseStaticStaticDependencies.empty ()) {
+                                        // choose
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_CHOOSE,
+                                            util::Attributes (), false, true);
+                                        {
+                                            // when shared
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = ReleaseStaticSharedDependencies.begin (),
+                                                     end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        {
+                                            // when static
+                                            util::Attributes attributes;
+                                            attributes.push_back (
+                                                util::Attribute (
+                                                    thekogans_make::ATTR_CONDITION,
+                                                    VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                            configFile << util::OpenTag (6, thekogans_make::TAG_WHEN,
+                                                attributes, false, true);
+                                            for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                     it = ReleaseStaticStaticDependencies.begin (),
+                                                     end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                                configFile << (*it)->ToString (7);
+                                            }
+                                            configFile << util::CloseTag (6, thekogans_make::TAG_WHEN);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_CHOOSE);
+                                    }
+                                    // shared
+                                    else if (!ReleaseStaticSharedDependencies.empty ()) {
+                                        // if shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseStaticSharedDependencies.begin (),
+                                                end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
+                                    }
+                                    // static
+                                    else {
+                                        // if static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_IF,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseStaticStaticDependencies.begin (),
+                                                end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_IF);
                                     }
                                     configFile << util::CloseTag (4, thekogans_make::TAG_WHEN);
                                 }
-                                configFile << util::CloseTag (3, thekogans_make::TAG_CHOOSE);
+                                configFile << util::CloseTag (3, thekogans_make::TAG_WHEN);
                             }
-                            else if (!ReleaseSharedDependencies.empty ()) {
+                            // shared
+                            else if (!ReleaseSharedSharedDependencies.empty () || !ReleaseSharedStaticDependencies.empty ()) {
+                                // if shared
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1745,14 +4897,83 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
-                                        it = ReleaseSharedDependencies.begin (),
-                                        end = ReleaseSharedDependencies.end (); it != end; ++it) {
-                                    configFile << (*it)->ToString (4);
+                                // shared && static
+                                if (!ReleaseSharedSharedDependencies.empty () && !ReleaseSharedStaticDependencies.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseSharedSharedDependencies.begin (),
+                                                end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseSharedStaticDependencies.begin (),
+                                                end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                }
+                                // shared
+                                else if (!ReleaseSharedSharedDependencies.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_SHARED)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = ReleaseSharedSharedDependencies.begin (),
+                                            end = ReleaseSharedSharedDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = ReleaseSharedStaticDependencies.begin (),
+                                            end = ReleaseSharedStaticDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }
+                            // static
                             else {
+                                // if static
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -1760,10 +4981,77 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
-                                        it = ReleaseStaticDependencies.begin (),
-                                        end = ReleaseStaticDependencies.end (); it != end; ++it) {
-                                    configFile << (*it)->ToString (4);
+                                // shared && static
+                                if (!ReleaseStaticSharedDependencies.empty () && !ReleaseStaticStaticDependencies.empty ()) {
+                                    // choose
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_CHOOSE,
+                                        util::Attributes (), false, true);
+                                    {
+                                        // when shared
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseStaticSharedDependencies.begin (),
+                                                end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    {
+                                        // when static
+                                        util::Attributes attributes;
+                                        attributes.push_back (
+                                            util::Attribute (
+                                                thekogans_make::ATTR_CONDITION,
+                                                VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                        configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
+                                            attributes, false, true);
+                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                                it = ReleaseStaticStaticDependencies.begin (),
+                                                end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                            configFile << (*it)->ToString (6);
+                                        }
+                                        configFile << util::CloseTag (5, thekogans_make::TAG_WHEN);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_CHOOSE);
+                                }
+                                // shared
+                                else if (!ReleaseStaticSharedDependencies.empty ()) {
+                                    // if shared
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = ReleaseStaticSharedDependencies.begin (),
+                                            end = ReleaseStaticSharedDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
+                                }
+                                else {
+                                    // if static
+                                    util::Attributes attributes;
+                                    attributes.push_back (
+                                        util::Attribute (
+                                            thekogans_make::ATTR_CONDITION,
+                                            VariableTest (thekogans_make::VAR_RUNTIME_TYPE, TYPE_STATIC)));
+                                    configFile << util::OpenTag (4, thekogans_make::TAG_IF,
+                                        attributes, false, true);
+                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                            it = ReleaseStaticStaticDependencies.begin (),
+                                            end = ReleaseStaticStaticDependencies.end (); it != end; ++it) {
+                                        configFile << (*it)->ToString (5);
+                                    }
+                                    configFile << util::CloseTag (4, thekogans_make::TAG_IF);
                                 }
                                 configFile << util::CloseTag (3, thekogans_make::TAG_IF);
                             }

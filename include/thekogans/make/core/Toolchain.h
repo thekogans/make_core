@@ -51,7 +51,8 @@ namespace thekogans {
                     const std::string &project,
                     const std::string &version,
                     const std::string &config,
-                    const std::string &type);
+                    const std::string &type,
+                    const std::string &runtime_type);
                 static std::string GetProgram (
                     const std::string &organization,
                     const std::string &project,

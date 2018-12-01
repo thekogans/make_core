@@ -320,13 +320,15 @@ namespace thekogans {
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API GetBuildDirectory (
                     const std::string &generator,
                     const std::string &config,
-                    const std::string &type) {
+                    const std::string &type,
+                    const std::string &runtime_type) {
                 std::list<std::string> components;
                 components.push_back (BUILD_DIR);
                 components.push_back (_TOOLCHAIN_BRANCH);
                 components.push_back (generator);
                 components.push_back (config);
                 components.push_back (type);
+                components.push_back (runtime_type);
                 return MakePath (components, false);
             }
 
@@ -334,27 +336,30 @@ namespace thekogans {
                     const std::string &project_root,
                     const std::string &generator,
                     const std::string &config,
-                    const std::string &type) {
-                return MakePath (project_root, GetBuildDirectory (generator, config, type));
+                    const std::string &type,
+                    const std::string &runtime_type) {
+                return MakePath (project_root, GetBuildDirectory (generator, config, type, runtime_type));
             }
 
             _LIB_THEKOGANS_MAKE_CORE_DECL bool _LIB_THEKOGANS_MAKE_CORE_API BuildRootExists (
                     const std::string &project_root,
                     const std::string &generator,
                     const std::string &config,
-                    const std::string &type) {
+                    const std::string &type,
+                    const std::string &runtime_type) {
                 return util::Path (
                     ToSystemPath (
-                        GetBuildRoot (project_root, generator, config, type))).Exists ();
+                        GetBuildRoot (project_root, generator, config, type, runtime_type))).Exists ();
             }
 
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API CreateBuildRoot (
                     const std::string &project_root,
                     const std::string &generator,
                     const std::string &config,
-                    const std::string &type) {
+                    const std::string &type,
+                    const std::string &runtime_type) {
                 std::string buildRoot =
-                    ToSystemPath (GetBuildRoot (project_root, generator, config, type));
+                    ToSystemPath (GetBuildRoot (project_root, generator, config, type, runtime_type));
                 if (!util::Path (buildRoot).Exists ()) {
                     util::Directory::Create (buildRoot);
                 }
@@ -429,13 +434,17 @@ namespace thekogans {
                     const std::string &config_file,
                     const std::string &generator,
                     const std::string &config,
-                    const std::string &type) {
+                    const std::string &type,
+                    const std::string &runtime_type) {
                 std::string configKey = MakePath (project_root, config_file);
                 if (!generator.empty ()) {
                     configKey += DECORATIONS_SEPARATOR + generator;
                 }
                 if (!config.empty () && !type.empty ()) {
-                    configKey += DECORATIONS_SEPARATOR + config + DECORATIONS_SEPARATOR + type;
+                    configKey +=
+                        DECORATIONS_SEPARATOR + config +
+                        DECORATIONS_SEPARATOR + type +
+                        DECORATIONS_SEPARATOR + runtime_type;
                 }
                 return configKey;
             }
@@ -559,13 +568,15 @@ namespace thekogans {
                         const std::string &config_file,
                         const std::string &config_,
                         const std::string &type,
+                        const std::string &runtime_type,
                         std::set<std::string> &visitedDependencies) {
                     const thekogans_make &config = thekogans_make::GetConfig (
                         project_root,
                         config_file,
                         MAKE,
                         config_,
-                        type);
+                        type,
+                        runtime_type);
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
                             it = config.dependencies.begin (),
                             end = config.dependencies.end (); it != end; ++it) {
@@ -575,7 +586,8 @@ namespace thekogans {
                                 (*it)->GetConfigFile (),
                                 (*it)->GetGenerator (),
                                 (*it)->GetConfig (),
-                                (*it)->GetType ());
+                                (*it)->GetType (),
+                                (*it)->GetRuntimeType ());
                             Uninstall (
                                 dependency.organization,
                                 dependency.project,
@@ -605,12 +617,63 @@ namespace thekogans {
                             thekogans_make::GetBuildConfig (project_root, config_file);
                         std::string install_type =
                             thekogans_make::GetBuildType (project_root, config_file);
-                        if (!install_config.empty () && !install_type.empty ()) {
+                        std::string install_runtime_type =
+                            thekogans_make::GetBuildRuntimeType (project_root, config_file);
+                        if (!install_config.empty () && !install_type.empty () && !install_runtime_type.empty ()) {
                             UninstallDependencies (
                                 project_root,
                                 config_file,
                                 install_config,
                                 install_type,
+                                install_runtime_type,
+                                visitedDependencies);
+                        }
+                        else if (!install_config.empty () && !install_type.empty ()) {
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                install_config,
+                                install_type,
+                                TYPE_SHARED,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                install_config,
+                                install_type,
+                                TYPE_STATIC,
+                                visitedDependencies);
+                        }
+                        else if (!install_config.empty () && !install_runtime_type.empty ()) {
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                install_config,
+                                TYPE_SHARED,
+                                install_runtime_type,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                install_config,
+                                TYPE_STATIC,
+                                install_runtime_type,
+                                visitedDependencies);
+                        }
+                        else if (!install_type.empty () && !install_runtime_type.empty ()) {
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_DEBUG,
+                                install_type,
+                                install_runtime_type,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_RELEASE,
+                                install_type,
+                                install_runtime_type,
                                 visitedDependencies);
                         }
                         else if (!install_config.empty ()) {
@@ -619,11 +682,27 @@ namespace thekogans {
                                 config_file,
                                 install_config,
                                 TYPE_SHARED,
+                                TYPE_SHARED,
                                 visitedDependencies);
                             UninstallDependencies (
                                 project_root,
                                 config_file,
                                 install_config,
+                                TYPE_SHARED,
+                                TYPE_STATIC,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                install_config,
+                                TYPE_STATIC,
+                                TYPE_SHARED,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                install_config,
+                                TYPE_STATIC,
                                 TYPE_STATIC,
                                 visitedDependencies);
                         }
@@ -633,12 +712,58 @@ namespace thekogans {
                                 config_file,
                                 CONFIG_DEBUG,
                                 install_type,
+                                TYPE_SHARED,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_DEBUG,
+                                install_type,
+                                TYPE_STATIC,
                                 visitedDependencies);
                             UninstallDependencies (
                                 project_root,
                                 config_file,
                                 CONFIG_RELEASE,
                                 install_type,
+                                TYPE_SHARED,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_RELEASE,
+                                install_type,
+                                TYPE_STATIC,
+                                visitedDependencies);
+                        }
+                        else if (!install_runtime_type.empty ()) {
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_DEBUG,
+                                TYPE_SHARED,
+                                install_runtime_type,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_DEBUG,
+                                TYPE_STATIC,
+                                install_runtime_type,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_RELEASE,
+                                TYPE_SHARED,
+                                install_runtime_type,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_RELEASE,
+                                TYPE_STATIC,
+                                install_runtime_type,
                                 visitedDependencies);
                         }
                         else {
@@ -647,11 +772,27 @@ namespace thekogans {
                                 config_file,
                                 CONFIG_DEBUG,
                                 TYPE_SHARED,
+                                TYPE_SHARED,
                                 visitedDependencies);
                             UninstallDependencies (
                                 project_root,
                                 config_file,
                                 CONFIG_DEBUG,
+                                TYPE_SHARED,
+                                TYPE_STATIC,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_DEBUG,
+                                TYPE_STATIC,
+                                TYPE_SHARED,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_DEBUG,
+                                TYPE_STATIC,
                                 TYPE_STATIC,
                                 visitedDependencies);
                             UninstallDependencies (
@@ -659,11 +800,27 @@ namespace thekogans {
                                 config_file,
                                 CONFIG_RELEASE,
                                 TYPE_SHARED,
+                                TYPE_SHARED,
                                 visitedDependencies);
                             UninstallDependencies (
                                 project_root,
                                 config_file,
                                 CONFIG_RELEASE,
+                                TYPE_SHARED,
+                                TYPE_STATIC,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_RELEASE,
+                                TYPE_STATIC,
+                                TYPE_SHARED,
+                                visitedDependencies);
+                            UninstallDependencies (
+                                project_root,
+                                config_file,
+                                CONFIG_RELEASE,
+                                TYPE_STATIC,
                                 TYPE_STATIC,
                                 visitedDependencies);
                         }
@@ -786,13 +943,15 @@ namespace thekogans {
                     const std::string &project_root,
                     const std::string &config_,
                     const std::string &type,
+                    const std::string &runtime_type,
                     const std::string &destination) {
                 const thekogans_make &config = thekogans_make::GetConfig (
                     project_root,
                     THEKOGANS_MAKE_XML,
                     MAKE,
                     config_,
-                    type);
+                    type,
+                    runtime_type);
                 std::string goalFileName = config.GetGoalFileName ();
                 std::string toDirectory = destination.empty () ?
                     config.GetProjectBinDirectory () : destination;
@@ -942,14 +1101,16 @@ namespace thekogans {
 
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API CopyPlugin (
                     const std::string &project_root,
-                    const std::string &config) {
+                    const std::string &config,
+                    const std::string &runtime_type) {
                 const thekogans_make &plugin_config =
                     thekogans_make::GetConfig (
                         project_root,
                         THEKOGANS_MAKE_XML,
                         MAKE,
                         config,
-                        TYPE_SHARED);
+                        TYPE_SHARED,
+                        runtime_type);
                 if (plugin_config.project_type == PROJECT_TYPE_PLUGIN) {
                     std::string fromPlugin = plugin_config.GetProjectGoal ();
                     for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
@@ -962,7 +1123,8 @@ namespace thekogans {
                                     (*it)->GetConfigFile (),
                                     (*it)->GetGenerator (),
                                     (*it)->GetConfig (),
-                                    (*it)->GetType ());
+                                    (*it)->GetType (),
+                                    (*it)->GetRuntimeType ());
                             std::string toDirectory = host_config.project_type == PROJECT_TYPE_PROGRAM ?
                                 host_config.GetProjectBinDirectory () :
                                 host_config.GetProjectLibDirectory ();
@@ -1042,13 +1204,27 @@ namespace thekogans {
                     const std::string &generator_,
                     const std::string &config,
                     const std::string &type,
+                    const std::string &runtime_type,
                     bool generateDependencies,
                     bool force) {
                 Generator::UniquePtr generator = Generator::Get (generator_);
                 if (generator.get () != 0) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
-                            generator->Generate (project_root, config, type, generateDependencies, force);
+                            if (runtime_type == TYPE_SHARED || runtime_type == TYPE_STATIC) {
+                                generator->Generate (
+                                    project_root,
+                                    config,
+                                    type,
+                                    runtime_type,
+                                    generateDependencies,
+                                    force);
+                            }
+                            else {
+                                THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
+                                    "Invlalid runtime_type: %s (" TYPE_STATIC " | " TYPE_SHARED ")",
+                                    runtime_type.c_str ());
+                            }
                         }
                         else {
                             THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
@@ -1075,12 +1251,25 @@ namespace thekogans {
                     const std::string &generator_,
                     const std::string &config,
                     const std::string &type,
+                    const std::string &runtime_type,
                     bool deleteDependencies) {
                 Generator::UniquePtr generator = Generator::Get (generator_);
                 if (generator.get () != 0) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
-                            generator->Delete (project_root, config, type, deleteDependencies);
+                            if (runtime_type == TYPE_SHARED || runtime_type == TYPE_STATIC) {
+                                generator->Delete (
+                                    project_root,
+                                    config,
+                                    type,
+                                    runtime_type,
+                                    deleteDependencies);
+                            }
+                            else {
+                                THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
+                                    "Invlalid runtime_type: %s (" TYPE_STATIC " | " TYPE_SHARED ")",
+                                    runtime_type.c_str ());
+                            }
                         }
                         else {
                             THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
@@ -1130,6 +1319,7 @@ namespace thekogans {
                         const std::string &project_root,
                         const std::string &config_,
                         const std::string &type,
+                        const std::string &runtime_type,
                         const std::string &gnu_make,
                         const std::list<std::string> &arguments,
                         const std::string &target,
@@ -1141,7 +1331,8 @@ namespace thekogans {
                             THEKOGANS_MAKE_XML,
                             MAKE,
                             config_,
-                            type);
+                            type,
+                            runtime_type);
                         if (config.project_type == PROJECT_TYPE_PLUGIN) {
                             for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
                                     it = config.plugin_hosts.begin (),
@@ -1151,6 +1342,7 @@ namespace thekogans {
                                         (*it)->GetProjectRoot (),
                                         (*it)->GetConfig (),
                                         (*it)->GetType (),
+                                        (*it)->GetRuntimeType (),
                                         gnu_make,
                                         arguments,
                                         target == TARGET_TESTS_SELF ? TARGET_ALL : target,
@@ -1161,17 +1353,20 @@ namespace thekogans {
                                             (*it)->GetConfigFile (),
                                             (*it)->GetGenerator (),
                                             (*it)->GetConfig (),
-                                            (*it)->GetType ());
+                                            (*it)->GetType (),
+                                            (*it)->GetRuntimeType ());
                                         if (plugin_host.project_type == PROJECT_TYPE_PROGRAM) {
                                             CopyDependencies (
                                                 (*it)->GetProjectRoot (),
                                                 (*it)->GetConfig (),
-                                                (*it)->GetType ());
+                                                (*it)->GetType (),
+                                                (*it)->GetRuntimeType ());
                                         }
                                         else if (plugin_host.project_type == PROJECT_TYPE_PLUGIN) {
                                             CopyPlugin (
                                                 (*it)->GetProjectRoot (),
-                                                (*it)->GetConfig ());
+                                                (*it)->GetConfig (),
+                                                (*it)->GetRuntimeType ());
                                         }
                                     }
                                 }
@@ -1185,13 +1380,19 @@ namespace thekogans {
                                     (*it)->GetProjectRoot (),
                                     (*it)->GetConfig (),
                                     (*it)->GetType (),
+                                    (*it)->GetRuntimeType (),
                                     gnu_make,
                                     arguments,
                                     target == TARGET_TESTS_SELF ? TARGET_ALL : target,
                                     builtProjects);
                             }
                         }
-                        std::string build_root = GetBuildRoot (project_root, "make", config_, type);
+                        std::string build_root = GetBuildRoot (
+                            project_root,
+                            MAKE,
+                            config_,
+                            type,
+                            runtime_type);
                         Execgnu_make (build_root, gnu_make, arguments, target);
                         if (target == TARGET_CLEAN) {
                             DeleteFile (MakePath (build_root, MAKEFILE));
@@ -1204,21 +1405,23 @@ namespace thekogans {
                     const std::string &project_root,
                     const std::string &config_,
                     const std::string &type,
+                    const std::string &runtime_type,
                     const std::string &mode,
                     bool hide_commands,
                     bool parallel_build,
                     const std::string &target) {
                 CreateBuildSystem (
                     project_root,
-                    "make",
+                    MAKE,
                     config_,
                     target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type,
+                    runtime_type,
                     true,
                     false);
                 std::string gnu_make =
                     ToSystemPath (
-                        Toolchain::GetProgram ("gnu", "make",
-                            Toolchain::GetLatestVersion ("gnu", "make")));
+                        Toolchain::GetProgram ("gnu", MAKE,
+                            Toolchain::GetLatestVersion ("gnu", MAKE)));
                 std::list<std::string> arguments;
                 if (hide_commands) {
                     arguments.push_back ("--quiet");
@@ -1235,6 +1438,7 @@ namespace thekogans {
                         project_root,
                         config_,
                         target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type,
+                        runtime_type,
                         gnu_make,
                         arguments,
                         target,
@@ -1245,17 +1449,23 @@ namespace thekogans {
                             THEKOGANS_MAKE_XML,
                             MAKE,
                             config_,
-                            target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type);
+                            target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type,
+                            runtime_type);
                         if (config.project_type == PROJECT_TYPE_PROGRAM) {
-                            CopyDependencies (project_root, config_, type);
+                            CopyDependencies (project_root, config_, type, runtime_type);
                         }
                         else if (config.project_type == PROJECT_TYPE_PLUGIN) {
-                            CopyPlugin (project_root, config_);
+                            CopyPlugin (project_root, config_, runtime_type);
                         }
                     }
                 }
                 else {
-                    std::string build_root = GetBuildRoot (project_root, "make", config_, type);
+                    std::string build_root = GetBuildRoot (
+                        project_root,
+                        MAKE,
+                        config_,
+                        type,
+                        runtime_type);
                     Execgnu_make (build_root, gnu_make, arguments, target);
                     DeleteFile (MakePath (build_root, MAKEFILE));
                 }

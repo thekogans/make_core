@@ -225,7 +225,8 @@ namespace thekogans {
                     const std::string &version,
                     const std::string &example,
                     const std::string &config,
-                    const std::string &type) {
+                    const std::string &type,
+                    const std::string &runtime_type) {
                 std::string project_root =
                     GetRoot (organization, project, branch, version, example);
                 std::list<std::string> components;
@@ -237,6 +238,7 @@ namespace thekogans {
                     components.push_back (_TOOLCHAIN_BRANCH);
                     components.push_back (config);
                     components.push_back (type);
+                    components.push_back (runtime_type);
                 }
                 std::string libraryName =
                     LIB_PREFIX + organization + ORGANIZATION_PROJECT_SEPARATOR + project;
@@ -247,7 +249,8 @@ namespace thekogans {
                     libraryName +=
                         DECORATIONS_SEPARATOR + _TOOLCHAIN_TRIPLET +
                         DECORATIONS_SEPARATOR + config +
-                        DECORATIONS_SEPARATOR + type;
+                        DECORATIONS_SEPARATOR + type +
+                        DECORATIONS_SEPARATOR + runtime_type;
                 }
                 libraryName += VERSION_SEPARATOR +
                     (!example.empty () ?
@@ -264,7 +267,8 @@ namespace thekogans {
                     const std::string &version,
                     const std::string &example,
                     const std::string &config,
-                    const std::string &type) {
+                    const std::string &type,
+                    const std::string &runtime_type) {
                 std::string project_root =
                     GetRoot (organization, project, branch, version, example);
                 std::list<std::string> components;
@@ -276,6 +280,7 @@ namespace thekogans {
                     components.push_back (_TOOLCHAIN_BRANCH);
                     components.push_back (config);
                     components.push_back (type);
+                    components.push_back (runtime_type);
                 }
                 std::string programName =
                     organization + ORGANIZATION_PROJECT_SEPARATOR + project;
@@ -286,7 +291,8 @@ namespace thekogans {
                     programName +=
                         DECORATIONS_SEPARATOR + _TOOLCHAIN_TRIPLET +
                         DECORATIONS_SEPARATOR + config +
-                        DECORATIONS_SEPARATOR + type;
+                        DECORATIONS_SEPARATOR + type +
+                        DECORATIONS_SEPARATOR + runtime_type;
                 }
                 programName += VERSION_SEPARATOR +
                     (!example.empty () ?
@@ -302,7 +308,8 @@ namespace thekogans {
                     const std::string &branch,
                     const std::string &version,
                     const std::string &example,
-                    const std::string &config) {
+                    const std::string &config,
+                    const std::string &runtime_type) {
                 const std::string type = TYPE_SHARED;
                 std::string project_root =
                     GetRoot (organization, project, branch, version, example);
@@ -315,6 +322,7 @@ namespace thekogans {
                     components.push_back (_TOOLCHAIN_BRANCH);
                     components.push_back (config);
                     components.push_back (type);
+                    components.push_back (runtime_type);
                 }
                 std::string pluginName =
                     organization + ORGANIZATION_PROJECT_SEPARATOR + project;
@@ -325,7 +333,8 @@ namespace thekogans {
                     pluginName +=
                         DECORATIONS_SEPARATOR + _TOOLCHAIN_TRIPLET +
                         DECORATIONS_SEPARATOR + config +
-                        DECORATIONS_SEPARATOR + type;
+                        DECORATIONS_SEPARATOR + type +
+                        DECORATIONS_SEPARATOR + runtime_type;
                 }
                 pluginName += VERSION_SEPARATOR +
                     (!example.empty () ?

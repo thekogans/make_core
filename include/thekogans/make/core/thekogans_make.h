@@ -55,6 +55,7 @@ namespace thekogans {
                 static const char * const ATTR_NAMING_CONVENTION;
                 static const char * const ATTR_BUILD_CONFIG;
                 static const char * const ATTR_BUILD_TYPE;
+                static const char * const ATTR_BUILD_RUNTIME_TYPE;
                 static const char * const ATTR_GUID;
                 static const char * const ATTR_SCHEMA_VERSION;
                 static const char * const ATTR_CONDITION;
@@ -68,6 +69,7 @@ namespace thekogans {
                 static const char * const ATTR_EXAMPLE;
                 static const char * const ATTR_CONFIG;
                 static const char * const ATTR_TYPE;
+                static const char * const ATTR_RUNTIME_TYPE;
                 static const char * const ATTR_FLAGS;
 
                 static const char * const TAG_THEKOGANS_MAKE;
@@ -192,6 +194,7 @@ namespace thekogans {
                 static const char * const VAR_GENERATOR;
                 static const char * const VAR_CONFIG;
                 static const char * const VAR_TYPE;
+                static const char * const VAR_RUNTIME_TYPE;
                 static const char * const VAR_PROJECT_DIRECTORY;
                 static const char * const VAR_BUILD_DIRECTORY;
                 static const char * const VAR_VERSION;
@@ -203,6 +206,7 @@ namespace thekogans {
                 std::string generator;
                 std::string config;
                 std::string type;
+                std::string runtime_type;
                 // thekogans_make tag attributes.
                 std::string organization;
                 std::string project;
@@ -213,6 +217,7 @@ namespace thekogans {
                 std::string naming_convention;
                 std::string build_config;
                 std::string build_type;
+                std::string build_runtime_type;
                 util::GUID guid;
                 std::string schema_version;
                 // thekogans_make body.
@@ -229,6 +234,7 @@ namespace thekogans {
                     virtual std::string GetGenerator () const = 0;
                     virtual std::string GetConfig () const = 0;
                     virtual std::string GetType () const = 0;
+                    virtual std::string GetRuntimeType () const = 0;
 
                     virtual bool EquivalentTo (
                         const Dependency & /*dependency*/) const = 0;
@@ -242,6 +248,8 @@ namespace thekogans {
                         Versions & /*versions*/,
                         std::set<std::string> & /*visitedDependencies*/) const = 0;
 
+                    virtual void GetPreprocessorDefinitions (
+                        std::list<std::string> & /*preprocessorDefinitions*/) const = 0;
                     virtual void GetFeatures (
                         std::set<std::string> & /*features*/) const = 0;
 
@@ -406,7 +414,7 @@ namespace thekogans {
                 std::list<FileList::Ptr> rc_sources;
                 std::string subsystem;
                 std::string def_file;
-                // OSX specific.
+                // OS X specific.
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL Bunde {
                     std::string info_plist;
                     std::list<std::string> resources;
@@ -438,6 +446,9 @@ namespace thekogans {
                 static std::string GetBuildType (
                     const std::string &project_root,
                     const std::string &config_file);
+                static std::string GetBuildRuntimeType (
+                    const std::string &project_root,
+                    const std::string &config_file);
                 static util::GUID GetGUID (
                     const std::string &project_root,
                     const std::string &config_file);
@@ -450,7 +461,8 @@ namespace thekogans {
                     const std::string &config_file,
                     const std::string &generator,
                     const std::string &config,
-                    const std::string &type);
+                    const std::string &type,
+                    const std::string &runtime_type);
 
                 void CheckDependencies () const;
                 void ListDependencies (util::ui32 indentationLevel) const;
@@ -515,7 +527,8 @@ namespace thekogans {
                     const std::string &config_file_,
                     const std::string &generator_,
                     const std::string &config_,
-                    const std::string &type_);
+                    const std::string &type_,
+                    const std::string &runtime_type_);
 
                 void Parseconstants (pugi::xml_node &node);
                 void Parsedependencies (
