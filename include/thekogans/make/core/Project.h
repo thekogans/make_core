@@ -67,8 +67,7 @@ namespace thekogans {
                     const std::string &version,
                     const std::string &example,
                     const std::string &config,
-                    const std::string &type,
-                    const std::string &runtime_type);
+                    const std::string &type);
                 static std::string GetProgram (
                     const std::string &organization,
                     const std::string &project,
@@ -76,16 +75,14 @@ namespace thekogans {
                     const std::string &version,
                     const std::string &example,
                     const std::string &config,
-                    const std::string &type,
-                    const std::string &runtime_type);
+                    const std::string &type);
                 static std::string GetPlugin (
                     const std::string &organization,
                     const std::string &project,
                     const std::string &branch,
                     const std::string &version,
                     const std::string &example,
-                    const std::string &config,
-                    const std::string &runtime_type);
+                    const std::string &config);
                 static void Cleanup (
                     const std::string &organization,
                     const std::string &project,

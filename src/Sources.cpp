@@ -456,8 +456,7 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &version,
                     const std::string &config,
-                    const std::string &type,
-                    const std::string &runtime_type) const {
+                    const std::string &type) const {
                 const Source *source = GetSource (organization);
                 if (source != 0) {
                     const Source::Toolchain *toolchain = source->GetToolchain (name, version);
@@ -478,7 +477,6 @@ namespace thekogans {
                         }
                         shellProcess.AddArgument ("-c:" + config);
                         shellProcess.AddArgument ("-t:" + type);
-                        shellProcess.AddArgument ("-rt:" + runtime_type);
                         util::ChildProcess::ChildStatus childStatus = shellProcess.Exec ();
                         if (childStatus == util::ChildProcess::Failed ||
                                 shellProcess.GetReturnCode () != 0) {

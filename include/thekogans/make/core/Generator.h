@@ -91,7 +91,6 @@ namespace thekogans {
                 /// \param[in] project_root Project root directory (where thekogans_make.xml resides).
                 /// \param[in] config Debug or Release.
                 /// \param[in] type Static or Shared.
-                /// \param[in] runtime_type Static or Shared.
                 /// \param[in] generateDependencies true = Generate Dependencies.
                 /// \param[in] force true = Don't bother checking the timestamps and force generation.
                 /// \return true = Generated the build system, false = The build system was up to date.
@@ -99,7 +98,6 @@ namespace thekogans {
                     const std::string &project_root,
                     const std::string &config,
                     const std::string &type,
-                    const std::string &runtime_type,
                     bool generateDependencies,
                     bool force) = 0;
 
@@ -108,13 +106,11 @@ namespace thekogans {
                 /// \param[in] project_root Project root directory (where thekogans_make.xml resides).
                 /// \param[in] config Debug or Release.
                 /// \param[in] type Static or Shared.
-                /// \param[in] runtime_type Static or Shared.
                 /// \param[in] deleteDependencies true = Delete Dependencies.
                 virtual void Delete (
                     const std::string &project_root,
                     const std::string &config,
                     const std::string &type,
-                    const std::string &runtime_type,
                     bool deleteDependencies) = 0;
             };
 

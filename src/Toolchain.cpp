@@ -157,12 +157,7 @@ namespace thekogans {
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (CONFIG_DIR);
                 components.push_back (
-                    GetFileName (
-                        organization,
-                        project,
-                        std::string (),
-                        version,
-                        XML_EXT));
+                    GetFileName (organization, project, std::string (), version, XML_EXT));
                 return MakePath (components, false);
             }
 
@@ -171,8 +166,7 @@ namespace thekogans {
                     const std::string &project,
                     const std::string &version,
                     const std::string &config,
-                    const std::string &type,
-                    const std::string &runtime_type) {
+                    const std::string &type) {
                 std::list<std::string> components;
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (LIB_DIR);
@@ -187,14 +181,11 @@ namespace thekogans {
                 if (namingConvention == NAMING_CONVENTION_HIERARCHICAL) {
                     components.push_back (config);
                     components.push_back (type);
-                    components.push_back (runtime_type);
                 }
                 std::string libraryName = LIB_PREFIX + organization + ORGANIZATION_PROJECT_SEPARATOR + project;
                 if (namingConvention == NAMING_CONVENTION_FLAT) {
                     libraryName += DECORATIONS_SEPARATOR + _TOOLCHAIN_TRIPLET +
-                        DECORATIONS_SEPARATOR + config +
-                        DECORATIONS_SEPARATOR + type +
-                        DECORATIONS_SEPARATOR + runtime_type;
+                        DECORATIONS_SEPARATOR + config + DECORATIONS_SEPARATOR + type;
                 }
                 libraryName += VERSION_SEPARATOR + version + EXT_SEPARATOR;
                 if (type == TYPE_SHARED) {
@@ -215,19 +206,9 @@ namespace thekogans {
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (BIN_DIR);
                 components.push_back (
-                    GetFileName (
-                        organization,
-                        project,
-                        std::string (),
-                        version,
-                        std::string ()));
+                    GetFileName (organization, project, std::string (), version, std::string ()));
                 components.push_back (
-                    GetFileName (
-                        organization,
-                        project,
-                        std::string (),
-                        std::string (),
-                        _TOOLCHAIN_PROGRAM_SUFFIX));
+                    GetFileName (organization, project, std::string (), std::string (), _TOOLCHAIN_PROGRAM_SUFFIX));
                 return MakePath (components, false);
             }
 
