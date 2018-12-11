@@ -788,8 +788,23 @@ namespace thekogans {
                             std::string NAME =
                                 util::StringToUpper (SanitizeName (name).c_str ());
                             std::string PREFIX = ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + NAME;
-                            preprocessorDefinitions.push_back (PREFIX + "_CONFIG_" + GetConfig ());
-                            preprocessorDefinitions.push_back (PREFIX + "_TYPE_" + GetType ());
+                            std::string config_ = PREFIX + "_CONFIG_" + GetConfig ();
+                            if (std::find (
+                                    preprocessorDefinitions.begin (),
+                                    preprocessorDefinitions.end (), config_) == preprocessorDefinitions.end ()) {
+                                preprocessorDefinitions.push_back (config_);
+                            }
+                            std::string type = PREFIX + "_TYPE_" + GetType ();
+                            if (std::find (
+                                    preprocessorDefinitions.begin (),
+                                    preprocessorDefinitions.end (), type) == preprocessorDefinitions.end ()) {
+                                preprocessorDefinitions.push_back (type);
+                            }
+                            for (std::list<Dependency::Ptr>::const_iterator
+                                    it = config.dependencies.begin (),
+                                    end = config.dependencies.end (); it != end; ++it) {
+                                (*it)->GetPreprocessorDefinitions (preprocessorDefinitions);
+                            }
                         }
                     }
 
