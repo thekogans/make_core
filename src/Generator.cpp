@@ -34,10 +34,12 @@ namespace thekogans {
                 }
             }
 
-            Generator::UniquePtr Generator::Get (const std::string &type) {
+            Generator::Ptr Generator::Get (
+                    const std::string &type,
+                    bool rootProject) {
                 Map::iterator it = GetMap ().find (type);
                 return it != GetMap ().end () ?
-                    it->second () : Generator::UniquePtr ();
+                    it->second (rootProject) : Generator::Ptr ();
             }
 
             Generator::MapInitializer::MapInitializer (

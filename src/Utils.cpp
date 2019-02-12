@@ -1044,8 +1044,8 @@ namespace thekogans {
                     const std::string &type,
                     bool generateDependencies,
                     bool force) {
-                Generator::UniquePtr generator = Generator::Get (generator_);
-                if (generator.get () != 0) {
+                Generator::Ptr generator = Generator::Get (generator_, true);
+                if (generator.Get () != 0) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
                             generator->Generate (project_root, config, type, generateDependencies, force);
@@ -1076,8 +1076,8 @@ namespace thekogans {
                     const std::string &config,
                     const std::string &type,
                     bool deleteDependencies) {
-                Generator::UniquePtr generator = Generator::Get (generator_);
-                if (generator.get () != 0) {
+                Generator::Ptr generator = Generator::Get (generator_, true);
+                if (generator.Get () != 0) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
                             generator->Delete (project_root, config, type, deleteDependencies);

@@ -24,6 +24,7 @@
 #include <map>
 #include <pugixml.hpp>
 #include "thekogans/util/Types.h"
+#include "thekogans/util/RefCounted.h"
 #include "thekogans/make/core/Config.h"
 
 namespace thekogans {
@@ -35,14 +36,14 @@ namespace thekogans {
             /// \brief
             /// Base class used to represent an abstract build generator.
 
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator {
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator : public util::ThreadSafeRefCounted {
                 /// \brief
-                /// Convenient typedef for std::shared_ptr<Generator>.
-                typedef std::unique_ptr<Generator> UniquePtr;
+                /// Convenient typedef for util::ThreadSafeRefCounted::Ptr<Generator>.
+                typedef util::ThreadSafeRefCounted::Ptr<Generator> Ptr;
 
                 /// \brief
                 /// typedef for the Generator factory function.
-                typedef UniquePtr (*Factory) ();
+                typedef Ptr (*Factory) (bool rootProject);
                 /// \brief
                 /// typedef for the Generator map.
                 typedef std::map<std::string, Factory> Map;
@@ -50,7 +51,9 @@ namespace thekogans {
                 /// Used for Generator dynamic discovery and creation.
                 /// \param[in] type Generator type (it's name).
                 /// \return A Generator based on the passed in type.
-                static UniquePtr Get (const std::string &type);
+                static Ptr Get (
+                    const std::string &type,
+                    bool rootProject);
                 /// \struct MapInitializer Generator.h thekogans/make/Generator.h
                 ///
                 /// \brief
@@ -76,7 +79,13 @@ namespace thekogans {
                 /// \param[out] generators List of registered generetors.
                 static void GetGenerators (std::list<std::string> &generators);
 
+            protected:
+                bool rootProject;
+
             public:
+                Generator (bool rootProject_) :
+                    rootProject (rootProject_) {}
+
                 /// \brief
                 /// Virtual dtor.
                 virtual ~Generator () {}
@@ -126,8 +135,8 @@ namespace thekogans {
             #define THEKOGANS_MAKE_CORE_DECLARE_GENERATOR(type)\
             public:\
                 static thekogans::make::core::Generator::MapInitializer mapInitializer;\
-                static thekogans::make::core::Generator::UniquePtr Create () {\
-                    return thekogans::make::core::Generator::UniquePtr (new type);\
+                static thekogans::make::core::Generator::Ptr Create (bool rootProject) {\
+                    return thekogans::make::core::Generator::Ptr (new type (rootProject));\
                 }\
                 virtual const char *GetName () const {\
                     return #type;\
