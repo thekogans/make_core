@@ -34,7 +34,7 @@ namespace thekogans {
             /// \struct Generator Generator.h thekogans/make/Generator.h
             ///
             /// \brief
-            /// Base class used to represent an abstract build generator.
+            /// Base class used to represent an abstract build system generator.
 
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator : public util::ThreadSafeRefCounted {
                 /// \brief
@@ -50,6 +50,7 @@ namespace thekogans {
                 /// \brief
                 /// Used for Generator dynamic discovery and creation.
                 /// \param[in] type Generator type (it's name).
+                /// \param[in] rootProject true == root project, false == child project.
                 /// \return A Generator based on the passed in type.
                 static Ptr Get (
                     const std::string &type,
@@ -80,14 +81,19 @@ namespace thekogans {
                 static void GetGenerators (std::list<std::string> &generators);
 
             protected:
+                /// \brief
+                /// true == root project, false == child project.
                 bool rootProject;
 
             public:
+                /// \brief
+                /// ctor.
+                /// \param[in] rootProject_ true == root project, false == child project.
                 Generator (bool rootProject_) :
                     rootProject (rootProject_) {}
 
                 /// \brief
-                /// Virtual dtor.
+                /// dtor.
                 virtual ~Generator () {}
 
                 /// \brief
