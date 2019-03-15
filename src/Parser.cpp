@@ -343,29 +343,25 @@ namespace thekogans {
 
             bool Parser::LogicalOrExpression () {
                 bool result = LogicalAndExpression ();
-                if (!result) {
-                    Tokenizer::Token token = tokenizer.GetToken ();
-                    if (token.type == Tokenizer::Token::OR) {
-                        result = LogicalAndExpression ();
-                    }
-                    else {
-                        tokenizer.PushBack (token);
-                    }
+                Tokenizer::Token token;
+                for (token = tokenizer.GetToken ();
+                         token.type == Tokenizer::Token::OR;
+                         token = tokenizer.GetToken ()) {
+                    result |= LogicalAndExpression ();
                 }
+                tokenizer.PushBack (token);
                 return result;
             }
 
             bool Parser::LogicalAndExpression () {
                 bool result = RelationalExpression ();
-                if (result) {
-                    Tokenizer::Token token = tokenizer.GetToken ();
-                    if (token.type == Tokenizer::Token::AND) {
-                        result = RelationalExpression ();
-                    }
-                    else {
-                        tokenizer.PushBack (token);
-                    }
+                Tokenizer::Token token;
+                for (token = tokenizer.GetToken ();
+                         token.type == Tokenizer::Token::AND;
+                         token = tokenizer.GetToken ()) {
+                    result &= RelationalExpression ();
                 }
+                tokenizer.PushBack (token);
                 return result;
             }
 
