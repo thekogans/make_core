@@ -12,13 +12,7 @@
   </features>
   <dependencies>
     <dependency organization = "thekogans"
-                name = "util">
-      <features>
-        <feature>THEKOGANS_UTIL_HAVE_PUGIXML</feature>
-      </features>
-    </dependency>
-    <toolchain organization = "thekogans"
-               name = "pugixml"/>
+                name = "util"/>
     <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
       <toolchain organization = "thekogans"
                  name = "curllib"/>

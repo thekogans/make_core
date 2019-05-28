@@ -21,7 +21,7 @@
 #include <string>
 #include <set>
 #include <map>
-#include <pugixml.hpp>
+#include "pugixml/pugixml.hpp"
 #include "thekogans/util/Types.h"
 #include "thekogans/make/core/Config.h"
 

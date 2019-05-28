@@ -23,7 +23,7 @@
 #include <list>
 #include <set>
 #include <map>
-#include <pugixml.hpp>
+#include "pugixml/pugixml.hpp"
 #include "thekogans/util/Heap.h"
 #include "thekogans/util/GUID.h"
 #include "thekogans/make/core/Config.h"
@@ -459,6 +459,7 @@ namespace thekogans {
 
                 std::string GetVersion () const;
                 void GetFeatures (std::set<std::string> &features_) const;
+                bool HasFeature (const std::string &feature) const;
                 void GetIncludeDirectories (std::set<std::string> &include_directories_) const;
                 void GetLinkLibraries (std::list<std::string> &link_libraries_) const;
                 void GetSharedLibraries (std::set<std::string> &shared_libraries) const;

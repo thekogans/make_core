@@ -115,7 +115,7 @@ namespace thekogans {
                         case '\'': {
                             ++expression;
                             std::string value;
-                            while (*expression != 0 && *expression != '\'') {
+                            while (*expression != '\0' && *expression != '\'') {
                                 switch (*expression) {
                                     case '\\':
                                         ++expression;
@@ -129,10 +129,7 @@ namespace thekogans {
                                         break;
                                     case '$': {
                                         ++expression;
-                                        util::TenantReadBuffer buffer (
-                                            util::HostEndian,
-                                            (const util::ui8 *)expression,
-                                            (util::ui32)strlen (expression));
+                                        util::TenantReadBuffer buffer (util::HostEndian, expression, strlen (expression));
                                         value += Function::ParseAndExec (config, buffer).ToString ();
                                         expression += buffer.readOffset;
                                         break;
@@ -154,10 +151,7 @@ namespace thekogans {
                         }
                         case '$': {
                             ++expression;
-                            util::TenantReadBuffer buffer (
-                                util::HostEndian,
-                                (const util::ui8 *)expression,
-                                (util::ui32)strlen (expression));
+                            util::TenantReadBuffer buffer (util::HostEndian, expression, strlen (expression));
                             Value value = Function::ParseAndExec (config, buffer);
                             expression += buffer.readOffset;
                             return Token (Token::VALUE, value);

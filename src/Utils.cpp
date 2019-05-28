@@ -97,6 +97,10 @@ namespace thekogans {
                 util::GetEnvironmentVariable ("TOOLCHAIN_NAMING_CONVENTION");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_NAME =
                 util::GetEnvironmentVariable ("TOOLCHAIN_NAME");
+            _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_COMMON_BIN =
+                util::GetEnvironmentVariable ("TOOLCHAIN_COMMON_BIN");
+            _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_COMMON_RESOURCES =
+                util::GetEnvironmentVariable ("TOOLCHAIN_COMMON_RESOURCES");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_SHELL =
                 util::GetEnvironmentVariable ("TOOLCHAIN_SHELL");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_ENDIAN =
@@ -143,6 +147,8 @@ namespace thekogans {
                 insert (value_type ("TOOLCHAIN_DEFAULT_VERSION", Value (Value::TYPE_Version, _TOOLCHAIN_DEFAULT_VERSION)));
                 insert (value_type ("TOOLCHAIN_NAMING_CONVENTION", Value (_TOOLCHAIN_NAMING_CONVENTION)));
                 insert (value_type ("TOOLCHAIN_NAME", Value (_TOOLCHAIN_NAME)));
+                insert (value_type ("TOOLCHAIN_COMMON_BIN", Value (_TOOLCHAIN_COMMON_BIN)));
+                insert (value_type ("TOOLCHAIN_COMMON_RESOURCES", Value (_TOOLCHAIN_COMMON_RESOURCES)));
                 insert (value_type ("TOOLCHAIN_SHELL", Value (_TOOLCHAIN_SHELL)));
                 insert (value_type ("TOOLCHAIN_ENDIAN", Value (_TOOLCHAIN_ENDIAN)));
                 insert (value_type ("TOOLCHAIN_DIR", Value (_TOOLCHAIN_DIR)));
@@ -480,7 +486,7 @@ namespace thekogans {
                 util::Hash::Digest digest;
                 util::SHA2 hasher;
                 hasher.FromFile (ToSystemPath (path), util::SHA2::DIGEST_SIZE_256, digest);
-                return util::Hash::DigestToString (digest);
+                return util::Hash::DigestTostring (digest);
             }
 
             _LIB_THEKOGANS_MAKE_CORE_DECL bool _LIB_THEKOGANS_MAKE_CORE_API CopyFile (

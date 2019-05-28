@@ -1511,6 +1511,10 @@ namespace thekogans {
                 }
             }
 
+            bool thekogans_make::HasFeature (const std::string &feature) const {
+                return features.find (feature) != features.end ();
+            }
+
             void thekogans_make::GetIncludeDirectories (
                     std::set<std::string> &include_directories_) const {
                 for (std::list<IncludeDirectories::Ptr>::const_iterator
@@ -1602,8 +1606,7 @@ namespace thekogans {
             std::string thekogans_make::Expand (const char *format) const {
                 std::string expanded;
                 std::size_t formatLength = strlen (format);
-                util::TenantReadBuffer buffer (
-                    util::HostEndian, (util::ui8 *)format, (util::ui32)formatLength);
+                util::TenantReadBuffer buffer (util::HostEndian, format, formatLength);
                 while (!buffer.IsEmpty ()) {
                     util::i8 ch;
                     buffer >> ch;

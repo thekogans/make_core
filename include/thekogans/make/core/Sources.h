@@ -24,7 +24,7 @@
 #include <string>
 #include <list>
 #include <set>
-#include <pugixml.hpp>
+#include "pugixml/pugixml.hpp"
 #include "thekogans/util/Heap.h"
 #include "thekogans/util/Singleton.h"
 #include "thekogans/util/StringUtils.h"

@@ -22,7 +22,7 @@
 #include <string>
 #include <list>
 #include <map>
-#include <pugixml.hpp>
+#include "pugixml/pugixml.hpp"
 #include "thekogans/util/Types.h"
 #include "thekogans/util/RefCounted.h"
 #include "thekogans/make/core/Config.h"
