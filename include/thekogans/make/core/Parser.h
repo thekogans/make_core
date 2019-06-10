@@ -89,16 +89,16 @@ namespace thekogans {
             //                            | <function-call>
             // <function-call>          ::= $(identifier [arguments])
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Parser {
+            private:
                 Tokenizer &tokenizer;
-                const thekogans_make &config;
 
-                Parser (
-                    Tokenizer &tokenizer_,
-                    const core::thekogans_make &config_) :
-                    tokenizer (tokenizer_),
-                    config (config_) {}
+            public:
+                explicit Parser (Tokenizer &tokenizer_) :
+                    tokenizer (tokenizer_) {}
 
                 bool Parse ();
+
+            private:
                 bool LogicalOrExpression ();
                 bool LogicalAndExpression ();
                 bool RelationalExpression ();

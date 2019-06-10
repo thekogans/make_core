@@ -1566,7 +1566,7 @@ namespace thekogans {
                 if (expression != 0) {
                     THEKOGANS_UTIL_TRY {
                         Tokenizer tokenizer (expression, *this);
-                        Parser parser (tokenizer, *this);
+                        Parser parser (tokenizer);
                         return parser.Parse ();
                     }
                     THEKOGANS_UTIL_CATCH (util::Exception) {
