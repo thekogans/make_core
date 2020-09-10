@@ -33,6 +33,8 @@ namespace thekogans {
             // https://android.googlesource.com/platform/ndk/+/master/build/awk/gen-cygwin-deps-converter.awk
 
             namespace {
+                #define strncasecmp _strnicmp
+
                 // cygwin_mount_table.txt entries have the following format:
                 // host ' ' 'on' ' ' cygwin ' ' 'type' ' ' type ' ' flags
                 // FIXME: what happens if there are spaces in fields?
