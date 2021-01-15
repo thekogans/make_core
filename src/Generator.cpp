@@ -34,12 +34,12 @@ namespace thekogans {
                 }
             }
 
-            Generator::Ptr Generator::Get (
+            Generator::SharedPtr Generator::Get (
                     const std::string &type,
                     bool rootProject) {
                 Map::iterator it = GetMap ().find (type);
                 return it != GetMap ().end () ?
-                    it->second (rootProject) : Generator::Ptr ();
+                    it->second (rootProject) : Generator::SharedPtr ();
             }
 
             Generator::MapInitializer::MapInitializer (

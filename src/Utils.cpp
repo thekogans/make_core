@@ -749,8 +749,8 @@ namespace thekogans {
                         plugin1.dependencies != plugin2.dependencies;
                 }
 
-                typedef std::list<util::Plugins::Plugin::Ptr> PluginList;
-                typedef std::pair<util::Plugins::Plugin::Ptr, util::Plugins::Plugin::Ptr> ModifiedPlugin;
+                typedef std::list<util::Plugins::Plugin::SharedPtr> PluginList;
+                typedef std::pair<util::Plugins::Plugin::SharedPtr, util::Plugins::Plugin::SharedPtr> ModifiedPlugin;
                 typedef std::list<ModifiedPlugin> ModifiedPluginList;
 
                 void DiffPluginMaps (
@@ -981,7 +981,7 @@ namespace thekogans {
                                     ToSystemPath (
                                         MakePath (toDirectory, THEKOGANS_MANIFEST + EXT_SEPARATOR + XML_EXT)));
                                 manifest.AddFile (pluginFileName, host_config.GetGoalFileName ());
-                                util::Plugins::Plugin::Ptr plugin = plugins.GetPlugin (pluginFileName);
+                                util::Plugins::Plugin::SharedPtr plugin = plugins.GetPlugin (pluginFileName);
                                 if (plugin.Get () != 0) {
                                     for (util::Plugins::Plugin::Dependencies::const_iterator
                                             jt = plugin->dependencies.begin (),
@@ -1050,7 +1050,7 @@ namespace thekogans {
                     const std::string &type,
                     bool generateDependencies,
                     bool force) {
-                Generator::Ptr generator = Generator::Get (generator_, true);
+                Generator::SharedPtr generator = Generator::Get (generator_, true);
                 if (generator.Get () != 0) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
@@ -1082,7 +1082,7 @@ namespace thekogans {
                     const std::string &config,
                     const std::string &type,
                     bool deleteDependencies) {
-                Generator::Ptr generator = Generator::Get (generator_, true);
+                Generator::SharedPtr generator = Generator::Get (generator_, true);
                 if (generator.Get () != 0) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {

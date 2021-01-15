@@ -36,14 +36,14 @@ namespace thekogans {
             /// \brief
             /// Base class used to represent an abstract build system generator.
 
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator : public util::ThreadSafeRefCounted {
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator : public util::RefCounted {
                 /// \brief
-                /// Convenient typedef for util::ThreadSafeRefCounted::Ptr<Generator>.
-                typedef util::ThreadSafeRefCounted::Ptr<Generator> Ptr;
+                /// Convenient typedef for util::RefCounted::SharedPtr<Generator>.
+                typedef util::RefCounted::SharedPtr<Generator> SharedPtr;
 
                 /// \brief
                 /// typedef for the Generator factory function.
-                typedef Ptr (*Factory) (bool rootProject);
+                typedef SharedPtr (*Factory) (bool rootProject);
                 /// \brief
                 /// typedef for the Generator map.
                 typedef std::map<std::string, Factory> Map;
@@ -52,7 +52,7 @@ namespace thekogans {
                 /// \param[in] type Generator type (it's name).
                 /// \param[in] rootProject true == root project, false == child project.
                 /// \return A Generator based on the passed in type.
-                static Ptr Get (
+                static SharedPtr Get (
                     const std::string &type,
                     bool rootProject);
                 /// \struct MapInitializer Generator.h thekogans/make/Generator.h
@@ -141,8 +141,8 @@ namespace thekogans {
             #define THEKOGANS_MAKE_CORE_DECLARE_GENERATOR(type)\
             public:\
                 static thekogans::make::core::Generator::MapInitializer mapInitializer;\
-                static thekogans::make::core::Generator::Ptr Create (bool rootProject) {\
-                    return thekogans::make::core::Generator::Ptr (new type (rootProject));\
+                static thekogans::make::core::Generator::SharedPtr Create (bool rootProject) {\
+                    return thekogans::make::core::Generator::SharedPtr (new type (rootProject));\
                 }\
                 virtual const char *GetName () const {\
                     return #type;\

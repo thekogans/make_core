@@ -762,7 +762,7 @@ namespace thekogans {
                                     ToSystemPath (
                                         MakePath (toDirectory, THEKOGANS_MANIFEST + EXT_SEPARATOR + XML_EXT)));
                                 manifest.AddFile (pluginFileName, host_config.GetGoalFileName ());
-                                util::Plugins::Plugin::Ptr plugin =
+                                util::Plugins::Plugin::SharedPtr plugin =
                                     plugins.GetPlugin (pluginFileName);
                                 if (plugin.Get () != 0) {
                                     for (util::Plugins::Plugin::Dependencies::const_iterator
