@@ -64,6 +64,7 @@ namespace thekogans {
             const char * const thekogans_make::ATTR_FLAGS = "flags";
 
             const char * const thekogans_make::TAG_THEKOGANS_MAKE = "thekogans_make";
+            const char * const thekogans_make::TAG_GOAL = "goal";
             const char * const thekogans_make::TAG_CONSTANTS = "constants";
             const char * const thekogans_make::TAG_CONSTANT = "constant";
             const char * const thekogans_make::TAG_FEATURES = "features";
@@ -1712,34 +1713,48 @@ namespace thekogans {
             }
 
             std::string thekogans_make::GetProjectGoal () const {
-                const char *goal = "";
-                if (project_type == PROJECT_TYPE_LIBRARY) {
-                #if defined (TOOLCHAIN_OS_Windows)
-                    if (type == TYPE_SHARED) {
-                        goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                            "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
+                if (goal.empty ()) {
+                    if (project_type == PROJECT_TYPE_LIBRARY) {
+                    #if defined (TOOLCHAIN_OS_Windows)
+                        if (type == TYPE_SHARED) {
+                            return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                                "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                                "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)");
+                        }
+                        else {
+                    #endif // defined (TOOLCHAIN_OS_Windows)
+                            return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                                "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
+                                "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)");
+                    #if defined (TOOLCHAIN_OS_Windows)
+                        }
+                    #endif // defined (TOOLCHAIN_OS_Windows)
                     }
-                    else {
-                #endif // defined (TOOLCHAIN_OS_Windows)
-                        goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(project_root)/$(LIB_DIR)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
-                            "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)";
-                #if defined (TOOLCHAIN_OS_Windows)
+                    else if (project_type == PROJECT_TYPE_PROGRAM) {
+                        return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                            "$(project_root)/$(BIN_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)" :
+                            "$(project_root)/$(BIN_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(organization)_$(project).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)");
                     }
-                #endif // defined (TOOLCHAIN_OS_Windows)
+                    else if (project_type == PROJECT_TYPE_PLUGIN) {
+                        return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                            "$(project_root)/$(LIB_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                            "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)");
+                    }
+                    return std::string ();
                 }
-                else if (project_type == PROJECT_TYPE_PROGRAM) {
-                    goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(project_root)/$(BIN_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)" :
-                        "$(project_root)/$(BIN_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(organization)_$(project).$(version)$(TOOLCHAIN_PROGRAM_SUFFIX)";
+                else {
+                    if (project_type == PROJECT_TYPE_LIBRARY || project_type == PROJECT_TYPE_PLUGIN) {
+                        return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                            ("$(project_root)/$(LIB_DIR)/" + goal).c_str () :
+                            ("$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/" + goal).c_str ());
+                    }
+                    else if (project_type == PROJECT_TYPE_PROGRAM) {
+                        return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                            ("$(project_root)/$(BIN_DIR)/" + goal).c_str () :
+                            ("$(project_root)/$(BIN_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/" + goal).c_str ());
+                    }
+                    return std::string ();
                 }
-                else if (project_type == PROJECT_TYPE_PLUGIN) {
-                    goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(project_root)/$(LIB_DIR)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                        "$(project_root)/$(LIB_DIR)/$(TOOLCHAIN_BRANCH)/$(config)/$(type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
-                }
-                return Expand (goal);
             }
 
             std::string thekogans_make::GetProjectLinkLibrary () const {
@@ -1789,32 +1804,44 @@ namespace thekogans {
             }
 
             std::string thekogans_make::GetToolchainGoal () const {
-                const char *goal = "";
-                if (project_type == PROJECT_TYPE_LIBRARY) {
-                #if defined (TOOLCHAIN_OS_Windows)
-                    if (type == TYPE_SHARED) {
-                        goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
+                if (goal.empty ()) {
+                    if (project_type == PROJECT_TYPE_LIBRARY) {
+                    #if defined (TOOLCHAIN_OS_Windows)
+                        if (type == TYPE_SHARED) {
+                            return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                                "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                                "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)");
+                        }
+                        else {
+                    #endif // defined (TOOLCHAIN_OS_Windows)
+                            return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                                "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
+                                "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)");
+                    #if defined (TOOLCHAIN_OS_Windows)
+                        }
+                    #endif // defined (TOOLCHAIN_OS_Windows)
                     }
-                    else {
-                #endif // defined (TOOLCHAIN_OS_Windows)
-                        goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(LIB_PREFIX)$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(link_library_suffix)" :
-                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(LIB_PREFIX)$(organization)_$(project).$(version).$(link_library_suffix)";
-                #if defined (TOOLCHAIN_OS_Windows)
+                    else if (project_type == PROJECT_TYPE_PROGRAM) {
+                        return Expand ("$(TOOLCHAIN_DIR)/$(BIN_DIR)/$(organization)_$(project)-$(version)/$(organization)_$(project)$(TOOLCHAIN_PROGRAM_SUFFIX)");
                     }
-                #endif // defined (TOOLCHAIN_OS_Windows)
+                    else if (project_type == PROJECT_TYPE_PLUGIN) {
+                        return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
+                            "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)");
+                    }
+                    return std::string ();
                 }
-                else if (project_type == PROJECT_TYPE_PROGRAM) {
-                    goal = "$(TOOLCHAIN_DIR)/$(BIN_DIR)/$(organization)_$(project)-$(version)/$(organization)_$(project)$(TOOLCHAIN_PROGRAM_SUFFIX)";
+                else {
+                    if (project_type == PROJECT_TYPE_LIBRARY || project_type == PROJECT_TYPE_PLUGIN) {
+                        return Expand (naming_convention == NAMING_CONVENTION_FLAT ?
+                            ("$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/" + goal).c_str () :
+                            ("$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/" + goal).c_str ());
+                    }
+                    else if (project_type == PROJECT_TYPE_PROGRAM) {
+                        return Expand (("$(TOOLCHAIN_DIR)/$(BIN_DIR)/$(organization)_$(project)" + goal).c_str ());
+                    }
+                    return std::string ();
                 }
-                else if (project_type == PROJECT_TYPE_PLUGIN) {
-                    goal = naming_convention == NAMING_CONVENTION_FLAT ?
-                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(organization)_$(project)-$(TOOLCHAIN_TRIPLET)-$(config)-$(type).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)" :
-                        "$(TOOLCHAIN_DIR)/$(LIB_DIR)/$(organization)_$(project)-$(version)/$(config)/$(type)/$(organization)_$(project).$(version).$(TOOLCHAIN_SHARED_LIBRARY_SUFFIX)";
-                }
-                return Expand (goal);
             }
 
             std::string thekogans_make::GetToolchainLinkLibrary () const {
@@ -1879,6 +1906,9 @@ namespace thekogans {
             }
 
             std::string thekogans_make::GetGoalFileName () const {
+                if (!goal.empty ()) {
+                    return goal;
+                }
                 const char *goalFileName = "";
                 if (project_type == PROJECT_TYPE_LIBRARY) {
                 #if defined (TOOLCHAIN_OS_Windows)
@@ -2017,7 +2047,10 @@ namespace thekogans {
                         !child.empty (); child = child.next_sibling ()) {
                     if (child.type () == pugi::node_element) {
                         std::string childName = child.name ();
-                        if (childName == TAG_CONSTANTS) {
+                        if (childName == TAG_GOAL) {
+                            goal = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
+                        }
+                        else if (childName == TAG_CONSTANTS) {
                             Parseconstants (child);
                         }
                         else if (childName == TAG_FEATURES) {

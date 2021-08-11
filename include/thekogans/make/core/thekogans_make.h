@@ -71,6 +71,7 @@ namespace thekogans {
                 static const char * const ATTR_FLAGS;
 
                 static const char * const TAG_THEKOGANS_MAKE;
+                static const char * const TAG_GOAL;
                 static const char * const TAG_CONSTANTS;
                 static const char * const TAG_CONSTANT;
                 static const char * const TAG_FEATURES;
@@ -216,6 +217,7 @@ namespace thekogans {
                 util::GUID guid;
                 std::string schema_version;
                 // thekogans_make body.
+                std::string goal;
                 std::set<std::string> features;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL Dependency {
                     typedef std::unique_ptr<Dependency> Ptr;
@@ -466,6 +468,7 @@ namespace thekogans {
 
                 inline bool HasGoal () const {
                     return
+                        !goal.empty () ||
                         !masm_sources.empty () ||
                         !nasm_sources.empty () ||
                         !c_sources.empty () ||
