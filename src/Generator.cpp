@@ -25,12 +25,9 @@ namespace thekogans {
         namespace core {
 
             namespace {
-                // Believe it or not, but just declaring map static
-                // does not guarantee proper ctor call order!? Wrapping
-                // it in an accessor function does.
                 Generator::Map &GetMap () {
-                    static Generator::Map map;
-                    return map;
+                    static Generator::Map *map = new Generator::MAp;
+                    return *map;
                 }
             }
 

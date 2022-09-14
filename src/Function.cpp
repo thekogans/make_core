@@ -27,12 +27,9 @@ namespace thekogans {
         namespace core {
 
             namespace {
-                // Believe it or not, but just declaring map static
-                // does not guarantee proper ctor call order!? Wrapping
-                // it in an accessor function does.
                 Function::Map &GetMap () {
-                    static Function::Map map;
-                    return map;
+                    static Function::Map *map = new Function::Map;
+                    return *map;
                 }
 
                 void SkipSpaces (util::Buffer &buffer) {
