@@ -48,8 +48,15 @@ namespace thekogans {
             #define PROJECT_TYPE_PROGRAM "program"
             #define PROJECT_TYPE_PLUGIN "plugin"
 
-            #define ARCH_i386 "i386"
             #define ARCH_x86_64 "x86_64"
+            #define ARCH_i386 "i386"
+            #define ARCH_arm64 "arm64"
+            #define ARCH_arm32 "arm32"
+            #define ARCH_ppc64 "ppc64"
+            #define ARCH_sparc64 "sparc64"
+            #define ARCH_sparc32 "sparc32"
+            #define ARCH_mips64 "mips64"
+            #define ARCH_mips32 "mips32"
 
             #define CONFIG_DEBUG "Debug"
             #define CONFIG_RELEASE "Release"

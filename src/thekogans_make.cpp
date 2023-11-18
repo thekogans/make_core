@@ -385,7 +385,9 @@ namespace thekogans {
                                         it->second + DECORATIONS_SEPARATOR + it->first : it->first;
                                     while (++it != end) {
                                         dependencyVersions += ", " +
-                                            (!it->second.empty () ? it->second + DECORATIONS_SEPARATOR + it->first : it->first);
+                                            (!it->second.empty () ?
+                                                it->second + DECORATIONS_SEPARATOR + it->first :
+                                                it->first);
 
                                     }
                                     std::cout << "WARNING: Found multiple versions for " <<
@@ -1854,16 +1856,12 @@ namespace thekogans {
 
             void thekogans_make::GetCommonPreprocessorDefinitions (
                     std::list<std::string> &preprocessorDefinitions) const {
-                std::string ORGANIZATION =
-                    util::StringToUpper (SanitizeName (organization).c_str ());
-                std::string PROJECT =
-                    util::StringToUpper (SanitizeName (project).c_str ());
+                std::string ORGANIZATION = util::StringToUpper (SanitizeName (organization).c_str ());
+                std::string PROJECT = util::StringToUpper (SanitizeName (project).c_str ());
                 std::string PREFIX = ORGANIZATION + ORGANIZATION_PROJECT_SEPARATOR + PROJECT;
             #if defined (TOOLCHAIN_OS_Windows)
-                if (project_type == PROJECT_TYPE_LIBRARY ||
-                        project_type == PROJECT_TYPE_PLUGIN) {
-                    preprocessorDefinitions.push_back (
-                        "_LIB_" + PREFIX + "_BUILD");
+                if (project_type == PROJECT_TYPE_LIBRARY || project_type == PROJECT_TYPE_PLUGIN) {
+                    preprocessorDefinitions.push_back ("_LIB_" + PREFIX + "_BUILD");
                 }
             #endif // defined (TOOLCHAIN_OS_Windows)
                 preprocessorDefinitions.push_back (
@@ -1882,6 +1880,8 @@ namespace thekogans {
                     "TOOLCHAIN_TYPE_" + Expand ("$(type)"));
                 preprocessorDefinitions.push_back (
                     "TOOLCHAIN_TRIPLET=\\\"" + Expand ("$(TOOLCHAIN_TRIPLET)") + "\\\"");
+                preprocessorDefinitions.push_back (
+                    "TOOLCHAIN_BRANCH=\\\"" + Expand ("$(TOOLCHAIN_BRANCH)") + "\\\"");
                 preprocessorDefinitions.push_back (
                     PREFIX + "_MAJOR_VERSION=" + Expand ("$(major_version)"));
                 preprocessorDefinitions.push_back (
@@ -2361,7 +2361,7 @@ namespace thekogans {
                         else if (childName == TAG_DEF_FILE) {
                             def_file = Expand (util::TrimSpaces (child.text ().get ()).c_str ());
                         }
-                        // These five are only available on OS X.
+                        // These two are only available on OS X.
                         else if (childName == TAG_BUNDLE) {
                             Parsebundle (child, root);
                         }
