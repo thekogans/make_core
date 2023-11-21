@@ -22,7 +22,7 @@
 #include <fstream>
 #include "thekogans/util/Exception.h"
 #include "thekogans/util/StringUtils.h"
-#include "thekogans/util/WindowsUtils.h"
+#include "thekogans/util/os/windows/WindowsUtils.h"
 #include "thekogans/make/core/CygwinMountTable.h"
 
 namespace thekogans {

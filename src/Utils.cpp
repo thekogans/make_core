@@ -35,7 +35,7 @@
 #include "thekogans/util/SHA2.h"
 #include "thekogans/util/ChildProcess.h"
 #if defined (TOOLCHAIN_OS_Windows)
-    #include "thekogans/util/WindowsUtils.h"
+    #include "thekogans/util/os/windows/WindowsUtils.h"
 #endif // defined (TOOLCHAIN_OS_Windows)
 #include "thekogans/make/core/thekogans_make.h"
 #include "thekogans/make/core/Function.h"
