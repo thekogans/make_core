@@ -244,17 +244,17 @@ namespace thekogans {
                             value = ParseValue (config, buffer);
                         }
                     }
-                    return Parameter (option, value);
+                    return Function::Parameter (option, value);
                 }
 
                 Function::Identifier Parse (
                         const thekogans_make &config,
                         util::Buffer &buffer,
                         Function::Parameters &parameters) {
-                    Identifier identifier = ParseIdentifier (config, buffer);
+                    Function::Identifier identifier = ParseIdentifier (config, buffer);
                     if (!identifier.first.empty () && identifier.second == util::NIDX32) {
                         while (1) {
-                            Parameter parameter = ParseParameter (config, buffer);
+                            Function::Parameter parameter = ParseParameter (config, buffer);
                             if (parameter.first.empty ()) {
                                 break;
                             }

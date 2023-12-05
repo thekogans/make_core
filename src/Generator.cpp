@@ -26,7 +26,7 @@ namespace thekogans {
 
             namespace {
                 Generator::Map &GetMap () {
-                    static Generator::Map *map = new Generator::MAp;
+                    static Generator::Map *map = new Generator::Map;
                     return *map;
                 }
             }

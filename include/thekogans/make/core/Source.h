@@ -40,7 +40,7 @@ namespace thekogans {
             /// \struct Source Source.h thekogans/make/Source.h
             ///
             /// \brief
-            /// Used to retrieve various info from the $DEVELOPMENT_ROOT/sources/$organization/Source.xml file.
+            /// Used to retrieve various info from the SOURCES_ROOT/$organization/Source.xml file.
 
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Source {
                 typedef std::unique_ptr<Source> Ptr;

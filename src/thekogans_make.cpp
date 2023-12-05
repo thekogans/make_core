@@ -2857,6 +2857,7 @@ namespace thekogans {
                     FileList &fileList,
                     FileList::File::CustomBuild &customBuild) {
                 std::vector<std::string> dependencies;
+                std::string prefix = MakePath (project_root, fileList.prefix);
                 for (pugi::xml_node child = node.first_child ();
                         !child.empty (); child = child.next_sibling ()) {
                     if (child.type () == pugi::node_element) {
@@ -2866,7 +2867,7 @@ namespace thekogans {
                                 Expand (util::TrimSpaces (child.text ().get ()).c_str ());
                             if (!dependency.empty ()) {
                                 customBuild.dependencies.push_back (dependency);
-                                dependencies.push_back (MakePath (project_root, dependency));
+                                dependencies.push_back (MakePath (prefix, dependency));
                             }
                         }
                         else {
