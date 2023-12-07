@@ -69,6 +69,7 @@ namespace thekogans {
                 static const char * const ATTR_CONFIG;
                 static const char * const ATTR_TYPE;
                 static const char * const ATTR_FLAGS;
+                static const char * const ATTR_PATH;
 
                 static const char * const TAG_THEKOGANS_MAKE;
                 static const char * const TAG_GOAL;
@@ -463,6 +464,7 @@ namespace thekogans {
                 void GetFeatures (std::set<std::string> &features_) const;
                 bool HasFeature (const std::string &feature) const;
                 void GetIncludeDirectories (std::set<std::string> &include_directories_) const;
+                void GetFrameworkDirectories (std::set<std::string> &framework_directories) const;
                 void GetLinkLibraries (std::list<std::string> &link_libraries_) const;
                 void GetSharedLibraries (std::set<std::string> &shared_libraries) const;
 

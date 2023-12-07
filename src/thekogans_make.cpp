@@ -62,6 +62,7 @@ namespace thekogans {
             const char * const thekogans_make::ATTR_CONFIG = "config";
             const char * const thekogans_make::ATTR_TYPE = "type";
             const char * const thekogans_make::ATTR_FLAGS = "flags";
+            const char * const thekogans_make::ATTR_PATH = "path";
 
             const char * const thekogans_make::TAG_THEKOGANS_MAKE = "thekogans_make";
             const char * const thekogans_make::TAG_GOAL = "goal";
@@ -1109,12 +1110,15 @@ namespace thekogans {
                 };
 
                 struct FrameworkDependency : public thekogans_make::Dependency {
+                    std::string path;
                     std::string framework;
                     const thekogans_make &dependent;
 
                     FrameworkDependency (
+                        const std::string &path_,
                         const std::string &framework_,
                         const thekogans_make &dependent_) :
+                        path (path_),
                         framework (framework_),
                         dependent (dependent_) {}
 
@@ -1145,6 +1149,7 @@ namespace thekogans {
                         const FrameworkDependency *frameworkDependency =
                             dynamic_cast<const FrameworkDependency *> (&dependency);
                         return frameworkDependency != 0 &&
+                            frameworkDependency->path == path &&
                             frameworkDependency->framework == framework;
                     }
 
@@ -1534,6 +1539,18 @@ namespace thekogans {
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetIncludeDirectories (include_directories_);
+                }
+            }
+
+            void thekogans_make::GetFrameworkDirectories (
+                    std::set<std::string> &framework_directories) const {
+                for (std::list<Dependency::Ptr>::const_iterator
+                        it = dependencies.begin (),
+                        end = dependencies.end (); it != end; ++it) {
+                    FrameworkDependency *dependency = dynamic_cast<FrameworkDependency *> ((*it).get ());
+                    if (dependency != 0) {
+                        framework_directories.insert (dependency->path);
+                    }
                 }
             }
 
@@ -2519,11 +2536,12 @@ namespace thekogans {
                             }
                         }
                         else if (childName == TAG_FRAMEWORK) {
+                            std::string path = Expand (child.attribute (ATTR_PATH).value ());
                             std::string framework = util::TrimSpaces (child.text ().get ());
                             if (!framework.empty ()) {
                                 dependencies.push_back (
                                     Dependency::Ptr (
-                                        new FrameworkDependency (Expand (framework.c_str ()), *this)));
+                                        new FrameworkDependency (path, Expand (framework.c_str ()), *this)));
                             }
                         }
                         else if (childName == TAG_SYSTEM) {
