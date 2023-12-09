@@ -1916,7 +1916,7 @@ namespace thekogans {
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetPreprocessorDefinitions (preprocessorDefinitions);
                 }
-                if (project_type == PROJECT_TYPE_LIBRARY) {
+                if (project_type == PROJECT_TYPE_LIBRARY || project_type == PROJECT_TYPE_PLUGIN) {
                     preprocessorDefinitions.push_back (PREFIX + "_CONFIG_" + Expand ("$(config)"));
                     preprocessorDefinitions.push_back (PREFIX + "_TYPE_" + Expand ("$(type)"));
                 }
