@@ -174,7 +174,7 @@ namespace thekogans {
                     if (hostPath.empty ()) {
                         hostPath = cygwinPath;
                     }
-                    std::replace (hostPath.begin (), hostPath.end (), '/', '\\');
+                    // std::replace (hostPath.begin (), hostPath.end (), '/', '\\');
                 }
                 return hostPath;
             }
