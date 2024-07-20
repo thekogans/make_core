@@ -42,9 +42,9 @@ namespace thekogans {
                         organization, project, branch, version, example);
                 #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                     if (!installed &&
-                            ToolchainSources::Instance ().IsSourceProject (
+                            ToolchainSources::Instance ()->IsSourceProject (
                                 organization, project, branch, version)) {
-                        ToolchainSources::Instance ().GetSourceProject (
+                        ToolchainSources::Instance ()->GetSourceProject (
                             organization, project, branch, version);
                         installed = Project::IsInstalled (
                             organization, project, branch, version, example);
@@ -94,7 +94,7 @@ namespace thekogans {
                         #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                             versions.push_back (
                                 util::Version (
-                                    ToolchainSources::Instance ().GetSourceProjectLatestVersion (
+                                    ToolchainSources::Instance ()->GetSourceProjectLatestVersion (
                                         organization, project, branch)));
                             if (versions[0] < versions[1]) {
                                 std::swap (versions[0], versions[1]);

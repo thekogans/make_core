@@ -44,7 +44,7 @@ namespace thekogans {
             struct _LIB_THEKOGANS_MAKE_CORE_DECL thekogans_make {
                 typedef std::unique_ptr<thekogans_make> Ptr;
 
-                THEKOGANS_UTIL_DECLARE_HEAP (thekogans_make)
+                THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                 static const char * const ATTR_ORGANIZATION;
                 static const char * const ATTR_PROJECT;
@@ -288,7 +288,7 @@ namespace thekogans {
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL FileList {
                     typedef std::unique_ptr<FileList> Ptr;
 
-                    THEKOGANS_UTIL_DECLARE_HEAP (FileList)
+                    THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
                     bool install;
@@ -296,13 +296,13 @@ namespace thekogans {
                     struct _LIB_THEKOGANS_MAKE_CORE_DECL File {
                         typedef std::unique_ptr<File> Ptr;
 
-                        THEKOGANS_UTIL_DECLARE_HEAP (File)
+                        THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                         std::string name;
                         struct _LIB_THEKOGANS_MAKE_CORE_DECL CustomBuild {
                             typedef std::unique_ptr<CustomBuild> Ptr;
 
-                            THEKOGANS_UTIL_DECLARE_HEAP (CustomBuild)
+                            THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                             std::vector<std::string> outputs;
                             std::vector<std::string> dependencies;
@@ -341,7 +341,7 @@ namespace thekogans {
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL IncludeDirectories {
                     typedef std::unique_ptr<IncludeDirectories> Ptr;
 
-                    THEKOGANS_UTIL_DECLARE_HEAP (IncludeDirectories)
+                    THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
                     bool install;
@@ -359,7 +359,7 @@ namespace thekogans {
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL LinkLibraries {
                     typedef std::unique_ptr<LinkLibraries> Ptr;
 
-                    THEKOGANS_UTIL_DECLARE_HEAP (LinkLibraries)
+                    THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
                     bool install;

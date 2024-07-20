@@ -192,12 +192,12 @@ namespace thekogans {
             const char * const thekogans_make::VAR_VERSION = "version";
             const char * const thekogans_make::VAR_LINK_LIBRARY_SUFFIX = "link_library_suffix";
 
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::FileList)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::FileList::File)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::FileList::File::CustomBuild)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::IncludeDirectories)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (thekogans_make::LinkLibraries)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (thekogans_make)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (thekogans_make::FileList)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (thekogans_make::FileList::File)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (thekogans_make::FileList::File::CustomBuild)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (thekogans_make::IncludeDirectories)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (thekogans_make::LinkLibraries)
 
             namespace {
                 std::string FormatFeatures (const std::set<std::string> &features) {
@@ -1611,8 +1611,8 @@ namespace thekogans {
                 if (it != globalSymbolTable.end ()) {
                     return it->second;
                 }
-                it = EnvironmentSymbolTable::Instance ().find (symbol);
-                if (it != EnvironmentSymbolTable::Instance ().end ()) {
+                it = EnvironmentSymbolTable::Instance ()->find (symbol);
+                if (it != EnvironmentSymbolTable::Instance ()->end ()) {
                     return it->second;
                 }
                 std::string environmentVariable =

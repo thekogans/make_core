@@ -143,7 +143,7 @@ namespace thekogans {
             };
 
         #if defined (TOOLCHAIN_OS_Windows)
-            #define ToSystemPath(path) thekogans::make::core::CygwinMountTable::Instance ().ToHostPath (path)
+            #define ToSystemPath(path) thekogans::make::core::CygwinMountTable::Instance ()->ToHostPath (path)
         #else // defined (TOOLCHAIN_OS_Windows)
             #define ToSystemPath(path) (path)
         #endif // defined (TOOLCHAIN_OS_Windows)

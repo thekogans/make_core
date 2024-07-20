@@ -83,9 +83,9 @@ namespace thekogans {
             const char * const Source::TAG_PROJECT = "project";
             const char * const Source::TAG_TOOLCHAIN = "toolchain";
 
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (Source)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (Source::Project)
-            THEKOGANS_UTIL_IMPLEMENT_HEAP (Source::Toolchain)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (Source)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (Source::Project)
+            THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (Source::Toolchain)
 
             Source::Source (const std::string &organization) {
                 std::list<std::string> components;

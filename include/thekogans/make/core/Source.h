@@ -45,7 +45,7 @@ namespace thekogans {
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Source {
                 typedef std::unique_ptr<Source> Ptr;
 
-                THEKOGANS_UTIL_DECLARE_HEAP (Source)
+                THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                 static const char * const ATTR_SCHEMA_VERSION;
                 static const char * const ATTR_ORGANIZATION;
@@ -66,7 +66,7 @@ namespace thekogans {
                 struct Project {
                     typedef std::unique_ptr<Project> Ptr;
 
-                    THEKOGANS_UTIL_DECLARE_HEAP (Project)
+                    THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string name;
                     std::string branch;
@@ -89,7 +89,7 @@ namespace thekogans {
                 struct Toolchain {
                     typedef std::unique_ptr<Toolchain> Ptr;
 
-                    THEKOGANS_UTIL_DECLARE_HEAP (Toolchain)
+                    THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string name;
                     std::string version;
