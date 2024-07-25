@@ -316,7 +316,7 @@ namespace thekogans {
                                 message (message_),
                                 recipe (recipe_) {}
 
-                            THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (CustomBuild)
+                            THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (CustomBuild)
                         };
                         CustomBuild::Ptr customBuild;
                         PrecompiledHeader precompiled_header;
@@ -328,7 +328,7 @@ namespace thekogans {
                             name (name_),
                             customBuild (createCustomBuild ? new CustomBuild : 0) {}
 
-                        THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (File)
+                        THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (File)
                     };
                     std::list<File::Ptr> files;
 
@@ -336,7 +336,7 @@ namespace thekogans {
                         install (false),
                         destinationPrefix (destinationPrefix_) {}
 
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (FileList)
+                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (FileList)
                 };
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL IncludeDirectories {
                     typedef std::unique_ptr<IncludeDirectories> Ptr;
@@ -350,7 +350,7 @@ namespace thekogans {
                     IncludeDirectories () :
                         install (false) {}
 
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (IncludeDirectories)
+                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (IncludeDirectories)
                 };
                 std::list<IncludeDirectories::Ptr> include_directories;
                 std::list<std::string> preprocessor_definitions;
@@ -371,7 +371,7 @@ namespace thekogans {
                         prefix (prefix_),
                         install (install_) {}
 
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (LinkLibraries)
+                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (LinkLibraries)
                 };
                 std::list<LinkLibraries::Ptr> link_libraries;
                 std::list<std::string> masm_flags;
@@ -580,7 +580,7 @@ namespace thekogans {
                     pugi::xml_document &document,
                     pugi::xml_node &root);
 
-                THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (thekogans_make)
+                THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (thekogans_make)
             };
 
         } // namespace core

@@ -83,7 +83,7 @@ namespace thekogans {
                         version (version_),
                         SHA2_256 (SHA2_256_) {}
 
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (Project)
+                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Project)
                 };
                 std::list<Project::Ptr> projects;
                 struct Toolchain {
@@ -106,7 +106,7 @@ namespace thekogans {
                         file (file_),
                         SHA2_256 (SHA2_256_) {}
 
-                    THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (Toolchain)
+                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Toolchain)
                 };
                 std::list<Toolchain::Ptr> toolchain;
 
@@ -199,7 +199,7 @@ namespace thekogans {
 
                 friend struct Sources;
 
-                THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (Source)
+                THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Source)
             };
 
         } // namespace core

@@ -125,7 +125,7 @@ namespace thekogans {
                 void UpdateSource (Source &source);
                 void Save () const;
 
-                THEKOGANS_MAKE_CORE_DISALLOW_COPY_AND_ASSIGN (Sources)
+                THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Sources)
             };
 
             typedef util::Singleton<Sources> ToolchainSources;
