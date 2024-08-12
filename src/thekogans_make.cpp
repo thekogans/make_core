@@ -1626,7 +1626,10 @@ namespace thekogans {
             std::string thekogans_make::Expand (const char *format) const {
                 std::string expanded;
                 std::size_t formatLength = strlen (format);
-                util::TenantReadBuffer buffer (util::HostEndian, format, formatLength);
+                util::TenantBuffer buffer (
+                    util::HostEndian,
+                    const_cast<char *> (format),
+                    formatLength);
                 while (!buffer.IsEmpty ()) {
                     util::i8 ch;
                     buffer >> ch;
