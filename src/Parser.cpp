@@ -129,10 +129,8 @@ namespace thekogans {
                                         break;
                                     case '$': {
                                         ++expression;
-                                        util::TenantBuffer buffer (
-                                            util::HostEndian,
-                                            const_cast<char *> (expression),
-                                            strlen (expression));
+                                        util::TenantReadBuffer buffer (
+                                            util::HostEndian, expression, strlen (expression));
                                         value += Function::ParseAndExec (config, buffer).ToString ();
                                         expression += buffer.readOffset;
                                         break;
@@ -154,10 +152,8 @@ namespace thekogans {
                         }
                         case '$': {
                             ++expression;
-                            util::TenantBuffer buffer (
-                                util::HostEndian,
-                                const_cast<char *> (expression),
-                                strlen (expression));
+                            util::TenantReadBuffer buffer (
+                                util::HostEndian, expression, strlen (expression));
                             Value value = Function::ParseAndExec (config, buffer);
                             expression += buffer.readOffset;
                             return Token (Token::VALUE, value);
