@@ -22,6 +22,7 @@
 #include <list>
 #include <set>
 #include <map>
+#include "thekogans/util/Environment.h"
 #include "thekogans/util/Singleton.h"
 #include "thekogans/util/SpinLock.h"
 #include "thekogans/util/Buffer.h"

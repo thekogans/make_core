@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <regex>
 #include <sstream>
+#include "thekogans/util/Environment.h"
 #include "thekogans/util/Types.h"
 #include "thekogans/util/Version.h"
 #include "thekogans/util/Path.h"

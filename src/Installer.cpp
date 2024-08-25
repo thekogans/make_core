@@ -20,6 +20,7 @@
 #include <set>
 #include <iostream>
 #include <fstream>
+#include "thekogans/util/Environment.h"
 #include "thekogans/util/Path.h"
 #include "thekogans/util/Plugins.h"
 #include "thekogans/util/Directory.h"

@@ -17,6 +17,7 @@
 
 #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
+#include "thekogans/util/Environment.h"
 #if !defined (TOOLCHAIN_OS_Windows)
     #include <sys/stat.h>
     #include <fcntl.h>
