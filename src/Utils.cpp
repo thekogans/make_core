@@ -1027,14 +1027,13 @@ namespace thekogans {
                     const std::string &separator) {
                 std::string generatorList;
                 {
-                    std::list<std::string> generators;
-                    Generator::GetGenerators (generators);
+                    util::DynamicCreatable::TypeMapType generators = Generator::GetTypes ();
                     if (!generators.empty ()) {
-                        std::list<std::string>::const_iterator it = generators.begin ();
-                        std::list<std::string>::const_iterator end = generators.end ();
-                        generatorList = *it++;
-                        while (it != end) {
-                            generatorList += separator + *it++;
+                        util::DynamicCreatable::TypeMapType::const_iterator it = generators.begin ();
+                        util::DynamicCreatable::TypeMapType::const_iterator end = generators.end ();
+                        generatorList = it->first;
+                        while (++it != end) {
+                            generatorList += separator + it->first;
                         }
                     }
                     else {
@@ -1051,11 +1050,16 @@ namespace thekogans {
                     const std::string &type,
                     bool generateDependencies,
                     bool force) {
-                Generator::SharedPtr generator = Generator::Get (generator_, true);
-                if (generator.Get () != 0) {
+                Generator::SharedPtr generator = Generator::CreateGenerator (generator_, true);
+                if (generator != nullptr) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
-                            generator->Generate (project_root, config, type, generateDependencies, force);
+                            generator->Generate (
+                                project_root,
+                                config,
+                                type,
+                                generateDependencies,
+                                force);
                         }
                         else {
                             THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
@@ -1083,8 +1087,8 @@ namespace thekogans {
                     const std::string &config,
                     const std::string &type,
                     bool deleteDependencies) {
-                Generator::SharedPtr generator = Generator::Get (generator_, true);
-                if (generator.Get () != 0) {
+                Generator::SharedPtr generator = Generator::CreateGenerator (generator_, true);
+                if (generator != nullptr) {
                     if (config == CONFIG_DEBUG || config == CONFIG_RELEASE) {
                         if (type == TYPE_SHARED || type == TYPE_STATIC) {
                             generator->Delete (project_root, config, type, deleteDependencies);

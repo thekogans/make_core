@@ -24,38 +24,12 @@ namespace thekogans {
     namespace make {
         namespace core {
 
-            namespace {
-                Generator::Map &GetMap () {
-                    static Generator::Map *map = new Generator::Map;
-                    return *map;
-                }
-            }
+            THEKOGANS_UTIL_IMPLEMENT_DYNAMIC_CREATABLE_ABSTRACT_BASE (thekogans::make::core::Generator)
 
-            Generator::SharedPtr Generator::Get (
+            Generator::SharedPtr Generator::CreateGenerator (
                     const std::string &type,
                     bool rootProject) {
-                Map::iterator it = GetMap ().find (type);
-                return it != GetMap ().end () ?
-                    it->second (rootProject) : Generator::SharedPtr ();
-            }
-
-            Generator::MapInitializer::MapInitializer (
-                    const std::string &type,
-                    Factory factory) {
-                std::pair<Map::iterator, bool> result =
-                    GetMap ().insert (Map::value_type (type, factory));
-                assert (result.second);
-                if (!result.second) {
-                    THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                        "Duplicate Generator: %s", type.c_str ());
-                }
-            }
-
-            void Generator::GetGenerators (std::list<std::string> &generators) {
-                for (Map::const_iterator it = GetMap ().begin (),
-                        end = GetMap ().end (); it != end; ++it) {
-                    generators.push_back (it->first);
-                }
+                return CreateType (type.c_str (), new Parameters (rootProject));
             }
 
         } // namespace core

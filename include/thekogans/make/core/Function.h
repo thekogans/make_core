@@ -23,6 +23,7 @@
 #include <list>
 #include <map>
 #include "thekogans/util/Buffer.h"
+#include "thekogans/util/DynamicCreatable.h"
 #include "thekogans/make/core/Config.h"
 #include "thekogans/make/core/Value.h"
 
@@ -32,34 +33,21 @@ namespace thekogans {
 
             struct thekogans_make;
 
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL Function {
-                typedef std::unique_ptr<Function> UniquePtr;
-
-                typedef UniquePtr (*Factory) ();
-                typedef std::map<std::string, Factory> Map;
-
-                typedef std::pair<std::string, std::string> Parameter;
-                typedef std::list<Parameter> Parameters;
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL Function : public util::DynamicCreatable {
+                THEKOGANS_UTIL_DECLARE_DYNAMIC_CREATABLE_ABSTRACT_BASE (Function)
 
                 static Value ParseAndExec (
                     const thekogans_make &config,
                     util::Buffer &buffer);
 
                 typedef std::pair<std::string, util::ui32> Identifier;
+                typedef std::pair<std::string, std::string> Parameter;
+                typedef std::list<Parameter> Parameters;
 
                 static Value Exec (
                     const thekogans_make &config,
                     const Identifier &identifier,
                     const Parameters &parameters);
-
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL MapInitializer {
-                    Map::iterator it;
-
-                    MapInitializer (
-                        const std::string &name_,
-                        Factory factory);
-                    ~MapInitializer ();
-                };
 
                 virtual ~Function () {}
 
@@ -67,17 +55,6 @@ namespace thekogans {
                     const thekogans_make &config,
                     const Parameters &parameters) const = 0;
             };
-
-            #define THEKOGANS_MAKE_CORE_DECLARE_FUNCTION(name)\
-            public:\
-                static thekogans::make::core::Function::MapInitializer mapInitializer;\
-                static thekogans::make::core::Function::UniquePtr Create () {\
-                    return thekogans::make::core::Function::UniquePtr (new name);\
-                }
-
-            #define THEKOGANS_MAKE_CORE_IMPLEMENT_FUNCTION(name)\
-                thekogans::make::core::Function::MapInitializer name::mapInitializer (\
-                    #name, name::Create);
 
         } // namespace core
     } // namespace make

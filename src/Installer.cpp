@@ -611,7 +611,7 @@ namespace thekogans {
                         attributes.push_back (
                             util::Attribute (
                                 thekogans_make::ATTR_GUID,
-                                config.guid.ToString ()));
+                                config.guid.ToHexString ()));
                         attributes.push_back (
                             util::Attribute (
                                 thekogans_make::ATTR_SCHEMA_VERSION,
@@ -1056,7 +1056,7 @@ namespace thekogans {
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_GUID,
-                            DebugShared.guid.ToString ()));
+                            DebugShared.guid.ToHexString ()));
                     attributes.push_back (
                         util::Attribute (
                             thekogans_make::ATTR_SCHEMA_VERSION,

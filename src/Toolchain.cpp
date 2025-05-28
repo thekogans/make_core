@@ -50,7 +50,7 @@ namespace thekogans {
                     }
                 #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                     for (std::size_t i = 0, count = versions.size (); !installed && i < count; ++i) {
-                        if (versions[i] != util::Version::Empty) {
+                        if (versions[i] != util::Version ()) {
                             version = versions[i].ToString ();
                             installed = IsInstalled (organization, project, version);
                         #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)

@@ -347,7 +347,8 @@ namespace thekogans {
                                 projectName += PROJECT_EXAMPLE_SEPARATOR + example;
                             }
                             versions[projectName].insert (
-                                VersionAndBranch (version.empty () ? config.GetVersion () : version, branch));
+                                VersionAndBranch (
+                                    version.empty () ? config.GetVersion () : version, branch));
                             for (std::list<Dependency::Ptr>::const_iterator
                                     it = config.dependencies.begin (),
                                     end = config.dependencies.end (); it != end; ++it) {
@@ -379,7 +380,8 @@ namespace thekogans {
                             }
                             const VersionSet &versionSet = versions[projectName];
                             if (versionSet.size () > 1) {
-                                if (visitedDependencies.find (projectName) == visitedDependencies.end ()) {
+                                if (visitedDependencies.find (projectName) ==
+                                        visitedDependencies.end ()) {
                                     visitedDependencies.insert (projectName);
                                     VersionSet::const_iterator it = versionSet.begin ();
                                     VersionSet::const_iterator end = versionSet.end ();
@@ -443,13 +445,15 @@ namespace thekogans {
                             std::string config_ = PREFIX + "_CONFIG_" + GetConfig ();
                             if (std::find (
                                     preprocessorDefinitions.begin (),
-                                    preprocessorDefinitions.end (), config_) == preprocessorDefinitions.end ()) {
+                                    preprocessorDefinitions.end (), config_) ==
+                                    preprocessorDefinitions.end ()) {
                                 preprocessorDefinitions.push_back (config_);
                             }
                             std::string type = PREFIX + "_TYPE_" + GetType ();
                             if (std::find (
                                     preprocessorDefinitions.begin (),
-                                    preprocessorDefinitions.end (), type) == preprocessorDefinitions.end ()) {
+                                    preprocessorDefinitions.end (), type) ==
+                                    preprocessorDefinitions.end ()) {
                                 preprocessorDefinitions.push_back (type);
                             }
                             for (std::list<Dependency::Ptr>::const_iterator
@@ -1967,8 +1971,7 @@ namespace thekogans {
                     config_file (config_file_),
                     generator (generator_),
                     config (config_),
-                    type (type_),
-                    guid (util::GUID::Empty) {
+                    type (type_) {
                 if (generator.empty ()) {
                     generator = MAKE;
                 }
@@ -2045,7 +2048,7 @@ namespace thekogans {
                 }
                 std::string guidString = root.attribute (ATTR_GUID).value ();
                 if (!guidString.empty ()) {
-                    guid = util::GUID (guidString);
+                    guid = util::GUID::FromHexString (guidString);
                 }
                 schema_version = root.attribute (ATTR_SCHEMA_VERSION).value ();
                 if (schema_version.empty ()) {
@@ -2542,7 +2545,8 @@ namespace thekogans {
                             if (!framework.empty ()) {
                                 dependencies.push_back (
                                     Dependency::Ptr (
-                                        new FrameworkDependency (path, Expand (framework.c_str ()), *this)));
+                                        new FrameworkDependency (
+                                            path, Expand (framework.c_str ()), *this)));
                             }
                         }
                         else if (childName == TAG_SYSTEM) {
@@ -2699,7 +2703,8 @@ namespace thekogans {
                     FileList &fileList) {
                 fileList.prefix = Expand (node.attribute (ATTR_PREFIX).value ());
                 fileList.install = Expand (node.attribute (ATTR_INSTALL).value ()) == VALUE_YES;
-                std::string destinationPrefix = Expand (node.attribute (ATTR_DESTINATION_PREFIX).value ());
+                std::string destinationPrefix =
+                    Expand (node.attribute (ATTR_DESTINATION_PREFIX).value ());
                 if (!destinationPrefix.empty ()) {
                     fileList.destinationPrefix = destinationPrefix;
                 }

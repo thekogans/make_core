@@ -119,22 +119,18 @@ namespace thekogans {
                             }
                         }
                     }
-                    struct Comparecygwin {
-                        inline bool operator () (
-                                const Entry &entry1,
-                                const Entry &entry2) const {
+                    std::sort (
+                        hostEntries.begin (),
+                        hostEntries.end (),
+                        [] (const Entry &entry1, const Entry &entry2) -> bool {
                             return entry1.cygwin.size () > entry2.cygwin.size ();
-                        }
-                    };
-                    std::sort (hostEntries.begin (), hostEntries.end (), Comparecygwin ());
-                    struct Comparehost {
-                        inline bool operator () (
-                                const Entry &entry1,
-                                const Entry &entry2) const {
+                        });
+                    std::sort (
+                        cygwinEntries.begin (),
+                        cygwinEntries.end (),
+                        [] (const Entry &entry1, const Entry &entry2) -> bool {
                             return entry1.host.size () > entry2.host.size ();
-                        }
-                    };
-                    std::sort (cygwinEntries.begin (), cygwinEntries.end (), Comparehost ());
+                        });
                     mountTableFile.close ();
                 }
                 else {
@@ -197,7 +193,7 @@ namespace thekogans {
                         }
                     }
                     if (ptr == 0) {
-                        ptr = &hostPath[0];
+                        ptr = hostPath.data ();
                     }
                     while (*ptr != 0) {
                         if (*ptr == '\\') {

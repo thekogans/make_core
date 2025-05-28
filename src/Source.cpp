@@ -261,7 +261,7 @@ namespace thekogans {
             std::string Source::GetProjectLatestVersion (
                     const std::string &name,
                     const std::string &branch) const {
-                util::Version latestVersion = util::Version::Empty;
+                util::Version latestVersion (0);
                 for (std::list<Project::Ptr>::const_iterator
                         it = projects.begin (),
                         end = projects.end (); it != end; ++it) {
@@ -390,7 +390,7 @@ namespace thekogans {
 
             std::string Source::GetToolchainLatestVersion (
                     const std::string &name) const {
-                util::Version latestVersion = util::Version::Empty;
+                util::Version latestVersion (0);
                 for (std::list<Toolchain::Ptr>::const_iterator
                         it = toolchain.begin (),
                         end = toolchain.end (); it != end; ++it) {

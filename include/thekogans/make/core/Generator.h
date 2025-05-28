@@ -24,7 +24,7 @@
 #include <map>
 #include "pugixml/pugixml.hpp"
 #include "thekogans/util/Types.h"
-#include "thekogans/util/RefCounted.h"
+#include "thekogans/util/DynamicCreatable.h"
 #include "thekogans/make/core/Config.h"
 
 namespace thekogans {
@@ -36,49 +36,41 @@ namespace thekogans {
             /// \brief
             /// Base class used to represent an abstract build system generator.
 
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator : public util::RefCounted {
-                /// \brief
-                /// Convenient typedef for util::RefCounted::SharedPtr<Generator>.
-                typedef util::RefCounted::SharedPtr<Generator> SharedPtr;
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator : public util::DynamicCreatable {
+                THEKOGANS_UTIL_DECLARE_DYNAMIC_CREATABLE_ABSTRACT_BASE (Generator)
 
-                /// \brief
-                /// typedef for the Generator factory function.
-                typedef SharedPtr (*Factory) (bool rootProject);
-                /// \brief
-                /// typedef for the Generator map.
-                typedef std::map<std::string, Factory> Map;
-                /// \brief
-                /// Used for Generator dynamic discovery and creation.
-                /// \param[in] type Generator type (it's name).
-                /// \param[in] rootProject true == root project, false == child project.
-                /// \return A Generator based on the passed in type.
-                static SharedPtr Get (
-                    const std::string &type,
-                    bool rootProject);
-                /// \struct MapInitializer Generator.h thekogans/make/Generator.h
+                /// \struct Signer::Parameters Signer.h thekogans/crypto/Signer.h
                 ///
                 /// \brief
-                /// MapInitializer is used to initialize the Generator::map.
-                /// It should not be used directly, and instead is included
-                /// in THEKOGANS_MAKE_CORE_DECLARE_GENERATOR/THEKOGANS_MAKE_CORE_IMPLEMENT_GENERATOR.
-                /// If you are deriving a generator from Generator, and you want
-                /// it to be dynamically discoverable/creatable, add
-                /// THEKOGANS_MAKE_CORE_DECLARE_GENERATOR to it's declaration,
-                /// and THEKOGANS_MAKE_CORE_IMPLEMENT_GENERATOR to it's definition.
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL MapInitializer {
+                /// Pass these parameters to DynamicCreatable::CreateType to
+                /// parametarize the new instance.
+                struct Parameters : public util::DynamicCreatable::Parameters {
                     /// \brief
-                    /// ctor. Add generator of type, and factory for creating it
-                    /// to the Generator::map
-                    /// \param[in] type Generator type (it's class name).
-                    /// \param[in] factory Generator creation factory.
-                    MapInitializer (
-                        const std::string &type,
-                        Factory factory);
-                };
+                    /// Private key.
+                    bool rootProject;
+
+                    /// \brief
+                    /// ctor.
+                    /// \param[in] privateKey_ Private key.
+                    /// \param[in] messageDigest_ Message digest.
+                    Parameters (bool rootProject_) :
+                        rootProject (rootProject_) {}
+
                 /// \brief
-                /// Get the list of all generators registered with the map.
-                /// \param[out] generators List of registered generetors.
-                static void GetGenerators (std::list<std::string> &generators);
+                /// Apply the encapsulated parameters to the passed in instance.
+                /// \param[in] dynamicCreatable Signer instance to apply the
+                /// encapsulated parameters to.
+                virtual void Apply (DynamicCreatable::SharedPtr dynamicCreatable) override {
+                    Generator::SharedPtr generator = dynamicCreatable;
+                    if (generator != nullptr) {
+                        generator->Init (rootProject);
+                    }
+                    else {
+                        THEKOGANS_UTIL_THROW_ERROR_CODE_EXCEPTION (
+                            THEKOGANS_UTIL_OS_ERROR_CODE_EINVAL);
+                    }
+                }
+            };
 
             protected:
                 /// \brief
@@ -89,17 +81,16 @@ namespace thekogans {
                 /// \brief
                 /// ctor.
                 /// \param[in] rootProject_ true == root project, false == child project.
-                Generator (bool rootProject_) :
+                Generator (bool rootProject_ = true) :
                     rootProject (rootProject_) {}
 
-                /// \brief
-                /// dtor.
-                virtual ~Generator () {}
+                static SharedPtr CreateGenerator (
+                    const std::string &type,
+                    bool rootProject);
 
-                /// \brief
-                /// Return the class name of the generator.
-                /// \return Class name of the generator.
-                virtual const char *GetName () const = 0;
+                virtual void Init (bool rootProject_) {
+                    rootProject = rootProject_;
+                }
 
                 /// \brief
                 /// Generate a build system.
@@ -107,8 +98,10 @@ namespace thekogans {
                 /// \param[in] config Debug or Release.
                 /// \param[in] type Static or Shared.
                 /// \param[in] generateDependencies true = Generate Dependencies.
-                /// \param[in] force true = Don't bother checking the timestamps and force generation.
-                /// \return true = Generated the build system, false = The build system was up to date.
+                /// \param[in] force true = Don't bother checking
+                /// the timestamps and force generation.
+                /// \return true = Generated the build system,
+                /// false = The build system was up to date.
                 virtual bool Generate (
                     const std::string &project_root,
                     const std::string &config,
@@ -128,35 +121,6 @@ namespace thekogans {
                     const std::string &type,
                     bool deleteDependencies) = 0;
             };
-
-            /// \brief
-            /// Dynamic discovery macro. Add this to your class declaration.
-            /// Example:
-            /// \code{.cpp}
-            /// struct vs2010 : public Generator {
-            ///     THEKOGANS_MAKE_CORE_DECLARE_GENERATOR (vs2010)
-            ///     ...
-            /// };
-            /// \endcode
-            #define THEKOGANS_MAKE_CORE_DECLARE_GENERATOR(type)\
-            public:\
-                static thekogans::make::core::Generator::MapInitializer mapInitializer;\
-                static thekogans::make::core::Generator::SharedPtr Create (bool rootProject) {\
-                    return thekogans::make::core::Generator::SharedPtr (new type (rootProject));\
-                }\
-                virtual const char *GetName () const {\
-                    return #type;\
-                }
-
-            /// \brief
-            /// Dynamic discovery macro. Instantiate one of these in the class cpp file.
-            /// Example:
-            /// \code{.cpp}
-            /// THEKOGANS_MAKE_CORE_IMPLEMENT_GENERATOR (vs2010)
-            /// \endcode
-            #define THEKOGANS_MAKE_CORE_IMPLEMENT_GENERATOR(type)\
-                thekogans::make::core::Generator::MapInitializer type::mapInitializer (\
-                    #type, type::Create);
 
         } // namespace core
     } // namespace make

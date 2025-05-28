@@ -26,12 +26,9 @@ namespace thekogans {
     namespace make {
         namespace core {
 
-            namespace {
-                Function::Map &GetMap () {
-                    static Function::Map *map = new Function::Map;
-                    return *map;
-                }
+            THEKOGANS_UTIL_IMPLEMENT_DYNAMIC_CREATABLE_ABSTRACT_BASE (thekogans::make::core::Function)
 
+            namespace {
                 void SkipSpaces (util::Buffer &buffer) {
                     while (!buffer.IsEmpty () && isspace (*buffer.GetReadPtr ())) {
                         buffer.AdvanceReadOffset (1);
@@ -293,9 +290,8 @@ namespace thekogans {
                     const Parameters &parameters) {
                 Value result;
                 {
-                    Map::iterator it = GetMap ().find (identifier.first);
-                    if (it != GetMap ().end ()) {
-                        UniquePtr function = it->second ();
+                    SharedPtr function = CreateType (identifier.first.c_str ());
+                    if (function != nullptr) {
                         result = function->Exec (config, parameters);
                     }
                     else if (parameters.empty ()) {
@@ -307,23 +303,6 @@ namespace thekogans {
                     }
                 }
                 return result;
-            }
-
-            Function::MapInitializer::MapInitializer (
-                    const std::string &name,
-                    Factory factory) {
-                std::pair<Map::iterator, bool> result =
-                    GetMap ().insert (Map::value_type (name, factory));
-                assert (result.second);
-                if (!result.second) {
-                    THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                        "Duplicate Function: %s", name.c_str ());
-                }
-                it = result.first;
-            }
-
-            Function::MapInitializer::~MapInitializer () {
-                GetMap ().erase (it);
             }
 
         } // namespace core

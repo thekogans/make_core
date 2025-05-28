@@ -74,7 +74,7 @@ namespace thekogans {
                     value (1, s) {}
                 Value (const util::GUID &g) :
                     type (TYPE_GUID),
-                    value (1, g.ToString ()) {}
+                    value (1, g.ToHexString ()) {}
                 Value (const util::Version &v) :
                     type (TYPE_Version),
                     value (1, v.ToString ()) {}
