@@ -8,7 +8,7 @@
                 guid = "5171bfe46480363ac0a3fab41b5addf5"
                 schema_version = "2">
   <features>
-    <feature>THEKOGANS_MAKE_CORE_HAVE_CURL</feature>
+    <!-- <feature>THEKOGANS_MAKE_CORE_HAVE_CURL</feature> -->
   </features>
   <dependencies>
     <dependency organization = "thekogans"
@@ -36,6 +36,7 @@
     <cpp_header>$(organization)/$(project_directory)/Installer.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Manifest.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Parser.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/PkgConfig.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Project.h</cpp_header>
     <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
       <cpp_header>$(organization)/$(project_directory)/Source.h</cpp_header>
@@ -56,6 +57,7 @@
     <cpp_source>Installer.cpp</cpp_source>
     <cpp_source>Manifest.cpp</cpp_source>
     <cpp_source>Parser.cpp</cpp_source>
+    <cpp_source>PkgConfig.cpp</cpp_source>
     <cpp_source>Project.cpp</cpp_source>
     <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
       <cpp_source>Source.cpp</cpp_source>
