@@ -29,7 +29,14 @@ namespace thekogans {
             Generator::SharedPtr Generator::CreateGenerator (
                     const std::string &type,
                     bool rootProject) {
-                return CreateType (type.c_str (), new Parameters (rootProject));
+                return CreateType (type.c_str (),
+                    [rootProject] (DynamicCreatable::SharedPtr dynamicCreatable) {
+                        Generator::SharedPtr generator = dynamicCreatable;
+                        if (generator != nullptr) {
+                            generator->Init (rootProject);
+                        }
+                    }
+                );
             }
 
         } // namespace core

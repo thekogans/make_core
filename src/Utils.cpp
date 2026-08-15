@@ -26,7 +26,6 @@
 #include <iostream>
 #include <fstream>
 #include "thekogans/util/FixedArray.h"
-#include "thekogans/util/Array.h"
 #include "thekogans/util/Path.h"
 #include "thekogans/util/File.h"
 #include "thekogans/util/Directory.h"

@@ -16,7 +16,6 @@
 // along with thekogans_make_core. If not, see <http://www.gnu.org/licenses/>.
 
 #include "thekogans/util/Types.h"
-#include "thekogans/util/Array.h"
 #include "thekogans/util/Path.h"
 #include "thekogans/util/Directory.h"
 #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)

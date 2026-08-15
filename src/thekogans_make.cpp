@@ -1450,10 +1450,7 @@ namespace thekogans {
                 ConfigMap::iterator it = configMap.lower_bound (configKey);
                 if (it == configMap.end () ||
                         configKey.size () > it->first.size () ||
-                        !std::equal (
-                            configKey.begin (),
-                            configKey.begin () + configKey.size (),
-                            it->first.begin ())) {
+                        !std::equal (configKey.begin (), configKey.end (), it->first.begin ())) {
                     std::pair<ConfigMap::iterator, bool> result =
                         configMap.insert (
                             ConfigMap::value_type (

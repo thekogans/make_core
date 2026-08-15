@@ -39,39 +39,6 @@ namespace thekogans {
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Generator : public util::DynamicCreatable {
                 THEKOGANS_UTIL_DECLARE_DYNAMIC_CREATABLE_ABSTRACT_BASE (Generator)
 
-                /// \struct Signer::Parameters Signer.h thekogans/crypto/Signer.h
-                ///
-                /// \brief
-                /// Pass these parameters to DynamicCreatable::CreateType to
-                /// parametarize the new instance.
-                struct Parameters : public util::DynamicCreatable::Parameters {
-                    /// \brief
-                    /// Private key.
-                    bool rootProject;
-
-                    /// \brief
-                    /// ctor.
-                    /// \param[in] privateKey_ Private key.
-                    /// \param[in] messageDigest_ Message digest.
-                    Parameters (bool rootProject_) :
-                        rootProject (rootProject_) {}
-
-                /// \brief
-                /// Apply the encapsulated parameters to the passed in instance.
-                /// \param[in] dynamicCreatable Signer instance to apply the
-                /// encapsulated parameters to.
-                virtual void Apply (DynamicCreatable::SharedPtr dynamicCreatable) override {
-                    Generator::SharedPtr generator = dynamicCreatable;
-                    if (generator != nullptr) {
-                        generator->Init (rootProject);
-                    }
-                    else {
-                        THEKOGANS_UTIL_THROW_ERROR_CODE_EXCEPTION (
-                            THEKOGANS_UTIL_OS_ERROR_CODE_EINVAL);
-                    }
-                }
-            };
-
             protected:
                 /// \brief
                 /// true == root project, false == child project.

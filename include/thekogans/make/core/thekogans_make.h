@@ -233,8 +233,7 @@ namespace thekogans {
                     virtual std::string GetConfig () const = 0;
                     virtual std::string GetType () const = 0;
 
-                    virtual bool EquivalentTo (
-                        const Dependency & /*dependency*/) const = 0;
+                    virtual bool EquivalentTo (const Dependency & /*dependency*/) const = 0;
 
                     typedef std::pair<std::string, std::string> VersionAndBranch;
                     typedef std::set<VersionAndBranch> VersionSet;
