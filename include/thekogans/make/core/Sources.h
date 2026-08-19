@@ -128,7 +128,7 @@ namespace thekogans {
                 THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Sources)
             };
 
-            typedef util::Singleton<Sources> ToolchainSources;
+            using ToolchainSources = util::Singleton<Sources>;
 
         } // namespace core
     } // namespace make

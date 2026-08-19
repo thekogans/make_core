@@ -88,6 +88,7 @@ namespace thekogans {
                 static const char * const TAG_LIBRARY;
                 static const char * const TAG_FRAMEWORK;
                 static const char * const TAG_SYSTEM;
+                static const char * const TAG_PKG_CONFIG;
                 static const char * const TAG_INCLUDE_DIRECTORIES;
                 static const char * const TAG_INCLUDE_DIRECTORY;
                 static const char * const TAG_PREPROCESSOR_DEFINITIONS;

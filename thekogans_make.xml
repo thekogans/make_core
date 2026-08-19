@@ -8,7 +8,7 @@
                 guid = "5171bfe46480363ac0a3fab41b5addf5"
                 schema_version = "2">
   <features>
-    <!-- <feature>THEKOGANS_MAKE_CORE_HAVE_CURL</feature> -->
+    <feature>THEKOGANS_MAKE_CORE_HAVE_CURL</feature>
   </features>
   <dependencies>
     <dependency organization = "thekogans"

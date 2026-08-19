@@ -82,6 +82,7 @@ namespace thekogans {
             const char * const thekogans_make::TAG_LIBRARY = "library";
             const char * const thekogans_make::TAG_FRAMEWORK = "framework";
             const char * const thekogans_make::TAG_SYSTEM = "system";
+            const char * const thekogans_make::TAG_PKG_CONFIG = "pkg_config";
             const char * const thekogans_make::TAG_INCLUDE_DIRECTORIES = "include_directories";
             const char * const thekogans_make::TAG_INCLUDE_DIRECTORY = "include_directory";
             const char * const thekogans_make::TAG_PREPROCESSOR_DEFINITIONS = "preprocessor_definitions";

@@ -27,6 +27,18 @@ namespace thekogans {
         namespace core {
 
             struct _LIB_THEKOGANS_MAKE_CORE_DECL PkgConfig {
+                /*
+                std::string name;
+                std::string version;
+                std::string description;
+                std::string url;
+                GList *libs;
+                GList *cflags;
+                GList * requires;
+                GList *requires_private;
+                GList *conflicts;
+                GList *libs_private;
+                */
                 using Variables = std::unordered_map<std::string, std::string>;
                 Variables variables;
                 using Properties = std::unordered_map<std::string, std::string>;
