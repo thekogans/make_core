@@ -226,7 +226,7 @@ namespace thekogans {
                             latestVersion = version;
                         }
                     }
-                    std::set<std::string> visitedDependencies;
+                    std::unordered_set<std::string> visitedDependencies;
                     for (std::list<std::string>::const_iterator
                             it = versions.begin (),
                             end = versions.end (); it != end; ++it) {

@@ -19,8 +19,8 @@
 #define __thekogans_make_core_Manifest_h
 
 #include <string>
-#include <set>
-#include <map>
+#include <unordered_set>
+#include <unordered_map>
 #include "pugixml/pugixml.hpp"
 #include "thekogans/util/Types.h"
 #include "thekogans/make/core/Config.h"
@@ -32,8 +32,8 @@ namespace thekogans {
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Manifest {
             private:
                 std::string path;
-                typedef std::set<std::string> Dependents;
-                typedef std::map<std::string, Dependents> Files;
+                using Dependents = std::unordered_set<std::string>;
+                using Files = std::unordered_map<std::string, Dependents>;
                 Files files;
                 bool modified;
 

@@ -43,7 +43,7 @@ namespace thekogans {
             /// Used to retrieve various info from the SOURCES_ROOT/$organization/Source.xml file.
 
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Source {
-                typedef std::unique_ptr<Source> Ptr;
+                using Ptr = std::unique_ptr<Source>;
 
                 THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
@@ -64,7 +64,7 @@ namespace thekogans {
                 std::string url;
                 std::string schema_version;
                 struct Project {
-                    typedef std::unique_ptr<Project> Ptr;
+                    using Ptr = std::unique_ptr<Project>;
 
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
@@ -87,7 +87,7 @@ namespace thekogans {
                 };
                 std::list<Project::Ptr> projects;
                 struct Toolchain {
-                    typedef std::unique_ptr<Toolchain> Ptr;
+                    using Ptr = std::unique_ptr<Toolchain>;
 
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 

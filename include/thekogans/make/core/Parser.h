@@ -23,7 +23,6 @@
 #include <set>
 #include "thekogans/make/core/Config.h"
 #include "thekogans/make/core/Value.h"
-#include "thekogans/make/core/Function.h"
 
 namespace thekogans {
     namespace make {

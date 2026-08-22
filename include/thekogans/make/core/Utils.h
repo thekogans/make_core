@@ -20,8 +20,8 @@
 
 #include <string>
 #include <list>
-#include <set>
-#include <map>
+#include <unordered_set>
+#include <unordered_map>
 #include "thekogans/util/Environment.h"
 #include "thekogans/util/Singleton.h"
 #include "thekogans/util/SpinLock.h"
@@ -135,7 +135,7 @@ namespace thekogans {
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_STATIC_LIBRARY_SUFFIX;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _SOURCES_ROOT;
 
-            typedef std::map<std::string, Value> SymbolTable;
+            using SymbolTable = std::unordered_map<std::string, Value>;
 
             struct _LIB_THEKOGANS_MAKE_CORE_DECL EnvironmentSymbolTable :
                     public util::Singleton<EnvironmentSymbolTable, util::SpinLock>,
@@ -222,7 +222,7 @@ namespace thekogans {
                 const std::string &project,
                 const std::string &version,
                 bool dependencies,
-                std::set<std::string> &visitedDependencies);
+                std::unordered_set<std::string> &visitedDependencies);
             _LIB_THEKOGANS_MAKE_CORE_DECL void _LIB_THEKOGANS_MAKE_CORE_API UninstallLibrary (
                 const std::string &organization,
                 const std::string &project,

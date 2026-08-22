@@ -21,7 +21,7 @@
 #endif // !defined (TOOLCHAIN_OS_Windows)
 #include <cstring>
 #include <cstdio>
-#include <set>
+#include <unordered_set>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -565,7 +565,7 @@ namespace thekogans {
                         const std::string &config_file,
                         const std::string &config_,
                         const std::string &type,
-                        std::set<std::string> &visitedDependencies) {
+                        std::unordered_set<std::string> &visitedDependencies) {
                     const thekogans_make &config = thekogans_make::GetConfig (
                         project_root,
                         config_file,
@@ -598,7 +598,7 @@ namespace thekogans {
                     const std::string &project,
                     const std::string &version,
                     bool dependencies,
-                    std::set<std::string> &visitedDependencies) {
+                    std::unordered_set<std::string> &visitedDependencies) {
                 std::string project_root = _TOOLCHAIN_DIR;
                 std::string config_file =
                     MakePath (
@@ -690,11 +690,11 @@ namespace thekogans {
                     const std::string &version,
                     bool dependencies) {
                 if (!version.empty ()) {
-                    std::set<std::string> visitedDependencies;
+                    std::unordered_set<std::string> visitedDependencies;
                     Uninstall (organization, project, version, dependencies, visitedDependencies);
                 }
                 else {
-                    std::set<std::string> visitedDependencies;
+                    std::unordered_set<std::string> visitedDependencies;
                     std::list<std::string> versions;
                     Toolchain::GetVersions (organization, project, versions);
                     for (std::list<std::string>::const_iterator
@@ -711,11 +711,11 @@ namespace thekogans {
                     const std::string &version,
                     bool dependencies) {
                 if (!version.empty ()) {
-                    std::set<std::string> visitedDependencies;
+                    std::unordered_set<std::string> visitedDependencies;
                     Uninstall (organization, project, version, dependencies, visitedDependencies);
                 }
                 else {
-                    std::set<std::string> visitedDependencies;
+                    std::unordered_set<std::string> visitedDependencies;
                     std::list<std::string> versions;
                     Toolchain::GetVersions (organization, project, versions);
                     for (std::list<std::string>::const_iterator
@@ -1143,7 +1143,7 @@ namespace thekogans {
                         const std::string &gnu_make,
                         const std::list<std::string> &arguments,
                         const std::string &target,
-                        std::set<std::string> &builtProjects) {
+                        std::unordered_set<std::string> &builtProjects) {
                     if (builtProjects.find (project_root) == builtProjects.end ()) {
                         builtProjects.insert (project_root);
                         const thekogans_make &config = thekogans_make::GetConfig (
@@ -1240,7 +1240,7 @@ namespace thekogans {
                 arguments.push_back ("mode=" + mode);
                 arguments.push_back ("hide_commands=" + std::string (hide_commands ? VALUE_YES : VALUE_NO));
                 if (target != TARGET_CLEAN_SELF) {
-                    std::set<std::string> builtProjects;
+                    std::unordered_set<std::string> builtProjects;
                     BuildProjectHelper (
                         project_root,
                         config_,

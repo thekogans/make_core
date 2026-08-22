@@ -18,14 +18,13 @@
 #if !defined (__thekogans_make_core_Function_h)
 #define __thekogans_make_core_Function_h
 
-#include <memory>
 #include <string>
-#include <list>
-#include <map>
+#include "thekogans/util/Types.h"
 #include "thekogans/util/Buffer.h"
 #include "thekogans/util/DynamicCreatable.h"
 #include "thekogans/make/core/Config.h"
 #include "thekogans/make/core/Value.h"
+#include "thekogans/make/core/thekogans_make.h"
 
 namespace thekogans {
     namespace make {
@@ -40,9 +39,9 @@ namespace thekogans {
                     const thekogans_make &config,
                     util::Buffer &buffer);
 
-                typedef std::pair<std::string, util::ui32> Identifier;
-                typedef std::pair<std::string, std::string> Parameter;
-                typedef std::list<Parameter> Parameters;
+                using Identifier = std::pair<std::string, util::ui32>;
+                using Parameter = std::pair<std::string, std::string>;
+                using Parameters = std::list<Parameter>;
 
                 static Value Exec (
                     const thekogans_make &config,

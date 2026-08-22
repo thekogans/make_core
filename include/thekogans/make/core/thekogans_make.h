@@ -42,7 +42,7 @@ namespace thekogans {
             /// Used to retrieve various info from the project's thekogans_make.xml file.
 
             struct _LIB_THEKOGANS_MAKE_CORE_DECL thekogans_make {
-                typedef std::unique_ptr<thekogans_make> Ptr;
+                using Ptr = std::unique_ptr<thekogans_make>;
 
                 THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
@@ -222,7 +222,7 @@ namespace thekogans {
                 std::string goal;
                 std::set<std::string> features;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL Dependency {
-                    typedef std::unique_ptr<Dependency> Ptr;
+                    using Ptr = std::unique_ptr<Dependency>;
 
                     virtual ~Dependency () {}
 
@@ -236,9 +236,9 @@ namespace thekogans {
 
                     virtual bool EquivalentTo (const Dependency & /*dependency*/) const = 0;
 
-                    typedef std::pair<std::string, std::string> VersionAndBranch;
-                    typedef std::set<VersionAndBranch> VersionSet;
-                    typedef std::map<std::string, VersionSet> Versions;
+                    using VersionAndBranch = std::pair<std::string, std::string>;
+                    using VersionSet = std::set<VersionAndBranch>;
+                    using Versions = std::map<std::string, VersionSet>;
 
                     virtual void CollectVersions (Versions & /*versions*/) const = 0;
                     virtual void SetMinVersion (
@@ -286,7 +286,7 @@ namespace thekogans {
                         type (None) {}
                 } precompiled_header;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL FileList {
-                    typedef std::unique_ptr<FileList> Ptr;
+                    using Ptr = std::unique_ptr<FileList>;
 
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
@@ -294,13 +294,13 @@ namespace thekogans {
                     bool install;
                     std::string destinationPrefix;
                     struct _LIB_THEKOGANS_MAKE_CORE_DECL File {
-                        typedef std::unique_ptr<File> Ptr;
+                        using Ptr = std::unique_ptr<File>;
 
                         THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                         std::string name;
                         struct _LIB_THEKOGANS_MAKE_CORE_DECL CustomBuild {
-                            typedef std::unique_ptr<CustomBuild> Ptr;
+                            using Ptr = std::unique_ptr<CustomBuild>;
 
                             THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
@@ -339,7 +339,7 @@ namespace thekogans {
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (FileList)
                 };
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL IncludeDirectories {
-                    typedef std::unique_ptr<IncludeDirectories> Ptr;
+                    using Ptr = std::unique_ptr<IncludeDirectories>;
 
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
@@ -357,7 +357,7 @@ namespace thekogans {
                 std::list<std::string> linker_flags;
                 std::list<std::string> librarian_flags;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL LinkLibraries {
-                    typedef std::unique_ptr<LinkLibraries> Ptr;
+                    using Ptr = std::unique_ptr<LinkLibraries>;
 
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
