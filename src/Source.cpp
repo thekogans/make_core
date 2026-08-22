@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with thekogans_make_core. If not, see <http://www.gnu.org/licenses/>.
 
-#if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
-
 #include "thekogans/util/Environment.h"
 #if !defined (TOOLCHAIN_OS_Windows)
     #include <sys/stat.h>
@@ -670,5 +668,3 @@ namespace thekogans {
         } // namespace core
     } // namespace make
 } // namespace thekogans
-
-#endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)

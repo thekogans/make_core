@@ -18,8 +18,6 @@
 #if !defined (__thekogans_make_core_Source_h)
 #define __thekogans_make_core_Source_h
 
-#if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
-
 #include <memory>
 #include <string>
 #include <list>
@@ -205,7 +203,5 @@ namespace thekogans {
         } // namespace core
     } // namespace make
 } // namespace thekogans
-
-#endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
 #endif // !defined (__thekogans_make_core_Source_h)

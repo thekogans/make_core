@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with thekogans_make_core. If not, see <http://www.gnu.org/licenses/>.
 
-#if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
-
 #include "thekogans/util/Environment.h"
 #if !defined (TOOLCHAIN_OS_Windows)
     #include <sys/stat.h>
@@ -26,7 +24,9 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <curl/curl.h>
+#if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
+    #include <curl/curl.h>
+#endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 #include "thekogans/util/ByteSwap.h"
 #include "thekogans/util/Path.h"
 #include "thekogans/util/File.h"
@@ -141,6 +141,7 @@ namespace thekogans {
                 std::cout.flush ();
             }
 
+        #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
             void Sources::UpdateSources (const std::string &organization) {
                 if (!sources.empty ()) {
                     if (!organization.empty ()) {
@@ -175,6 +176,7 @@ namespace thekogans {
                     std::cout.flush ();
                 }
             }
+        #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             void Sources::GetSources (std::set<std::string> &sources_) const {
                 for (std::list<Source::Ptr>::const_iterator
@@ -184,6 +186,7 @@ namespace thekogans {
                 }
             }
 
+        #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
             void Sources::AddSource (
                     const std::string &organization,
                     const std::string &url) {
@@ -201,6 +204,7 @@ namespace thekogans {
                 UpdateSource (*source);
                 Save ();
             }
+        #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             void Sources::DeleteSource (const std::string &organization) {
                 for (std::list<Source::Ptr>::iterator
@@ -360,6 +364,7 @@ namespace thekogans {
                 return source != 0 ? source->GetToolchainSHA2_256 (name, version) : std::string ();
             }
 
+        #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
             namespace {
                 struct DataSink {
                     virtual ~DataSink () {}
@@ -437,6 +442,7 @@ namespace thekogans {
                     }
                 };
             }
+        #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             bool Sources::IsSourceToolchain (
                     const std::string &organization,
@@ -510,6 +516,7 @@ namespace thekogans {
                 return 0;
             }
 
+        #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
             void Sources::UpdateSource (Source &source) {
                 struct BufferDataSink : public DataSink {
                     std::vector<util::ui8> buffer;
@@ -555,6 +562,7 @@ namespace thekogans {
                     }
                 }
             }
+        #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             void Sources::Save () const {
                 std::fstream sourcesFile (
@@ -584,5 +592,3 @@ namespace thekogans {
         } // namespace core
     } // namespace make
 } // namespace thekogans
-
-#endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)

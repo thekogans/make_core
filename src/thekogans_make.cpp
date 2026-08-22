@@ -1914,14 +1914,14 @@ namespace thekogans {
                         (util::stringToui32 (major_version.c_str ()) << 16) +
                         (util::stringToui32 (minor_version.c_str ()) << 8) +
                         util::stringToui32 (patch_version.c_str ())));
+                preprocessorDefinitions.push_back (
+                    PREFIX + "_CONFIG_" + Expand ("$(config)"));
+                preprocessorDefinitions.push_back (
+                    PREFIX + "_TYPE_" + Expand ("$(type)"));
                 for (std::list<Dependency::Ptr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetPreprocessorDefinitions (preprocessorDefinitions);
-                }
-                if (project_type == PROJECT_TYPE_LIBRARY || project_type == PROJECT_TYPE_PLUGIN) {
-                    preprocessorDefinitions.push_back (PREFIX + "_CONFIG_" + Expand ("$(config)"));
-                    preprocessorDefinitions.push_back (PREFIX + "_TYPE_" + Expand ("$(type)"));
                 }
             }
 

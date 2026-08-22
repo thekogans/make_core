@@ -18,8 +18,6 @@
 #if !defined (__thekogans_make_core_Sources_h)
 #define __thekogans_make_core_Sources_h
 
-#if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
-
 #include <memory>
 #include <string>
 #include <list>
@@ -42,7 +40,7 @@ namespace thekogans {
             /// \struct Sources Sources.h thekogans/make/Sources.h
             ///
             /// \brief
-            /// Used to retrieve various info from the $TOOLCHAIN_ROOT/Sources.xml file.
+            /// Used to retrieve various info from the $TOOLCHAIN_ROOT/Sources.xml files.
 
             struct _LIB_THEKOGANS_MAKE_CORE_DECL Sources {
                 static const char * const ATTR_SCHEMA_VERSION;
@@ -56,12 +54,16 @@ namespace thekogans {
                     ToSystemPath (MakePath (_TOOLCHAIN_ROOT, SOURCES_XML)));
 
                 void ListSources () const;
+            #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void UpdateSources (const std::string &organization);
+            #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
                 void GetSources (std::set<std::string> &sources) const;
+            #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void AddSource (
                     const std::string &organization,
                     const std::string &url);
+            #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void DeleteSource (const std::string &organization);
                 std::string GetSourceURL (const std::string &organization) const;
 
@@ -122,7 +124,9 @@ namespace thekogans {
 
             private:
                 Source *GetSource (const std::string &organization) const;
+            #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void UpdateSource (Source &source);
+            #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void Save () const;
 
                 THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Sources)
@@ -133,7 +137,5 @@ namespace thekogans {
         } // namespace core
     } // namespace make
 } // namespace thekogans
-
-#endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
 #endif // !defined (__thekogans_make_core_Sources_h)
