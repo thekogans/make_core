@@ -16,8 +16,6 @@
       <toolchain organization = "thekogans"
                  name = "curllib"
                  type = "Shared"/>
-      <toolchain organization = "thekogans"
-                 name = "curl"/>
     </if>
   </dependencies>
   <cpp_preprocessor_definitions>
