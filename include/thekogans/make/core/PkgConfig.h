@@ -33,11 +33,12 @@ namespace thekogans {
                 std::string description;
                 std::string url;
                 GList *libs;
+                GList *libs_private;
                 GList *cflags;
-                GList * requires;
+                GList *cflags_private;
+                GList *requires;
                 GList *requires_private;
                 GList *conflicts;
-                GList *libs_private;
                 */
                 using Variables = std::unordered_map<std::string, std::string>;
                 Variables variables;
