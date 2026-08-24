@@ -80,6 +80,11 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch,
                     std::set<std::string> &versions) const;
+                std::string GetSourceProjectDescription (
+                    const std::string &organization,
+                    const std::string &name,
+                    const std::string &branch,
+                    const std::string &version) const;
                 std::string GetSourceProjectSHA2_256 (
                     const std::string &organization,
                     const std::string &name,
@@ -104,6 +109,10 @@ namespace thekogans {
                     const std::string &name,
                     std::set<std::string> &versions) const;
                 std::string GetSourceToolchainFile (
+                    const std::string &organization,
+                    const std::string &name,
+                    const std::string &version) const;
+                std::string GetSourceToolchainDescription (
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version) const;

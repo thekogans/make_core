@@ -31,7 +31,7 @@ namespace thekogans {
     namespace make {
         namespace core {
 
-            /// \struct Generator Generator.h thekogans/make/Generator.h
+            /// \struct Generator Generator.h thekogans/make/core/Generator.h
             ///
             /// \brief
             /// Base class used to represent an abstract build system generator.

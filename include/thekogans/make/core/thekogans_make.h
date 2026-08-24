@@ -226,6 +226,12 @@ namespace thekogans {
 
                     virtual ~Dependency () {}
 
+                    virtual std::string GetOrganization () const {
+                        return std::string ();
+                    }
+                    virtual std::string GetName () const {
+                        return std::string ();
+                    }
                     virtual const thekogans_make &GetDependent () const = 0;
 
                     virtual std::string GetProjectRoot () const = 0;
@@ -245,10 +251,13 @@ namespace thekogans {
                         Versions & /*versions*/,
                         std::set<std::string> & /*visitedDependencies*/) const = 0;
 
-                    virtual void GetPreprocessorDefinitions (
+                    virtual void GetCommonPreprocessorDefinitions (
                         std::list<std::string> & /*preprocessorDefinitions*/) const = 0;
                     virtual void GetFeatures (
                         std::set<std::string> & /*features*/) const = 0;
+                    virtual bool HaveFeature (const std::string & /*feature*/) const {
+                        return false;
+                    }
 
                     virtual void GetIncludeDirectories (
                         std::set<std::string> & /*include_directories*/) const = 0;
@@ -459,6 +468,9 @@ namespace thekogans {
 
                 void CheckDependencies () const;
                 void ListDependencies (util::ui32 indentationLevel) const;
+                const Dependency *GetDependency (
+                    const std::string &organization,
+                    const std::string &name) const;
 
                 std::string GetVersion () const;
                 void GetFeatures (std::set<std::string> &features_) const;
@@ -467,6 +479,23 @@ namespace thekogans {
                 void GetFrameworkDirectories (std::set<std::string> &framework_directories) const;
                 void GetLinkLibraries (std::list<std::string> &link_libraries_) const;
                 void GetSharedLibraries (std::set<std::string> &shared_libraries) const;
+
+                void GetLinkerFlags (std::set<std::string> &linker_flags) const;
+                void GetLibrarianFlags (std::set<std::string> &librarian_flags) const;
+                void GetMasmFlags (std::set<std::string> &masm_flags) const;
+                void GetMasmPreprocessorDefinitions (std::set<std::string> &masm_preprocessor_definitions) const;
+                void GetNasmFlags (std::set<std::string> &nasm_flags) const;
+                void GetNasmPreprocessorDefinitions (std::set<std::string> &nasm_preprocessor_definitions) const;
+                void GetCFlags (std::set<std::string> &c_flags) const;
+                void GetCPreprocessorDefinitions (std::set<std::string> &c_preprocessor_definitions) const;
+                void GetCPPFlags (std::set<std::string> &cpp_flags) const;
+                void GetCPPPreprocessorDefinitions (std::set<std::string> &cpp_preprocessor_definitions) const;
+                void GetObjectiveCFlags (std::set<std::string> &objective_c_flags) const;
+                void GetObjectiveCPreprocessorDefinitions (std::set<std::string> &objective_c_preprocessor_definitions) const;
+                void GetObjectiveCPPFlags (std::set<std::string> &objective_cpp_flags) const;
+                void GetObjectiveCPPPreprocessorDefinitions (std::set<std::string> &objective_cpp_preprocessor_definitions) const;
+                void GetRCFlags (std::set<std::string> &rc_flags) const;
+                void GetRCPreprocessorDefinitions (std::set<std::string> &rc_preprocessor_definitions) const;
 
                 inline bool HasGoal () const {
                     return

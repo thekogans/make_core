@@ -27,8 +27,14 @@ namespace thekogans {
     namespace make {
         namespace core {
 
-            PkgConfig::PkgConfig (const std::string &path) {
-                std::ifstream file (path);
+            PkgConfig::PkgConfig (
+                    const std::string &package_,
+                    const std::string &config_,
+                    const std::string &type_) :
+                    package (package_),
+                    config (config_),
+                    type (type_) {
+                std::ifstream file (package);
                 if (file.is_open ()) {
                     std::string line;
                     while (std::getline (file, line)) {

@@ -49,6 +49,7 @@ namespace thekogans {
                 static const char * const ATTR_ORGANIZATION;
                 static const char * const ATTR_URL;
                 static const char * const ATTR_NAME;
+                static const char * const ATTR_DESCRIPTION;
                 static const char * const ATTR_BRANCH;
                 static const char * const ATTR_VERSION;
                 static const char * const ATTR_FILE;
@@ -67,12 +68,14 @@ namespace thekogans {
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string name;
+                    std::string description;
                     std::string branch;
                     std::string version;
                     std::string SHA2_256;
 
                     Project (
                         const std::string &name_,
+                        const std::string &description_,
                         const std::string &branch_,
                         const std::string &version_,
                         const std::string &SHA2_256_) :
@@ -90,12 +93,14 @@ namespace thekogans {
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string name;
+                    std::string description;
                     std::string version;
                     std::string file;
                     std::string SHA2_256;
 
                     Toolchain (
                         const std::string &name_,
+                        const std::string &description_,
                         const std::string &version_,
                         const std::string &file_,
                         const std::string &SHA2_256_) :
@@ -140,12 +145,17 @@ namespace thekogans {
                 std::string GetProjectLatestVersion (
                     const std::string &name,
                     const std::string &branch) const;
+                std::string GetProjectDescription (
+                    const std::string &name,
+                    const std::string &branch,
+                    const std::string &version) const;
                 std::string GetProjectSHA2_256 (
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const;
                 void AddProject (
                     const std::string &name,
+                    const std::string &description,
                     const std::string &branch,
                     const std::string &version,
                     const std::string &SHA2_256);
@@ -169,11 +179,15 @@ namespace thekogans {
                 std::string GetToolchainFile (
                     const std::string &name,
                     const std::string &version) const;
+                std::string GetToolchainDescription (
+                    const std::string &name,
+                    const std::string &version) const;
                 std::string GetToolchainSHA2_256 (
                     const std::string &name,
                     const std::string &version) const;
                 void AddToolchain (
                     const std::string &name,
+                    const std::string &description,
                     const std::string &version,
                     const std::string &file,
                     const std::string &SHA2_256);

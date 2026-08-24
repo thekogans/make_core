@@ -67,7 +67,7 @@ namespace thekogans {
 
                 Token GetToken ();
 
-                void PushBack (const Token &token) {
+                inline void PushBack (const Token &token) {
                     stack.push_back (token);
                 }
             };

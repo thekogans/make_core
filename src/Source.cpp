@@ -73,6 +73,7 @@ namespace thekogans {
             const char * const Source::ATTR_ORGANIZATION = "organization";
             const char * const Source::ATTR_URL = "url";
             const char * const Source::ATTR_NAME = "name";
+            const char * const Source::ATTR_DESCRIPTION = "description";
             const char * const Source::ATTR_BRANCH = "branch";
             const char * const Source::ATTR_VERSION = "version";
             const char * const Source::ATTR_FILE = "file";
@@ -273,6 +274,14 @@ namespace thekogans {
                 return latestVersion.ToString ();
             }
 
+            std::string Source::GetProjectDescription (
+                    const std::string &name,
+                    const std::string &branch,
+                    const std::string &version) const {
+                const Project *project = GetProject (name, branch, version);
+                return project != 0 ? project->description : std::string ();
+            }
+
             std::string Source::GetProjectSHA2_256 (
                     const std::string &name,
                     const std::string &branch,
@@ -283,6 +292,7 @@ namespace thekogans {
 
             void Source::AddProject (
                     const std::string &name,
+                    const std::string &description,
                     const std::string &branch,
                     const std::string &version,
                     const std::string &SHA2_256) {
@@ -292,13 +302,16 @@ namespace thekogans {
                         end = projects.end (); it != end; ++it) {
                     if ((*it)->name == name && (*it)->branch == branch) {
                         if ((*it)->version == version) {
+                            if (!description.empty ()) {
+                                (*it)->description = description;
+                            }
                             (*it)->SHA2_256 = SHA2_256;
                             std::cout << "Updating " << **it << std::endl;
                             updated = true;
                             break;
                         }
                         else if (util::Version (version) > util::Version ((*it)->version)) {
-                            Project::Ptr project (new Project (name, branch, version, SHA2_256));
+                            Project::Ptr project (new Project (name, description, branch, version, SHA2_256));
                             std::cout << "Adding " << *project << std::endl;
                             projects.insert (it, std::move (project));
                             updated = true;
@@ -307,7 +320,7 @@ namespace thekogans {
                     }
                 }
                 if (!updated) {
-                    Project::Ptr project (new Project (name, branch, version, SHA2_256));
+                    Project::Ptr project (new Project (name, description, branch, version, SHA2_256));
                     std::cout << "Adding " << *project << std::endl;
                     projects.push_back (std::move (project));
                 }
@@ -409,6 +422,13 @@ namespace thekogans {
                 return toolchain != 0 ? toolchain->file : std::string ();
             }
 
+            std::string Source::GetToolchainDescription (
+                    const std::string &name,
+                    const std::string &version) const {
+                const Toolchain *toolchain = GetToolchain (name, version);
+                return toolchain != 0 ? toolchain->description : std::string ();
+            }
+
             std::string Source::GetToolchainSHA2_256 (
                     const std::string &name,
                     const std::string &version) const {
@@ -418,6 +438,7 @@ namespace thekogans {
 
             void Source::AddToolchain (
                     const std::string &name,
+                    const std::string &description,
                     const std::string &version,
                     const std::string &file,
                     const std::string &SHA2_256) {
@@ -434,7 +455,7 @@ namespace thekogans {
                             break;
                         }
                         else if (util::Version (version) > util::Version ((*it)->version)) {
-                            Toolchain::Ptr toolchain_ (new Toolchain (name, version, file, SHA2_256));
+                            Toolchain::Ptr toolchain_ (new Toolchain (name, description, version, file, SHA2_256));
                             std::cout << "Adding " << *toolchain_ << std::endl;
                             toolchain.insert (it, std::move (toolchain_));
                             updated = true;
@@ -443,7 +464,7 @@ namespace thekogans {
                     }
                 }
                 if (!updated) {
-                    Toolchain::Ptr toolchain_ (new Toolchain (name, version, file, SHA2_256));
+                    Toolchain::Ptr toolchain_ (new Toolchain (name, description, version, file, SHA2_256));
                     std::cout << "Adding " << *toolchain_ << std::endl;
                     toolchain.push_back (std::move (toolchain_));
                 }
@@ -571,13 +592,14 @@ namespace thekogans {
 
             void Source::Parseproject (const pugi::xml_node &node) {
                 std::string name = node.attribute (ATTR_NAME).value ();
+                std::string description = node.attribute (ATTR_DESCRIPTION).value ();
                 std::string branch = node.attribute (ATTR_BRANCH).value ();
                 std::string version = node.attribute (ATTR_VERSION).value ();
                 std::string SHA2_256 = node.attribute (ATTR_SHA2_256).value ();
                 if (!name.empty () && !version.empty () && !SHA2_256.empty ()) {
                     projects.push_back (
                         Source::Project::Ptr (
-                            new Source::Project (name, branch, version, SHA2_256)));
+                            new Source::Project (name, description, branch, version, SHA2_256)));
                 }
                 else {
                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
@@ -585,6 +607,7 @@ namespace thekogans {
                         "  <source organization = \"%s\"\n"
                         "          url = \"%s\">\n"
                         "    <project name = \"%s\"\n"
+                        "             description = \"%s\"\n"
                         "             branch = \"%s\"\n"
                         "             version = \"%s\"\n"
                         "             SHA2-256 = \"%s\"/>\n"
@@ -592,6 +615,7 @@ namespace thekogans {
                         organization.c_str (),
                         url.c_str (),
                         name.c_str (),
+                        description.c_str (),
                         branch.c_str (),
                         version.c_str (),
                         SHA2_256.c_str ());
@@ -600,13 +624,14 @@ namespace thekogans {
 
             void Source::Parsetoolchain (const pugi::xml_node &node) {
                 std::string name = node.attribute (ATTR_NAME).value ();
+                std::string description = node.attribute (ATTR_DESCRIPTION).value ();
                 std::string version = node.attribute (ATTR_VERSION).value ();
                 std::string file = node.attribute (ATTR_FILE).value ();
                 std::string SHA2_256 = node.attribute (ATTR_SHA2_256).value ();
                 if (!name.empty () && !version.empty () && !SHA2_256.empty ()) {
                     toolchain.push_back (
                         Source::Toolchain::Ptr (
-                            new Source::Toolchain (name, version, file, SHA2_256)));
+                            new Source::Toolchain (name, description, version, file, SHA2_256)));
                 }
                 else {
                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
@@ -614,6 +639,7 @@ namespace thekogans {
                         "  <source organization = \"%s\"\n"
                         "          url = \"%s\">\n"
                         "    <toolchain name = \"%s\"\n"
+                        "               description = \"%s\"\n"
                         "               version = \"%s\"\n"
                         "               file = \"%s\"\n"
                         "               SHA2-256 = \"%s\"/>\n"
@@ -621,6 +647,7 @@ namespace thekogans {
                         organization.c_str (),
                         url.c_str (),
                         name.c_str (),
+                        description.c_str (),
                         version.c_str (),
                         file.c_str (),
                         SHA2_256.c_str ());
@@ -643,6 +670,9 @@ namespace thekogans {
                         end = projects.end (); it != end; ++it) {
                     util::Attributes attributes;
                     attributes.push_back (util::Attribute (ATTR_NAME, (*it)->name));
+                    if (!(*it)->description.empty ()) {
+                        attributes.push_back (util::Attribute (ATTR_DESCRIPTION, (*it)->description));
+                    }
                     if (!(*it)->branch.empty ()) {
                         attributes.push_back (util::Attribute (ATTR_BRANCH, (*it)->branch));
                     }
@@ -655,6 +685,9 @@ namespace thekogans {
                         end = toolchain.end (); it != end; ++it) {
                     util::Attributes attributes;
                     attributes.push_back (util::Attribute (ATTR_NAME, (*it)->name));
+                    if (!(*it)->description.empty ()) {
+                        attributes.push_back (util::Attribute (ATTR_DESCRIPTION, (*it)->description));
+                    }
                     attributes.push_back (util::Attribute (ATTR_VERSION, (*it)->version));
                     if (!(*it)->file.empty ()) {
                         attributes.push_back (util::Attribute (ATTR_FILE, (*it)->file));

@@ -40,12 +40,18 @@ namespace thekogans {
                 GList *requires_private;
                 GList *conflicts;
                 */
+                std::string package;
+                std::string config;
+                std::string type;
                 using Variables = std::unordered_map<std::string, std::string>;
                 Variables variables;
                 using Properties = std::unordered_map<std::string, std::string>;
                 Properties properties;
 
-                PkgConfig (const std::string &path);
+                PkgConfig (
+                    const std::string &package_,
+                    const std::string &config_,
+                    const std::string &type_);
 
             private:
                 std::string ResolveVariables (std::string value);

@@ -34,6 +34,7 @@
 #include "thekogans/make/core/Toolchain.h"
 #include "thekogans/make/core/Utils.h"
 #include "thekogans/make/core/Version.h"
+#include "thekogans/make/core/PkgConfig.h"
 #include "thekogans/make/core/thekogans_make.h"
 
 namespace thekogans {
@@ -296,6 +297,12 @@ namespace thekogans {
                         }
                     }
 
+                    virtual std::string GetOrganization () const {
+                        return organization;
+                    }
+                    virtual std::string GetName () const {
+                        return name;
+                    }
                     virtual const thekogans_make &GetDependent () const {
                         return dependent;
                     }
@@ -381,9 +388,7 @@ namespace thekogans {
                             }
                             const VersionSet &versionSet = versions[projectName];
                             if (versionSet.size () > 1) {
-                                if (visitedDependencies.find (projectName) ==
-                                        visitedDependencies.end ()) {
-                                    visitedDependencies.insert (projectName);
+                                if (visitedDependencies.insert (projectName).second) {
                                     VersionSet::const_iterator it = versionSet.begin ();
                                     VersionSet::const_iterator end = versionSet.end ();
                                     std::string dependencyVersions = !it->second.empty () ?
@@ -423,7 +428,7 @@ namespace thekogans {
                         }
                     }
 
-                    virtual void GetPreprocessorDefinitions (
+                    virtual void GetCommonPreprocessorDefinitions (
                             std::list<std::string> &preprocessorDefinitions) const {
                         const thekogans_make &config =
                             thekogans_make::GetConfig (
@@ -453,20 +458,18 @@ namespace thekogans {
                             std::string type = PREFIX + "_TYPE_" + GetType ();
                             if (std::find (
                                     preprocessorDefinitions.begin (),
-                                    preprocessorDefinitions.end (), type) ==
-                                    preprocessorDefinitions.end ()) {
+                                    preprocessorDefinitions.end (), type) == preprocessorDefinitions.end ()) {
                                 preprocessorDefinitions.push_back (type);
                             }
                             for (std::list<Dependency::Ptr>::const_iterator
                                     it = config.dependencies.begin (),
                                     end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetPreprocessorDefinitions (preprocessorDefinitions);
+                                (*it)->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
                             }
                         }
                     }
 
-                    virtual void GetFeatures (
-                            std::set<std::string> &features) const {
+                    virtual void GetFeatures (std::set<std::string> &features) const {
                         const thekogans_make &config =
                             thekogans_make::GetConfig (
                                 GetProjectRoot (),
@@ -486,6 +489,17 @@ namespace thekogans {
                                 (*it)->GetFeatures (features);
                             }
                         }
+                    }
+
+                    virtual bool HaveFeature (const std::string &feature) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        return config.features.find (feature) != config.features.end ();
                     }
 
                     virtual void GetIncludeDirectories (
@@ -568,14 +582,8 @@ namespace thekogans {
 
                     virtual std::string ToString (util::ui32 indentationLevel = 0) const {
                         util::Attributes attributes;
-                        attributes.push_back (
-                            util::Attribute (
-                                thekogans_make::ATTR_ORGANIZATION,
-                                organization));
-                        attributes.push_back (
-                            util::Attribute (
-                                thekogans_make::ATTR_NAME,
-                                name));
+                        attributes.push_back (util::Attribute (thekogans_make::ATTR_ORGANIZATION, organization));
+                        attributes.push_back (util::Attribute (thekogans_make::ATTR_NAME, name));
                         attributes.push_back (
                             util::Attribute (thekogans_make::ATTR_VERSION, version.empty () ?
                                 thekogans_make::GetConfig (
@@ -586,23 +594,12 @@ namespace thekogans {
                                     GetType ()).GetVersion () :
                                 version));
                         if (!config.empty ()) {
-                            attributes.push_back (
-                                util::Attribute (
-                                    thekogans_make::ATTR_CONFIG,
-                                    config));
+                            attributes.push_back (util::Attribute (thekogans_make::ATTR_CONFIG, config));
                         }
                         if (!type.empty ()) {
-                            attributes.push_back (
-                                util::Attribute (
-                                    thekogans_make::ATTR_TYPE,
-                                    type));
+                            attributes.push_back (util::Attribute (thekogans_make::ATTR_TYPE, type));
                         }
-                        return util::OpenTag (
-                            indentationLevel,
-                            thekogans_make::TAG_TOOLCHAIN,
-                            attributes,
-                            true,
-                            true);
+                        return util::OpenTag (indentationLevel, thekogans_make::TAG_TOOLCHAIN, attributes, true, true);
                     }
 
                     virtual void ListDependencies (util::ui32 indentationLevel = 0) const {
@@ -681,6 +678,12 @@ namespace thekogans {
                         }
                     }
 
+                    virtual std::string GetOrganization () const {
+                        return organization;
+                    }
+                    virtual std::string GetName () const {
+                        return name;
+                    }
                     virtual const thekogans_make &GetDependent () const {
                         return dependent;
                     }
@@ -760,8 +763,7 @@ namespace thekogans {
                                     std::string ());
                             const VersionSet &versionSet = versions[projectName];
                             if (versionSet.size () > 1) {
-                                if (visitedDependencies.find (projectName) == visitedDependencies.end ()) {
-                                    visitedDependencies.insert (projectName);
+                                if (visitedDependencies.insert (projectName).second) {
                                     VersionSet::const_iterator it = versionSet.begin ();
                                     VersionSet::const_iterator end = versionSet.end ();
                                     std::string dependencyVersions = it->first;
@@ -783,7 +785,7 @@ namespace thekogans {
                         }
                     }
 
-                    virtual void GetPreprocessorDefinitions (
+                    virtual void GetCommonPreprocessorDefinitions (
                             std::list<std::string> &preprocessorDefinitions) const {
                         const thekogans_make &config =
                             thekogans_make::GetConfig (
@@ -813,13 +815,12 @@ namespace thekogans {
                             for (std::list<Dependency::Ptr>::const_iterator
                                     it = config.dependencies.begin (),
                                     end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetPreprocessorDefinitions (preprocessorDefinitions);
+                                (*it)->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
                             }
                         }
                     }
 
-                    virtual void GetFeatures (
-                            std::set<std::string> &features) const {
+                    virtual void GetFeatures (std::set<std::string> &features) const {
                         const thekogans_make &config =
                             thekogans_make::GetConfig (
                                 GetProjectRoot (),
@@ -839,6 +840,17 @@ namespace thekogans {
                                 (*it)->GetFeatures (features);
                             }
                         }
+                    }
+
+                    virtual bool HaveFeature (const std::string &feature) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        return config.features.find (feature) != config.features.end ();
                     }
 
                     virtual void GetIncludeDirectories (
@@ -970,36 +982,16 @@ namespace thekogans {
 
                     virtual std::string ToString (util::ui32 indentationLevel = 0) const {
                         util::Attributes attributes;
-                        attributes.push_back (
-                            util::Attribute (
-                                thekogans_make::ATTR_ORGANIZATION,
-                                organization));
-                        attributes.push_back (
-                            util::Attribute (
-                                thekogans_make::ATTR_NAME,
-                                name));
-                        attributes.push_back (
-                            util::Attribute (
-                                thekogans_make::ATTR_VERSION,
-                                version));
+                        attributes.push_back (util::Attribute (thekogans_make::ATTR_ORGANIZATION, organization));
+                        attributes.push_back (util::Attribute (thekogans_make::ATTR_NAME, name));
+                        attributes.push_back (util::Attribute (thekogans_make::ATTR_VERSION, version));
                         if (!config.empty ()) {
-                            attributes.push_back (
-                                util::Attribute (
-                                    thekogans_make::ATTR_CONFIG,
-                                    config));
+                            attributes.push_back (util::Attribute (thekogans_make::ATTR_CONFIG, config));
                         }
                         if (!type.empty ()) {
-                            attributes.push_back (
-                                util::Attribute (
-                                    thekogans_make::ATTR_TYPE,
-                                    type));
+                            attributes.push_back (util::Attribute (thekogans_make::ATTR_TYPE, type));
                         }
-                        return util::OpenTag (
-                            indentationLevel,
-                            thekogans_make::TAG_TOOLCHAIN,
-                            attributes,
-                            true,
-                            true);
+                        return util::OpenTag (indentationLevel, thekogans_make::TAG_TOOLCHAIN, attributes, true, true);
                     }
 
                     virtual void ListDependencies (util::ui32 indentationLevel = 0) const {
@@ -1019,6 +1011,95 @@ namespace thekogans {
                                 end = config.dependencies.end (); it != end; ++it) {
                             (*it)->ListDependencies (indentationLevel + 1);
                         }
+                    }
+                };
+
+                struct PkgConfigDependency : public thekogans_make::Dependency {
+                    std::string package;
+                    const thekogans_make &dependent;
+                    PkgConfig pkgConfig;
+
+                    PkgConfigDependency (
+                        const std::string &package_,
+                        const thekogans_make &dependent_) :
+                        package (package_),
+                        dependent (dependent_),
+                        pkgConfig (package, dependent.config, dependent.type) {}
+
+                    virtual const thekogans_make &GetDependent () const {
+                        return dependent;
+                    }
+
+                    virtual std::string GetProjectRoot () const {
+                        return std::string ();
+                    }
+                    virtual std::string GetConfigFile () const {
+                        return std::string ();
+                    }
+
+                    virtual std::string GetGenerator () const {
+                        return std::string ();
+                    }
+
+                    virtual std::string GetConfig () const {
+                        return std::string ();
+                    }
+
+                    virtual std::string GetType () const {
+                        return std::string ();
+                    }
+
+                    virtual bool EquivalentTo (const Dependency &dependency) const {
+                        const PkgConfigDependency *pkgConfigDependency =
+                            dynamic_cast<const PkgConfigDependency *> (&dependency);
+                        return pkgConfigDependency != nullptr &&
+                            pkgConfigDependency->package == package;
+                    }
+
+                    virtual void CollectVersions (
+                            Versions & /*versions*/) const {
+                    }
+                    virtual void SetMinVersion (
+                            Versions & /*versions*/,
+                            std::set<std::string> & /*visitedDependencies*/) const {
+                    }
+
+                    virtual void GetCommonPreprocessorDefinitions (
+                            std::list<std::string> & /*preprocessorDefinitions*/) const {
+                    }
+
+                    virtual void GetFeatures (
+                            std::set<std::string> & /*features*/) const {
+                    }
+
+                    virtual void GetIncludeDirectories (
+                            std::set<std::string> & /*include_directories*/) const {
+                    }
+
+                    virtual void GetLinkLibraries (
+                            std::list<std::string> &link_libraries) const {
+                    }
+
+                    virtual void GetSharedLibraries (
+                            std::set<std::string> & /*shared_libraries*/) const {
+                    }
+
+                    virtual bool IsInstalled () const {
+                        return true;
+                    }
+
+                    virtual std::string ToString (util::ui32 indentationLevel = 0) const {
+                        return
+                            util::OpenTag (indentationLevel, thekogans_make::TAG_PKG_CONFIG) +
+                            package +
+                            util::CloseTag (0, thekogans_make::TAG_PKG_CONFIG);
+                    }
+
+                    virtual void ListDependencies (util::ui32 indentationLevel = 0) const {
+                        std::cout <<
+                            std::string (indentationLevel * 2, ' ') <<
+                            "package: " << package << std::endl;
+                        std::cout.flush ();
                     }
                 };
 
@@ -1070,11 +1151,11 @@ namespace thekogans {
                             std::set<std::string> & /*visitedDependencies*/) const {
                     }
 
-                    virtual void GetPreprocessorDefinitions (
+                    virtual void GetCommonPreprocessorDefinitions (
                             std::list<std::string> & /*preprocessorDefinitions*/) const {
                     }
 
-                    virtual void  GetFeatures (
+                    virtual void GetFeatures (
                             std::set<std::string> & /*features*/) const {
                     }
 
@@ -1167,11 +1248,11 @@ namespace thekogans {
                             std::set<std::string> & /*visitedDependencies*/) const {
                     }
 
-                    virtual void GetPreprocessorDefinitions (
+                    virtual void GetCommonPreprocessorDefinitions (
                             std::list<std::string> & /*preprocessorDefinitions*/) const {
                     }
 
-                    virtual void  GetFeatures (
+                    virtual void GetFeatures (
                             std::set<std::string> & /*features*/) const {
                     }
 
@@ -1255,11 +1336,11 @@ namespace thekogans {
                             std::set<std::string> & /*visitedDependencies*/) const {
                     }
 
-                    virtual void GetPreprocessorDefinitions (
+                    virtual void GetCommonPreprocessorDefinitions (
                             std::list<std::string> & /*preprocessorDefinitions*/) const {
                     }
 
-                    virtual void  GetFeatures (
+                    virtual void GetFeatures (
                             std::set<std::string> & /*features*/) const {
                     }
 
@@ -1505,6 +1586,19 @@ namespace thekogans {
                 }
             }
 
+            const thekogans_make::Dependency *thekogans_make::GetDependency (
+                    const std::string &organization,
+                    const std::string &name) const {
+                for (std::list<Dependency::Ptr>::const_iterator
+                        it = dependencies.begin (),
+                        end = dependencies.end (); it != end; ++it) {
+                    if ((*it)->GetOrganization () == organization && (*it)->GetName () == name) {
+                        return (*it).get ();
+                    }
+                }
+                return nullptr;
+            }
+
             std::string thekogans_make::GetVersion () const {
                 return major_version + VERSION_SEPARATOR + minor_version + VERSION_SEPARATOR + patch_version;
             }
@@ -1569,8 +1663,7 @@ namespace thekogans {
                 for (std::list<std::string>::const_reverse_iterator
                         it = link_libraries.rbegin (),
                         end = link_libraries.rend (); it != end; ++it) {
-                    if (visited_link_libraries.find (*it) == visited_link_libraries.end ()) {
-                        visited_link_libraries.insert (*it);
+                    if (visited_link_libraries.insert (*it).second) {
                         link_libraries_.push_front (*it);
                     }
                 }
@@ -1582,6 +1675,134 @@ namespace thekogans {
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetSharedLibraries (shared_libraries);
+                }
+            }
+
+            void thekogans_make::GetLinkerFlags (std::set<std::string> &linker_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = linker_flags.begin (),
+                         end = linker_flags.end (); it != end; ++it) {
+                    linker_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetLibrarianFlags (std::set<std::string> &librarian_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = librarian_flags.begin (),
+                         end = librarian_flags.end (); it != end; ++it) {
+                    librarian_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetMasmFlags (std::set<std::string> &masm_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = masm_flags.begin (),
+                         end = masm_flags.end (); it != end; ++it) {
+                    masm_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetMasmPreprocessorDefinitions (std::set<std::string> &masm_preprocessor_definitions_) const {
+                for (std::list<std::string>::const_iterator
+                         it = masm_preprocessor_definitions.begin (),
+                         end = masm_preprocessor_definitions.end (); it != end; ++it) {
+                    masm_preprocessor_definitions_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetNasmFlags (std::set<std::string> &nasm_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = nasm_flags.begin (),
+                         end = nasm_flags.end (); it != end; ++it) {
+                    nasm_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetNasmPreprocessorDefinitions (std::set<std::string> &nasm_preprocessor_definitions_) const {
+                for (std::list<std::string>::const_iterator
+                         it = nasm_preprocessor_definitions.begin (),
+                         end = nasm_preprocessor_definitions.end (); it != end; ++it) {
+                    nasm_preprocessor_definitions_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetCFlags (std::set<std::string> &c_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = c_flags.begin (),
+                         end = c_flags.end (); it != end; ++it) {
+                    c_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetCPreprocessorDefinitions (std::set<std::string> &c_preprocessor_definitions_) const {
+                for (std::list<std::string>::const_iterator
+                         it = c_preprocessor_definitions.begin (),
+                         end = c_preprocessor_definitions.end (); it != end; ++it) {
+                    c_preprocessor_definitions_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetCPPFlags (std::set<std::string> &cpp_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = cpp_flags.begin (),
+                         end = cpp_flags.end (); it != end; ++it) {
+                    cpp_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetCPPPreprocessorDefinitions (std::set<std::string> &cpp_preprocessor_definitions_) const {
+                for (std::list<std::string>::const_iterator
+                         it = cpp_preprocessor_definitions.begin (),
+                         end = cpp_preprocessor_definitions.end (); it != end; ++it) {
+                    cpp_preprocessor_definitions_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetObjectiveCFlags (std::set<std::string> &objective_c_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = objective_c_flags.begin (),
+                         end = objective_c_flags.end (); it != end; ++it) {
+                    objective_c_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetObjectiveCPreprocessorDefinitions (std::set<std::string> &objective_c_preprocessor_definitions_) const {
+                for (std::list<std::string>::const_iterator
+                         it = objective_c_preprocessor_definitions.begin (),
+                         end = objective_c_preprocessor_definitions.end (); it != end; ++it) {
+                    objective_c_preprocessor_definitions_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetObjectiveCPPFlags (std::set<std::string> &objective_cpp_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = objective_cpp_flags.begin (),
+                         end = objective_cpp_flags.end (); it != end; ++it) {
+                    objective_cpp_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetObjectiveCPPPreprocessorDefinitions (std::set<std::string> &objective_cpp_preprocessor_definitions_) const {
+                for (std::list<std::string>::const_iterator
+                         it = objective_cpp_preprocessor_definitions.begin (),
+                         end = objective_cpp_preprocessor_definitions.end (); it != end; ++it) {
+                    objective_cpp_preprocessor_definitions_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetRCFlags (std::set<std::string> &rc_flags_) const {
+                for (std::list<std::string>::const_iterator
+                         it = rc_flags.begin (),
+                         end = rc_flags.end (); it != end; ++it) {
+                    rc_flags_.insert (*it);
+                }
+            }
+
+            void thekogans_make::GetRCPreprocessorDefinitions (std::set<std::string> &rc_preprocessor_definitions_) const {
+                for (std::list<std::string>::const_iterator
+                         it = rc_preprocessor_definitions.begin (),
+                         end = rc_preprocessor_definitions.end (); it != end; ++it) {
+                    rc_preprocessor_definitions_.insert (*it);
                 }
             }
 
@@ -1921,7 +2142,7 @@ namespace thekogans {
                 for (std::list<Dependency::Ptr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
-                    (*it)->GetPreprocessorDefinitions (preprocessorDefinitions);
+                    (*it)->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
                 }
             }
 
@@ -2528,6 +2749,14 @@ namespace thekogans {
                                         type,
                                         features,
                                         *this)));
+                        }
+                        else if (childName == TAG_PKG_CONFIG) {
+                            std::string library = util::TrimSpaces (child.text ().get ());
+                            if (!library.empty ()) {
+                                dependencies.push_back (
+                                    Dependency::Ptr (
+                                        new PkgConfigDependency (Expand (library.c_str ()), *this)));
+                            }
                         }
                         else if (childName == TAG_LIBRARY) {
                             std::string library = util::TrimSpaces (child.text ().get ());

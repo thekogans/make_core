@@ -146,7 +146,7 @@ namespace thekogans {
                 if (!sources.empty ()) {
                     if (!organization.empty ()) {
                         Source *source = GetSource (organization);
-                        if (source != 0) {
+                        if (source != nullptr) {
                             std::cout << "Updating " << *source << std::endl;
                             std::cout.flush ();
                             UpdateSource (*source);
@@ -191,7 +191,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &url) {
                 Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     std::cout << "Updating " << *source << " -> " << url << std::endl;
                     source->url = url;
                 }
@@ -224,7 +224,7 @@ namespace thekogans {
             std::string Sources::GetSourceURL (
                     const std::string &organization) const {
                 const Source *source = GetSource (organization);
-                return source != 0 ? source->url : std::string ();
+                return source != nullptr ? source->url : std::string ();
             }
 
             std::string Sources::GetSourceProjectLatestVersion (
@@ -232,7 +232,7 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch) const {
                 const Source *source = GetSource (organization);
-                return source != 0 ?
+                return source != nullptr ?
                     source->GetProjectLatestVersion (name, branch) :
                     std::string ();
             }
@@ -242,7 +242,7 @@ namespace thekogans {
                     const std::string &name,
                     std::set<std::string> &branches) const {
                 const Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     source->GetProjectBranches (name, branches);
                 }
             }
@@ -253,9 +253,20 @@ namespace thekogans {
                     const std::string &branch,
                     std::set<std::string> &versions) const {
                 const Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     source->GetProjectVersions (name, branch, versions);
                 }
+            }
+
+            std::string Sources::GetSourceProjectDescription (
+                    const std::string &organization,
+                    const std::string &name,
+                    const std::string &branch,
+                    const std::string &version) const {
+                const Source *source = GetSource (organization);
+                return source != nullptr ?
+                    source->GetProjectDescription (name, branch, version) :
+                    std::string ();
             }
 
             std::string Sources::GetSourceProjectSHA2_256 (
@@ -264,7 +275,7 @@ namespace thekogans {
                     const std::string &branch,
                     const std::string &version) const {
                 const Source *source = GetSource (organization);
-                return source != 0 ?
+                return source != nullptr ?
                     source->GetProjectSHA2_256 (name, branch, version) :
                     std::string ();
             }
@@ -275,9 +286,9 @@ namespace thekogans {
                     const std::string &branch,
                     const std::string &version) const {
                 const Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     const Source::Project *project = source->GetProject (name, branch, version);
-                    if (project != 0) {
+                    if (project != nullptr) {
                         return true;
                     }
                 }
@@ -290,9 +301,9 @@ namespace thekogans {
                     const std::string &branch,
                     const std::string &version) const {
                 const Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     const Source::Project *project = source->GetProject (name, branch, version);
-                    if (project != 0) {
+                    if (project != nullptr) {
                         util::ChildProcess shellProcess (ToSystemPath (_TOOLCHAIN_SHELL));
                         std::list<std::string> components;
                         components.push_back (_TOOLCHAIN_ROOT);
@@ -333,7 +344,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name) const {
                 const Source *source = GetSource (organization);
-                return source != 0 ?
+                return source != nullptr ?
                     source->GetToolchainLatestVersion (name) :
                     std::string ();
             }
@@ -343,7 +354,7 @@ namespace thekogans {
                     const std::string &name,
                     std::set<std::string> &versions) const {
                 const Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     source->GetToolchainVersions (name, versions);
                 }
             }
@@ -353,7 +364,15 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &version) const {
                 const Source *source = GetSource (organization);
-                return source != 0 ? source->GetToolchainFile (name, version) : std::string ();
+                return source != nullptr ? source->GetToolchainFile (name, version) : std::string ();
+            }
+
+            std::string Sources::GetSourceToolchainDescription (
+                    const std::string &organization,
+                    const std::string &name,
+                    const std::string &version) const {
+                const Source *source = GetSource (organization);
+                return source != nullptr ? source->GetToolchainDescription (name, version) : std::string ();
             }
 
             std::string Sources::GetSourceToolchainSHA2_256 (
@@ -361,7 +380,7 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &version) const {
                 const Source *source = GetSource (organization);
-                return source != 0 ? source->GetToolchainSHA2_256 (name, version) : std::string ();
+                return source != nullptr ? source->GetToolchainSHA2_256 (name, version) : std::string ();
             }
 
         #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
@@ -384,7 +403,7 @@ namespace thekogans {
                             DataSink &dataSink_) :
                             curl (curl_easy_init ()),
                             dataSink (dataSink_) {
-                        if (curl != 0) {
+                        if (curl != nullptr) {
                             curl_easy_setopt (curl, CURLOPT_URL, url.c_str ());
                             curl_easy_setopt (curl, CURLOPT_FOLLOWLOCATION, 1L);
                             curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, Callback);
@@ -449,9 +468,9 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &version) const {
                 const Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     const Source::Toolchain *toolchain = source->GetToolchain (name, version);
-                    if (toolchain != 0) {
+                    if (toolchain != nullptr) {
                         return true;
                     }
                 }
@@ -465,9 +484,9 @@ namespace thekogans {
                     const std::string &config,
                     const std::string &type) const {
                 const Source *source = GetSource (organization);
-                if (source != 0) {
+                if (source != nullptr) {
                     const Source::Toolchain *toolchain = source->GetToolchain (name, version);
-                    if (toolchain != 0) {
+                    if (toolchain != nullptr) {
                         util::ChildProcess shellProcess (ToSystemPath (_TOOLCHAIN_SHELL));
                         std::list<std::string> components;
                         components.push_back (_TOOLCHAIN_ROOT);
