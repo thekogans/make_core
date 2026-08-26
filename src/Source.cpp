@@ -24,7 +24,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <curl/curl.h>
 #include "thekogans/util/ByteSwap.h"
 #include "thekogans/util/Path.h"
 #include "thekogans/util/File.h"

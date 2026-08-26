@@ -54,6 +54,7 @@ namespace thekogans {
             const char * const thekogans_make::ATTR_SCHEMA_VERSION = "schema_version";
             const char * const thekogans_make::ATTR_CONDITION = "condition";
             const char * const thekogans_make::ATTR_PREFIX = "prefix";
+            const char * const thekogans_make::ATTR_PACKAGE = "package";
             const char * const thekogans_make::ATTR_INSTALL = "install";
             const char * const thekogans_make::ATTR_DESTINATION_PREFIX = "destination_prefix";
             const char * const thekogans_make::ATTR_NAME = "name";
@@ -502,8 +503,7 @@ namespace thekogans {
                         return config.features.find (feature) != config.features.end ();
                     }
 
-                    virtual void GetIncludeDirectories (
-                            std::set<std::string> &include_directories) const {
+                    virtual void GetIncludeDirectories (std::set<std::string> &include_directories) const {
                         const thekogans_make &config =
                             thekogans_make::GetConfig (
                                 GetProjectRoot (),
@@ -533,8 +533,7 @@ namespace thekogans {
                         }
                     }
 
-                    virtual void GetLinkLibraries (
-                            std::list<std::string> &link_libraries) const {
+                    virtual void GetLinkLibraries (std::list<std::string> &link_libraries) const {
                         const thekogans_make &config =
                             thekogans_make::GetConfig (
                                 GetProjectRoot (),
@@ -1015,16 +1014,22 @@ namespace thekogans {
                 };
 
                 struct PkgConfigDependency : public thekogans_make::Dependency {
+                    std::string prefix;
                     std::string package;
+                    std::string version;
                     const thekogans_make &dependent;
                     PkgConfig pkgConfig;
 
                     PkgConfigDependency (
+                        const std::string &prefix_,
                         const std::string &package_,
+                        const std::string &version_,
                         const thekogans_make &dependent_) :
+                        prefix (prefix_),
                         package (package_),
+                        version (version_),
                         dependent (dependent_),
-                        pkgConfig (package, dependent.config, dependent.type) {}
+                        pkgConfig (prefix, package, version, dependent.config, dependent.type) {}
 
                     virtual const thekogans_make &GetDependent () const {
                         return dependent;
@@ -1072,12 +1077,19 @@ namespace thekogans {
                             std::set<std::string> & /*features*/) const {
                     }
 
+                    virtual void GetLinkerFlags (std::set<std::string> &linker_flags) const {
+                        pkgConfig.GetLibs (linker_flags);
+                    }
+
+                    virtual void GetCFlags (std::set<std::string> &c_flags) const {
+                        pkgConfig.GetCFlags (c_flags);
+                    }
+
                     virtual void GetIncludeDirectories (
                             std::set<std::string> & /*include_directories*/) const {
                     }
 
-                    virtual void GetLinkLibraries (
-                            std::list<std::string> &link_libraries) const {
+                    virtual void GetLinkLibraries (std::list<std::string> &link_libraries) const {
                     }
 
                     virtual void GetSharedLibraries (
@@ -1104,12 +1116,15 @@ namespace thekogans {
                 };
 
                 struct LibraryDependency : public thekogans_make::Dependency {
+                    std::string prefix;
                     std::string library;
                     const thekogans_make &dependent;
 
                     LibraryDependency (
+                        const std::string &prefix_,
                         const std::string &library_,
                         const thekogans_make &dependent_) :
+                        prefix (prefix_),
                         library (library_),
                         dependent (dependent_) {}
 
@@ -1139,7 +1154,8 @@ namespace thekogans {
                     virtual bool EquivalentTo (const Dependency &dependency) const {
                         const LibraryDependency *libraryDependency =
                             dynamic_cast<const LibraryDependency *> (&dependency);
-                        return libraryDependency != 0 &&
+                        return libraryDependency != nullptr &&
+                            libraryDependency->prefix == prefix &&
                             libraryDependency->library == library;
                     }
 
@@ -1165,12 +1181,14 @@ namespace thekogans {
 
                     virtual void GetLinkLibraries (
                             std::list<std::string> &link_libraries) const {
-                    #if defined (TOOLCHAIN_OS_Windows)
-                        std::string prefix;
-                    #else // defined (TOOLCHAIN_OS_Windows)
-                        std::string prefix = "-l";
-                    #endif // defined (TOOLCHAIN_OS_Windows)
-                        link_libraries.push_back (prefix + library);
+                        std::string prefix_;
+                        if (!prefix.empty ()) {
+                            prefix_ = "-L" + prefix + " ";
+                        }
+                    #if !defined (TOOLCHAIN_OS_Windows)
+                        prefix_ += "-l";
+                    #endif // !defined (TOOLCHAIN_OS_Windows)
+                        link_libraries.push_back (prefix_ + library);
                     }
 
                     virtual void GetSharedLibraries (
@@ -1197,15 +1215,15 @@ namespace thekogans {
                 };
 
                 struct FrameworkDependency : public thekogans_make::Dependency {
-                    std::string path;
+                    std::string prefix;
                     std::string framework;
                     const thekogans_make &dependent;
 
                     FrameworkDependency (
-                        const std::string &path_,
+                        const std::string &prefix_,
                         const std::string &framework_,
                         const thekogans_make &dependent_) :
-                        path (path_),
+                        prefix (prefix_),
                         framework (framework_),
                         dependent (dependent_) {}
 
@@ -1235,8 +1253,8 @@ namespace thekogans {
                     virtual bool EquivalentTo (const Dependency &dependency) const {
                         const FrameworkDependency *frameworkDependency =
                             dynamic_cast<const FrameworkDependency *> (&dependency);
-                        return frameworkDependency != 0 &&
-                            frameworkDependency->path == path &&
+                        return frameworkDependency != nullptr &&
+                            frameworkDependency->prefix == prefix &&
                             frameworkDependency->framework == framework;
                     }
 
@@ -1262,7 +1280,12 @@ namespace thekogans {
 
                     virtual void GetLinkLibraries (
                             std::list<std::string> &link_libraries) const {
-                        link_libraries.push_back ("-framework " + framework);
+                        std::string prefix_;
+                        if (!prefix.empty ()) {
+                            prefix_ = "-F" + prefix + " ";
+                        }
+                        prefix_ += "-framework ";
+                        link_libraries.push_back (prefix_ + framework);
                     }
 
                     virtual void GetSharedLibraries (
@@ -1324,7 +1347,7 @@ namespace thekogans {
                     virtual bool EquivalentTo (const Dependency &dependency) const {
                         const SystemDependency *systemDependency =
                             dynamic_cast<const SystemDependency *> (&dependency);
-                        return systemDependency != 0 &&
+                        return systemDependency != nullptr &&
                             systemDependency->library == library;
                     }
 
@@ -1646,7 +1669,7 @@ namespace thekogans {
                         end = dependencies.end (); it != end; ++it) {
                     FrameworkDependency *dependency = dynamic_cast<FrameworkDependency *> ((*it).get ());
                     if (dependency != 0) {
-                        framework_directories.insert (dependency->path);
+                        framework_directories.insert (dependency->prefix);
                     }
                 }
             }
@@ -1684,6 +1707,11 @@ namespace thekogans {
                          end = linker_flags.end (); it != end; ++it) {
                     linker_flags_.insert (*it);
                 }
+                for (std::list<Dependency::Ptr>::const_iterator
+                         it = dependencies.begin (),
+                         end = dependencies.end (); it != end; ++it) {
+                    (*it)->GetLinkerFlags (linker_flags_);
+                }
             }
 
             void thekogans_make::GetLibrarianFlags (std::set<std::string> &librarian_flags_) const {
@@ -1702,7 +1730,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetMasmPreprocessorDefinitions (std::set<std::string> &masm_preprocessor_definitions_) const {
+            void thekogans_make::GetMasmPreprocessorDefinitions (
+                    std::set<std::string> &masm_preprocessor_definitions_) const {
                 for (std::list<std::string>::const_iterator
                          it = masm_preprocessor_definitions.begin (),
                          end = masm_preprocessor_definitions.end (); it != end; ++it) {
@@ -1718,7 +1747,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetNasmPreprocessorDefinitions (std::set<std::string> &nasm_preprocessor_definitions_) const {
+            void thekogans_make::GetNasmPreprocessorDefinitions (
+                    std::set<std::string> &nasm_preprocessor_definitions_) const {
                 for (std::list<std::string>::const_iterator
                          it = nasm_preprocessor_definitions.begin (),
                          end = nasm_preprocessor_definitions.end (); it != end; ++it) {
@@ -1732,9 +1762,15 @@ namespace thekogans {
                          end = c_flags.end (); it != end; ++it) {
                     c_flags_.insert (*it);
                 }
+                for (std::list<Dependency::Ptr>::const_iterator
+                         it = dependencies.begin (),
+                         end = dependencies.end (); it != end; ++it) {
+                    (*it)->GetCFlags (c_flags_);
+                }
             }
 
-            void thekogans_make::GetCPreprocessorDefinitions (std::set<std::string> &c_preprocessor_definitions_) const {
+            void thekogans_make::GetCPreprocessorDefinitions (
+                    std::set<std::string> &c_preprocessor_definitions_) const {
                 for (std::list<std::string>::const_iterator
                          it = c_preprocessor_definitions.begin (),
                          end = c_preprocessor_definitions.end (); it != end; ++it) {
@@ -1750,7 +1786,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetCPPPreprocessorDefinitions (std::set<std::string> &cpp_preprocessor_definitions_) const {
+            void thekogans_make::GetCPPPreprocessorDefinitions (
+                    std::set<std::string> &cpp_preprocessor_definitions_) const {
                 for (std::list<std::string>::const_iterator
                          it = cpp_preprocessor_definitions.begin (),
                          end = cpp_preprocessor_definitions.end (); it != end; ++it) {
@@ -1758,7 +1795,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetObjectiveCFlags (std::set<std::string> &objective_c_flags_) const {
+            void thekogans_make::GetObjectiveCFlags (
+                    std::set<std::string> &objective_c_flags_) const {
                 for (std::list<std::string>::const_iterator
                          it = objective_c_flags.begin (),
                          end = objective_c_flags.end (); it != end; ++it) {
@@ -1766,7 +1804,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetObjectiveCPreprocessorDefinitions (std::set<std::string> &objective_c_preprocessor_definitions_) const {
+            void thekogans_make::GetObjectiveCPreprocessorDefinitions (
+                    std::set<std::string> &objective_c_preprocessor_definitions_) const {
                 for (std::list<std::string>::const_iterator
                          it = objective_c_preprocessor_definitions.begin (),
                          end = objective_c_preprocessor_definitions.end (); it != end; ++it) {
@@ -1774,7 +1813,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetObjectiveCPPFlags (std::set<std::string> &objective_cpp_flags_) const {
+            void thekogans_make::GetObjectiveCPPFlags (
+                    std::set<std::string> &objective_cpp_flags_) const {
                 for (std::list<std::string>::const_iterator
                          it = objective_cpp_flags.begin (),
                          end = objective_cpp_flags.end (); it != end; ++it) {
@@ -1782,7 +1822,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetObjectiveCPPPreprocessorDefinitions (std::set<std::string> &objective_cpp_preprocessor_definitions_) const {
+            void thekogans_make::GetObjectiveCPPPreprocessorDefinitions (
+                    std::set<std::string> &objective_cpp_preprocessor_definitions_) const {
                 for (std::list<std::string>::const_iterator
                          it = objective_cpp_preprocessor_definitions.begin (),
                          end = objective_cpp_preprocessor_definitions.end (); it != end; ++it) {
@@ -1798,7 +1839,8 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetRCPreprocessorDefinitions (std::set<std::string> &rc_preprocessor_definitions_) const {
+            void thekogans_make::GetRCPreprocessorDefinitions (
+                    std::set<std::string> &rc_preprocessor_definitions_) const {
                 for (std::list<std::string>::const_iterator
                          it = rc_preprocessor_definitions.begin (),
                          end = rc_preprocessor_definitions.end (); it != end; ++it) {
@@ -2751,19 +2793,22 @@ namespace thekogans {
                                         *this)));
                         }
                         else if (childName == TAG_PKG_CONFIG) {
-                            std::string library = util::TrimSpaces (child.text ().get ());
-                            if (!library.empty ()) {
+                            std::string prefix = Expand (child.attribute (ATTR_PREFIX).value ());
+                            std::string package = Expand (child.attribute (ATTR_PACKAGE).value ());
+                            std::string version = Expand (child.attribute (ATTR_VERSION).value ());
+                            if (!package.empty ()) {
                                 dependencies.push_back (
                                     Dependency::Ptr (
-                                        new PkgConfigDependency (Expand (library.c_str ()), *this)));
+                                        new PkgConfigDependency (prefix, package, version, *this)));
                             }
                         }
                         else if (childName == TAG_LIBRARY) {
+                            std::string path = Expand (child.attribute (ATTR_PATH).value ());
                             std::string library = util::TrimSpaces (child.text ().get ());
                             if (!library.empty ()) {
                                 dependencies.push_back (
                                     Dependency::Ptr (
-                                        new LibraryDependency (Expand (library.c_str ()), *this)));
+                                        new LibraryDependency (path, Expand (library.c_str ()), *this)));
                             }
                         }
                         else if (childName == TAG_FRAMEWORK) {
@@ -2772,8 +2817,7 @@ namespace thekogans {
                             if (!framework.empty ()) {
                                 dependencies.push_back (
                                     Dependency::Ptr (
-                                        new FrameworkDependency (
-                                            path, Expand (framework.c_str ()), *this)));
+                                        new FrameworkDependency (path, Expand (framework.c_str ()), *this)));
                             }
                         }
                         else if (childName == TAG_SYSTEM) {

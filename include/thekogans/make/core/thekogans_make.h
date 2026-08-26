@@ -59,6 +59,7 @@ namespace thekogans {
                 static const char * const ATTR_SCHEMA_VERSION;
                 static const char * const ATTR_CONDITION;
                 static const char * const ATTR_PREFIX;
+                static const char * const ATTR_PACKAGE;
                 static const char * const ATTR_INSTALL;
                 static const char * const ATTR_DESTINATION_PREFIX;
                 static const char * const ATTR_NAME;
@@ -258,6 +259,23 @@ namespace thekogans {
                     virtual bool HaveFeature (const std::string & /*feature*/) const {
                         return false;
                     }
+
+                    virtual void GetLinkerFlags (std::set<std::string> & /*linker_flags*/) const {}
+                    virtual void GetLibrarianFlags (std::set<std::string> & /*librarian_flags*/) const {}
+                    virtual void GetMasmFlags (std::set<std::string> & /*masm_flags*/) const {}
+                    virtual void GetMasmPreprocessorDefinitions (std::set<std::string> & /*masm_preprocessor_definitions*/) const {}
+                    virtual void GetNasmFlags (std::set<std::string> & /*nasm_flags*/) const {}
+                    virtual void GetNasmPreprocessorDefinitions (std::set<std::string> & /*nasm_preprocessor_definitions*/) const {}
+                    virtual void GetCFlags (std::set<std::string> & /*c_flags*/) const {}
+                    virtual void GetCPreprocessorDefinitions (std::set<std::string> & /*c_preprocessor_definitions*/) const {}
+                    virtual void GetCPPFlags (std::set<std::string> & /*cpp_flags*/) const {}
+                    virtual void GetCPPPreprocessorDefinitions (std::set<std::string> & /*cpp_preprocessor_definitions*/) const {}
+                    virtual void GetObjectiveCFlags (std::set<std::string> & /*objective_c_flags*/) const {}
+                    virtual void GetObjectiveCPreprocessorDefinitions (std::set<std::string> & /*objective_c_preprocessor_definitions*/) const {}
+                    virtual void GetObjectiveCPPFlags (std::set<std::string> & /*objective_cpp_flags*/) const {}
+                    virtual void GetObjectiveCPPPreprocessorDefinitions (std::set<std::string> & /*objective_cpp_preprocessor_definitions*/) const {}
+                    virtual void GetRCFlags (std::set<std::string> & /*rc_flags*/) const {}
+                    virtual void GetRCPreprocessorDefinitions (std::set<std::string> & /*rc_preprocessor_definitions*/) const {}
 
                     virtual void GetIncludeDirectories (
                         std::set<std::string> & /*include_directories*/) const = 0;
@@ -480,22 +498,22 @@ namespace thekogans {
                 void GetLinkLibraries (std::list<std::string> &link_libraries_) const;
                 void GetSharedLibraries (std::set<std::string> &shared_libraries) const;
 
-                void GetLinkerFlags (std::set<std::string> &linker_flags) const;
-                void GetLibrarianFlags (std::set<std::string> &librarian_flags) const;
-                void GetMasmFlags (std::set<std::string> &masm_flags) const;
-                void GetMasmPreprocessorDefinitions (std::set<std::string> &masm_preprocessor_definitions) const;
-                void GetNasmFlags (std::set<std::string> &nasm_flags) const;
-                void GetNasmPreprocessorDefinitions (std::set<std::string> &nasm_preprocessor_definitions) const;
-                void GetCFlags (std::set<std::string> &c_flags) const;
-                void GetCPreprocessorDefinitions (std::set<std::string> &c_preprocessor_definitions) const;
-                void GetCPPFlags (std::set<std::string> &cpp_flags) const;
-                void GetCPPPreprocessorDefinitions (std::set<std::string> &cpp_preprocessor_definitions) const;
-                void GetObjectiveCFlags (std::set<std::string> &objective_c_flags) const;
-                void GetObjectiveCPreprocessorDefinitions (std::set<std::string> &objective_c_preprocessor_definitions) const;
-                void GetObjectiveCPPFlags (std::set<std::string> &objective_cpp_flags) const;
-                void GetObjectiveCPPPreprocessorDefinitions (std::set<std::string> &objective_cpp_preprocessor_definitions) const;
-                void GetRCFlags (std::set<std::string> &rc_flags) const;
-                void GetRCPreprocessorDefinitions (std::set<std::string> &rc_preprocessor_definitions) const;
+                void GetLinkerFlags (std::set<std::string> &linker_flags_) const;
+                void GetLibrarianFlags (std::set<std::string> &librarian_flags_) const;
+                void GetMasmFlags (std::set<std::string> &masm_flags_) const;
+                void GetMasmPreprocessorDefinitions (std::set<std::string> &masm_preprocessor_definitions_) const;
+                void GetNasmFlags (std::set<std::string> &nasm_flags_) const;
+                void GetNasmPreprocessorDefinitions (std::set<std::string> &nasm_preprocessor_definitions_) const;
+                void GetCFlags (std::set<std::string> &c_flags_) const;
+                void GetCPreprocessorDefinitions (std::set<std::string> &c_preprocessor_definitions_) const;
+                void GetCPPFlags (std::set<std::string> &cpp_flags_) const;
+                void GetCPPPreprocessorDefinitions (std::set<std::string> &cpp_preprocessor_definitions_) const;
+                void GetObjectiveCFlags (std::set<std::string> &objective_c_flags_) const;
+                void GetObjectiveCPreprocessorDefinitions (std::set<std::string> &objective_c_preprocessor_definitions_) const;
+                void GetObjectiveCPPFlags (std::set<std::string> &objective_cpp_flags_) const;
+                void GetObjectiveCPPPreprocessorDefinitions (std::set<std::string> &objective_cpp_preprocessor_definitions_) const;
+                void GetRCFlags (std::set<std::string> &rc_flags_) const;
+                void GetRCPreprocessorDefinitions (std::set<std::string> &rc_preprocessor_definitions_) const;
 
                 inline bool HasGoal () const {
                     return

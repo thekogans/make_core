@@ -7,15 +7,15 @@
                 guid = "5171bfe46480363ac0a3fab41b5addf5"
                 schema_version = "2">
   <features>
-    <feature>THEKOGANS_MAKE_CORE_HAVE_CURL</feature>
+    <if condition = "$(is_package_installed -p:libcurl)">
+      <feature>THEKOGANS_MAKE_CORE_HAVE_CURL</feature>
+    </if>
   </features>
   <dependencies>
     <dependency organization = "thekogans"
                 name = "util"/>
     <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
-      <toolchain organization = "thekogans"
-                 name = "curllib"
-                 type = "Shared"/>
+      <pkg_config package = "libcurl"/>
     </if>
   </dependencies>
   <cpp_preprocessor_definitions>

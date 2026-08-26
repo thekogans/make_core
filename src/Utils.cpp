@@ -115,10 +115,10 @@ namespace thekogans {
                 util::GetEnvironmentVariable ("TOOLCHAIN_SHARED_LIBRARY_SUFFIX");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_STATIC_LIBRARY_SUFFIX =
                 util::GetEnvironmentVariable ("TOOLCHAIN_STATIC_LIBRARY_SUFFIX");
+            _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_PKG_CONFIG_PATH =
+                util::GetEnvironmentVariable ("TOOLCHAIN_PKG_CONFIG_PATH");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _SOURCES_ROOT =
                 util::GetEnvironmentVariable ("SOURCES_ROOT");
-            _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _PKG_CONFIG_PATH =
-                util::GetEnvironmentVariable ("PKG_CONFIG_PATH");
 
             EnvironmentSymbolTable::EnvironmentSymbolTable () {
                 insert (value_type ("BIN_DIR", Value (BIN_DIR)));
@@ -158,8 +158,8 @@ namespace thekogans {
                 insert (value_type ("TOOLCHAIN_PROGRAM_SUFFIX", Value (_TOOLCHAIN_PROGRAM_SUFFIX)));
                 insert (value_type ("TOOLCHAIN_SHARED_LIBRARY_SUFFIX", Value (_TOOLCHAIN_SHARED_LIBRARY_SUFFIX)));
                 insert (value_type ("TOOLCHAIN_STATIC_LIBRARY_SUFFIX", Value (_TOOLCHAIN_STATIC_LIBRARY_SUFFIX)));
+                insert (value_type ("TOOLCHAIN_PKG_CONFIG_PATH", Value (_TOOLCHAIN_PKG_CONFIG_PATH)));
                 insert (value_type ("SOURCES_ROOT", Value (_SOURCES_ROOT)));
-                insert (value_type ("PKG_CONFIG_PATH", Value (_PKG_CONFIG_PATH)));
             }
 
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API ParseQuotedString (

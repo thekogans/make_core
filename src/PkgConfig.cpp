@@ -20,47 +20,125 @@
 #include <string>
 #include <regex>
 #include <sstream>
+#include <vector>
 #include "thekogans/util/StringUtils.h"
+#include "thekogans/util/Path.h"
+#include "thekogans/make/core/Utils.h"
 #include "thekogans/make/core/PkgConfig.h"
 
 namespace thekogans {
     namespace make {
         namespace core {
 
+            namespace {
+                void GetPkgConfigPrefixes (std::vector<std::string> &prefixes) {
+                    std::string::size_type start = 0;
+                    std::string::size_type end = _TOOLCHAIN_PKG_CONFIG_PATH.find_first_of (":", start);
+                    do {
+                        std::string prefix;
+                        if (end == std::string::npos) {
+                            prefix = _TOOLCHAIN_PKG_CONFIG_PATH.substr (start);
+                        }
+                        else {
+                            prefix = _TOOLCHAIN_PKG_CONFIG_PATH.substr (start, end - start);
+                        }
+                        prefix = util::TrimSpaces (prefix.c_str ());
+                        if (!prefix.empty ()) {
+                            prefixes.push_back (prefix);
+                        }
+                        start = end + 1;
+                        end = _TOOLCHAIN_PKG_CONFIG_PATH.find_first_of (":", start);
+                    } while (start != 0);
+                }
+            }
+
             PkgConfig::PkgConfig (
+                    const std::string &prefix_,
                     const std::string &package_,
+                    const std::string &version_,
                     const std::string &config_,
                     const std::string &type_) :
+                    prefix (prefix_),
                     package (package_),
+                    version (version_),
                     config (config_),
                     type (type_) {
-                std::ifstream file (package);
-                if (file.is_open ()) {
-                    std::string line;
-                    while (std::getline (file, line)) {
-                        line = util::TrimSpaces  (line.c_str ());
-                        // Skip empty lines and comments
-                        if (!line.empty () && line[0] != '#') {
-                            // Check for Property definition (Keyword: Value)
-                            size_t colonPos = line.find (':');
-                            // Check for Variable definition (key=value)
-                            size_t equalPos = line.find ('=');
-                            if (colonPos != std::string::npos &&
-                                    (equalPos == std::string::npos || colonPos < equalPos)) {
-                                // It's a property
-                                std::string key = util::TrimSpaces (line.substr (0, colonPos).c_str ());
-                                std::string rawValue = util::TrimSpaces (line.substr (colonPos + 1).c_str ());
-                                // Resolve variables inside the property value
-                                properties[key] = ResolveVariables (rawValue);
-                            }
-                            else if (equalPos != std::string::npos) {
-                                // It's a variable
-                                std::string key = util::TrimSpaces (line.substr (0, equalPos).c_str ());
-                                std::string rawValue = util::TrimSpaces (line.substr (equalPos + 1).c_str ());
-                                // Variables can reference previously defined variables
-                                variables[key] = ResolveVariables (rawValue);
+                std::vector<std::string> prefixes;
+                if (prefix.empty ()) {
+                    GetPkgConfigPrefixes (prefixes);
+                }
+                else {
+                    prefixes.push_back (prefix);
+                }
+                for (auto prefix : prefixes) {
+                    std::ifstream file (ToSystemPath (MakePath (prefix, package + ".pc")));
+                    if (file.is_open ()) {
+                        std::string line;
+                        while (std::getline (file, line)) {
+                            line = util::TrimSpaces  (line.c_str ());
+                            // Skip empty lines and comments
+                            if (!line.empty () && line[0] != '#') {
+                                // Check for Property definition (Keyword: Value)
+                                size_t colonPos = line.find (':');
+                                // Check for Variable definition (key=value)
+                                size_t equalPos = line.find ('=');
+                                if (colonPos != std::string::npos &&
+                                        (equalPos == std::string::npos || colonPos < equalPos)) {
+                                    // It's a property
+                                    std::string key = util::TrimSpaces (line.substr (0, colonPos).c_str ());
+                                    // Resolve variables inside the property value
+                                    std::string rawValue = ResolveVariables (util::TrimSpaces (line.substr (colonPos + 1).c_str ()));
+                                    properties[key] = rawValue;
+                                }
+                                else if (equalPos != std::string::npos) {
+                                    // It's a variable
+                                    std::string key = util::TrimSpaces (line.substr (0, equalPos).c_str ());
+                                    // Variables can reference previously defined variables
+                                    std::string rawValue = ResolveVariables (util::TrimSpaces (line.substr (equalPos + 1).c_str ()));
+                                    variables[key] = rawValue;
+                                }
                             }
                         }
+                        break;
+                    }
+                }
+            }
+
+            bool PkgConfig::IsInstalled (
+                    const std::string &package,
+                    const std::string &version) {
+                std::vector<std::string> prefixes;
+                GetPkgConfigPrefixes (prefixes);
+                for (auto prefix : prefixes) {
+                    if (util::Path (ToSystemPath (MakePath (prefix, package + ".pc"))).Exists ()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            void PkgConfig::GetLibs (std::set<std::string> &libs) const {
+                Properties::const_iterator it = properties.find ("Libs");
+                if (it != properties.end ()) {
+                    libs.insert (it->second);
+                }
+                if (type == TYPE_STATIC) {
+                    Properties::const_iterator it = properties.find ("Libs.private");
+                    if (it != properties.end ()) {
+                        libs.insert (it->second);
+                    }
+                }
+            }
+
+            void PkgConfig::GetCFlags (std::set<std::string> &c_flags) const {
+                Properties::const_iterator it = properties.find ("Cflags");
+                if (it != properties.end ()) {
+                    c_flags.insert (it->second);
+                }
+                if (type == TYPE_STATIC) {
+                    Properties::const_iterator it = properties.find ("Cflags.private");
+                    if (it != properties.end ()) {
+                        c_flags.insert (it->second);
                     }
                 }
             }

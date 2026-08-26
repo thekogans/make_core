@@ -19,6 +19,7 @@
 #define __thekogans_make_core_PkgConfig_h
 
 #include <string>
+#include <set>
 #include <unordered_map>
 #include "thekogans/make/core/Config.h"
 
@@ -26,21 +27,22 @@ namespace thekogans {
     namespace make {
         namespace core {
 
+            // Standard properties
+            // name;
+            // version;
+            // description;
+            // url;
+            // libs;
+            // libs_private;
+            // cflags;
+            // cflags_private;
+            // requires_;
+            // requires_private;
+            // conflicts;
             struct _LIB_THEKOGANS_MAKE_CORE_DECL PkgConfig {
-                /*
-                std::string name;
-                std::string version;
-                std::string description;
-                std::string url;
-                GList *libs;
-                GList *libs_private;
-                GList *cflags;
-                GList *cflags_private;
-                GList *requires;
-                GList *requires_private;
-                GList *conflicts;
-                */
+                std::string prefix;
                 std::string package;
+                std::string version;
                 std::string config;
                 std::string type;
                 using Variables = std::unordered_map<std::string, std::string>;
@@ -49,9 +51,18 @@ namespace thekogans {
                 Properties properties;
 
                 PkgConfig (
+                    const std::string &prefix_,
                     const std::string &package_,
+                    const std::string &version_,
                     const std::string &config_,
                     const std::string &type_);
+
+                static bool IsInstalled (
+                    const std::string &package,
+                    const std::string &version);
+
+                void GetLibs (std::set<std::string> &libs) const;
+                void GetCFlags (std::set<std::string> &c_flags) const;
 
             private:
                 std::string ResolveVariables (std::string value);
