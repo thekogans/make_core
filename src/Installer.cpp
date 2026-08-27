@@ -177,7 +177,7 @@ namespace thekogans {
                     }
                 }
 
-                typedef std::pair<std::string, std::string> InstallPaths;
+                using InstallPaths = std::pair<std::string, std::string>;
 
                 void GetInstallPaths (
                         const thekogans_make &config,

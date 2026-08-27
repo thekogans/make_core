@@ -15,7 +15,7 @@
     <dependency organization = "thekogans"
                 name = "util"/>
     <if condition = "$(have_feature -f:THEKOGANS_MAKE_CORE_HAVE_CURL)">
-      <pkg_config package = "libcurl"/>
+      <package name = "libcurl"/>
     </if>
   </dependencies>
   <cpp_preprocessor_definitions>

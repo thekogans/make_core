@@ -752,9 +752,9 @@ namespace thekogans {
                         plugin1.dependencies != plugin2.dependencies;
                 }
 
-                typedef std::list<util::Plugins::Plugin::SharedPtr> PluginList;
-                typedef std::pair<util::Plugins::Plugin::SharedPtr, util::Plugins::Plugin::SharedPtr> ModifiedPlugin;
-                typedef std::list<ModifiedPlugin> ModifiedPluginList;
+                using PluginList = std::list<util::Plugins::Plugin::SharedPtr>;
+                using ModifiedPlugin = std::pair<util::Plugins::Plugin::SharedPtr, util::Plugins::Plugin::SharedPtr>;
+                using ModifiedPluginList = std::list<ModifiedPlugin>;
 
                 void DiffPluginMaps (
                         const util::Plugins::PluginMap &fromPlugins,

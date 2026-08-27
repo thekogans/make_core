@@ -21,6 +21,7 @@
 #include <string>
 #include <set>
 #include <unordered_map>
+#include "thekogans/util/RefCounted.h"
 #include "thekogans/make/core/Config.h"
 
 namespace thekogans {
@@ -39,9 +40,12 @@ namespace thekogans {
             // requires_;
             // requires_private;
             // conflicts;
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL PkgConfig {
-                std::string prefix;
-                std::string package;
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL PkgConfig : public util::RefCounted {
+                THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (PkgConfig)
+
+            private:
+                std::string path;
+                std::string name;
                 std::string version;
                 std::string config;
                 std::string type;
@@ -51,8 +55,16 @@ namespace thekogans {
                 Properties properties;
 
                 PkgConfig (
-                    const std::string &prefix_,
-                    const std::string &package_,
+                    const std::string &path_,
+                    const std::string &name_,
+                    const std::string &version_,
+                    const std::string &config_,
+                    const std::string &type_);
+
+            public:
+                static PkgConfig::SharedPtr GetConfig (
+                    const std::string &path_,
+                    const std::string &name_,
                     const std::string &version_,
                     const std::string &config_,
                     const std::string &type_);

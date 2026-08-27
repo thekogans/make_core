@@ -31,47 +31,46 @@ namespace thekogans {
         namespace core {
 
             namespace {
-                void GetPkgConfigPrefixes (std::vector<std::string> &prefixes) {
+                void GetPkgConfigPaths (std::vector<std::string> &paths) {
                     std::string::size_type start = 0;
                     std::string::size_type end = _TOOLCHAIN_PKG_CONFIG_PATH.find_first_of (":", start);
-                    do {
-                        std::string prefix;
-                        if (end == std::string::npos) {
-                            prefix = _TOOLCHAIN_PKG_CONFIG_PATH.substr (start);
-                        }
-                        else {
-                            prefix = _TOOLCHAIN_PKG_CONFIG_PATH.substr (start, end - start);
-                        }
-                        prefix = util::TrimSpaces (prefix.c_str ());
-                        if (!prefix.empty ()) {
-                            prefixes.push_back (prefix);
+                    while (end != std::string::npos) {
+                        std::string path = util::TrimSpaces (
+                            _TOOLCHAIN_PKG_CONFIG_PATH.substr (start, end - start).c_str ());
+                        if (!path.empty ()) {
+                            paths.push_back (path);
                         }
                         start = end + 1;
                         end = _TOOLCHAIN_PKG_CONFIG_PATH.find_first_of (":", start);
-                    } while (start != 0);
+                    }
+                    std::string path = util::TrimSpaces (
+                        _TOOLCHAIN_PKG_CONFIG_PATH.substr (start).c_str ());
+                    if (!path.empty ()) {
+                        paths.push_back (path);
+                    }
                 }
             }
 
             PkgConfig::PkgConfig (
-                    const std::string &prefix_,
-                    const std::string &package_,
+                    const std::string &path_,
+                    const std::string &name_,
                     const std::string &version_,
                     const std::string &config_,
                     const std::string &type_) :
-                    prefix (prefix_),
-                    package (package_),
+                    path (path_),
+                    name (name_),
                     version (version_),
                     config (config_),
                     type (type_) {
-                std::vector<std::string> prefixes;
-                if (prefix.empty ()) {
-                    GetPkgConfigPrefixes (prefixes);
+                std::vector<std::string> paths;
+                if (path.empty ()) {
+                    GetPkgConfigPaths (paths);
                 }
                 else {
-                    prefixes.push_back (prefix);
+                    paths.push_back (path);
                 }
-                for (auto prefix : prefixes) {
-                    std::ifstream file (ToSystemPath (MakePath (prefix, package + ".pc")));
+                for (auto path : paths) {
+                    std::ifstream file (ToSystemPath (MakePath (path, name + ".pc")));
                     if (file.is_open ()) {
                         std::string line;
                         while (std::getline (file, line)) {
@@ -104,13 +103,22 @@ namespace thekogans {
                 }
             }
 
+            PkgConfig::SharedPtr PkgConfig::GetConfig (
+                    const std::string &path,
+                    const std::string &name,
+                    const std::string &version,
+                    const std::string &config,
+                    const std::string &type) {
+                return new PkgConfig (path, name, version, config, type);
+            }
+
             bool PkgConfig::IsInstalled (
                     const std::string &package,
                     const std::string &version) {
-                std::vector<std::string> prefixes;
-                GetPkgConfigPrefixes (prefixes);
-                for (auto prefix : prefixes) {
-                    if (util::Path (ToSystemPath (MakePath (prefix, package + ".pc"))).Exists ()) {
+                std::vector<std::string> paths;
+                GetPkgConfigPaths (paths);
+                for (auto path : paths) {
+                    if (util::Path (ToSystemPath (MakePath (path, package + ".pc"))).Exists ()) {
                         return true;
                     }
                 }

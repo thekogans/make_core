@@ -59,7 +59,6 @@ namespace thekogans {
                 static const char * const ATTR_SCHEMA_VERSION;
                 static const char * const ATTR_CONDITION;
                 static const char * const ATTR_PREFIX;
-                static const char * const ATTR_PACKAGE;
                 static const char * const ATTR_INSTALL;
                 static const char * const ATTR_DESTINATION_PREFIX;
                 static const char * const ATTR_NAME;
@@ -86,10 +85,9 @@ namespace thekogans {
                 static const char * const TAG_OUTPUT_FILE;
                 static const char * const TAG_PROJECT;
                 static const char * const TAG_TOOLCHAIN;
+                static const char * const TAG_PACKAGE;
                 static const char * const TAG_LIBRARY;
                 static const char * const TAG_FRAMEWORK;
-                static const char * const TAG_SYSTEM;
-                static const char * const TAG_PKG_CONFIG;
                 static const char * const TAG_INCLUDE_DIRECTORIES;
                 static const char * const TAG_INCLUDE_DIRECTORY;
                 static const char * const TAG_PREPROCESSOR_DEFINITIONS;
