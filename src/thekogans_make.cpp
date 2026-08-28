@@ -501,6 +501,50 @@ namespace thekogans {
                         return config.features.find (feature) != config.features.end ();
                     }
 
+                    virtual void GetLinkerFlags (std::set<std::string> &linker_flags) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        if (config.project_type == PROJECT_TYPE_LIBRARY) {
+                            for (auto linker_flag : config.linker_flags) {
+                                linker_flags.insert (linker_flag);
+                            }
+                            if (config.type == TYPE_STATIC) {
+                                for (std::list<Dependency::Ptr>::const_iterator
+                                        it = config.dependencies.begin (),
+                                        end = config.dependencies.end (); it != end; ++it) {
+                                    (*it)->GetLinkerFlags (linker_flags);
+                                }
+                            }
+                        }
+                    }
+
+                    virtual void GetCFlags (std::set<std::string> &c_flags) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        if (config.project_type == PROJECT_TYPE_LIBRARY) {
+                            for (auto c_flag : config.c_flags) {
+                                c_flags.insert (c_flag);
+                            }
+                            if (config.type == TYPE_STATIC) {
+                                for (std::list<Dependency::Ptr>::const_iterator
+                                        it = config.dependencies.begin (),
+                                        end = config.dependencies.end (); it != end; ++it) {
+                                    (*it)->GetCFlags (c_flags);
+                                }
+                            }
+                        }
+                    }
+
                     virtual void GetIncludeDirectories (std::set<std::string> &include_directories) const {
                         const thekogans_make &config =
                             thekogans_make::GetConfig (
@@ -848,6 +892,50 @@ namespace thekogans {
                                 GetConfig (),
                                 GetType ());
                         return config.features.find (feature) != config.features.end ();
+                    }
+
+                    virtual void GetLinkerFlags (std::set<std::string> &linker_flags) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        if (config.project_type == PROJECT_TYPE_LIBRARY) {
+                            for (auto linker_flag : config.linker_flags) {
+                                linker_flags.insert (linker_flag);
+                            }
+                            if (config.type == TYPE_STATIC) {
+                                for (std::list<Dependency::Ptr>::const_iterator
+                                        it = config.dependencies.begin (),
+                                        end = config.dependencies.end (); it != end; ++it) {
+                                    (*it)->GetLinkerFlags (linker_flags);
+                                }
+                            }
+                        }
+                    }
+
+                    virtual void GetCFlags (std::set<std::string> &c_flags) const {
+                        const thekogans_make &config =
+                            thekogans_make::GetConfig (
+                                GetProjectRoot (),
+                                GetConfigFile (),
+                                GetGenerator (),
+                                GetConfig (),
+                                GetType ());
+                        if (config.project_type == PROJECT_TYPE_LIBRARY) {
+                            for (auto c_flag : config.c_flags) {
+                                c_flags.insert (c_flag);
+                            }
+                            if (config.type == TYPE_STATIC) {
+                                for (std::list<Dependency::Ptr>::const_iterator
+                                        it = config.dependencies.begin (),
+                                        end = config.dependencies.end (); it != end; ++it) {
+                                    (*it)->GetCFlags (c_flags);
+                                }
+                            }
+                        }
                     }
 
                     virtual void GetIncludeDirectories (

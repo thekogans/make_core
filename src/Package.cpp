@@ -24,14 +24,14 @@
 #include "thekogans/util/StringUtils.h"
 #include "thekogans/util/Path.h"
 #include "thekogans/make/core/Utils.h"
-#include "thekogans/make/core/PkgConfig.h"
+#include "thekogans/make/core/Package.h"
 
 namespace thekogans {
     namespace make {
         namespace core {
 
             namespace {
-                void GetPkgConfigPaths (std::vector<std::string> &paths) {
+                void GetPackagePaths (std::vector<std::string> &paths) {
                     std::string::size_type start = 0;
                     std::string::size_type end = _TOOLCHAIN_PKG_CONFIG_PATH.find_first_of (":", start);
                     while (end != std::string::npos) {
@@ -51,7 +51,7 @@ namespace thekogans {
                 }
             }
 
-            PkgConfig::PkgConfig (
+            Package::Package (
                     const std::string &path_,
                     const std::string &name_,
                     const std::string &version_,
@@ -64,7 +64,7 @@ namespace thekogans {
                     type (type_) {
                 std::vector<std::string> paths;
                 if (path.empty ()) {
-                    GetPkgConfigPaths (paths);
+                    GetPackagePaths (paths);
                 }
                 else {
                     paths.push_back (path);
@@ -103,20 +103,20 @@ namespace thekogans {
                 }
             }
 
-            PkgConfig::SharedPtr PkgConfig::GetConfig (
+            Package::SharedPtr Package::GetConfig (
                     const std::string &path,
                     const std::string &name,
                     const std::string &version,
                     const std::string &config,
                     const std::string &type) {
-                return new PkgConfig (path, name, version, config, type);
+                return new Package (path, name, version, config, type);
             }
 
-            bool PkgConfig::IsInstalled (
+            bool Package::IsInstalled (
                     const std::string &package,
                     const std::string &version) {
                 std::vector<std::string> paths;
-                GetPkgConfigPaths (paths);
+                GetPackagePaths (paths);
                 for (auto path : paths) {
                     if (util::Path (ToSystemPath (MakePath (path, package + ".pc"))).Exists ()) {
                         return true;
@@ -125,7 +125,7 @@ namespace thekogans {
                 return false;
             }
 
-            void PkgConfig::GetLibs (std::set<std::string> &libs) const {
+            void Package::GetLibs (std::set<std::string> &libs) const {
                 Properties::const_iterator it = properties.find ("Libs");
                 if (it != properties.end ()) {
                     libs.insert (it->second);
@@ -138,7 +138,7 @@ namespace thekogans {
                 }
             }
 
-            void PkgConfig::GetCFlags (std::set<std::string> &c_flags) const {
+            void Package::GetCFlags (std::set<std::string> &c_flags) const {
                 Properties::const_iterator it = properties.find ("Cflags");
                 if (it != properties.end ()) {
                     c_flags.insert (it->second);
@@ -152,7 +152,7 @@ namespace thekogans {
             }
 
             // Recursively resolves ${variable} blocks within a string
-            std::string PkgConfig::ResolveVariables (std::string value) {
+            std::string Package::ResolveVariables (std::string value) {
                 std::regex variableRegex (R"(\$\{([^}]+)\})");
                 std::smatch match;
                 // Max loop depth to prevent infinite recursion on self-referential variables
