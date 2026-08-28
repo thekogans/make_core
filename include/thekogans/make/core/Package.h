@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with thekogans_make_core. If not, see <http://www.gnu.org/licenses/>.
 
-#if !defined (__thekogans_make_core_PkgConfig_h)
-#define __thekogans_make_core_PkgConfig_h
+#if !defined (__thekogans_make_core_Package_h)
+#define __thekogans_make_core_Package_h
 
 #include <string>
 #include <set>
@@ -40,8 +40,8 @@ namespace thekogans {
             // requires_;
             // requires_private;
             // conflicts;
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL PkgConfig : public util::RefCounted {
-                THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (PkgConfig)
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL Package : public util::RefCounted {
+                THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (Package)
 
             private:
                 std::string path;
@@ -54,7 +54,7 @@ namespace thekogans {
                 using Properties = std::unordered_map<std::string, std::string>;
                 Properties properties;
 
-                PkgConfig (
+                Package (
                     const std::string &path_,
                     const std::string &name_,
                     const std::string &version_,
@@ -62,7 +62,7 @@ namespace thekogans {
                     const std::string &type_);
 
             public:
-                static PkgConfig::SharedPtr GetConfig (
+                static Package::SharedPtr GetConfig (
                     const std::string &path_,
                     const std::string &name_,
                     const std::string &version_,
@@ -84,4 +84,4 @@ namespace thekogans {
     } // namespace make
 } // namespace thekogans
 
-#endif // !defined (__thekogans_make_core_PkgConfig_h)
+#endif // !defined (__thekogans_make_core_Package_h)

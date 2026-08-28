@@ -34,7 +34,7 @@
 #include "thekogans/make/core/Toolchain.h"
 #include "thekogans/make/core/Utils.h"
 #include "thekogans/make/core/Version.h"
-#include "thekogans/make/core/PkgConfig.h"
+#include "thekogans/make/core/Package.h"
 #include "thekogans/make/core/thekogans_make.h"
 
 namespace thekogans {
@@ -1016,7 +1016,7 @@ namespace thekogans {
                     std::string name;
                     std::string version;
                     const thekogans_make &dependent;
-                    PkgConfig::SharedPtr pkgConfig;
+                    Package::SharedPtr pkgConfig;
 
                     PackageDependency (
                         const std::string &path_,
@@ -1028,7 +1028,7 @@ namespace thekogans {
                         version (version_),
                         dependent (dependent_),
                         pkgConfig (
-                            PkgConfig::GetConfig (
+                            Package::GetConfig (
                                 path, name, version, dependent.config, dependent.type)) {}
 
                     virtual const thekogans_make &GetDependent () const {

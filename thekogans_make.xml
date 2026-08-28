@@ -34,7 +34,7 @@
     <cpp_header>$(organization)/$(project_directory)/Installer.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Manifest.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Parser.h</cpp_header>
-    <cpp_header>$(organization)/$(project_directory)/PkgConfig.h</cpp_header>
+    <cpp_header>$(organization)/$(project_directory)/Package.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Project.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Source.h</cpp_header>
     <cpp_header>$(organization)/$(project_directory)/Sources.h</cpp_header>
@@ -53,7 +53,7 @@
     <cpp_source>Installer.cpp</cpp_source>
     <cpp_source>Manifest.cpp</cpp_source>
     <cpp_source>Parser.cpp</cpp_source>
-    <cpp_source>PkgConfig.cpp</cpp_source>
+    <cpp_source>Package.cpp</cpp_source>
     <cpp_source>Project.cpp</cpp_source>
     <cpp_source>Source.cpp</cpp_source>
     <cpp_source>Sources.cpp</cpp_source>
