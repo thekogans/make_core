@@ -103,6 +103,8 @@ namespace thekogans {
                 util::GetEnvironmentVariable ("TOOLCHAIN_COMMON_RESOURCES");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_SHELL =
                 util::GetEnvironmentVariable ("TOOLCHAIN_SHELL");
+            _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_MAKE =
+                util::GetEnvironmentVariable ("TOOLCHAIN_MAKE");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_ENDIAN =
                 util::GetEnvironmentVariable ("TOOLCHAIN_ENDIAN");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_DIR =
@@ -1228,16 +1230,12 @@ namespace thekogans {
                     target == TARGET_TESTS || target == TARGET_TESTS_SELF ? TYPE_STATIC : type,
                     true,
                     false);
-                std::string gnu_make =
-                    ToSystemPath (
-                        Toolchain::GetProgram ("gnu", "make",
-                            Toolchain::GetLatestVersion ("gnu", "make")));
+                std::string gnu_make = ToSystemPath (_TOOLCHAIN_MAKE);
                 std::list<std::string> arguments;
                 if (hide_commands) {
                     arguments.push_back ("--quiet");
                 }
                 if (parallel_build) {
-                    arguments.push_back ("--output-sync");
                     arguments.push_back ("-j");
                 }
                 arguments.push_back ("mode=" + mode);
