@@ -128,15 +128,12 @@ namespace thekogans {
 
             void Sources::ListSources () const {
                 if (!sources.empty ()) {
-                    for (std::list<Source::SharedPtr>::const_iterator
-                            it = sources.begin (),
-                            end = sources.end (); it != end; ++it) {
-                        (*it)->List ();
+                    for (auto source : sources) {
+                        source->List ();
                     }
                 }
                 else {
-                    std::cout << "No sources found in " <<
-                        sourcesFilePath << std::endl;
+                    std::cout << "No sources found in " << sourcesFilePath << std::endl;
                 }
                 std::cout.flush ();
             }
@@ -179,10 +176,8 @@ namespace thekogans {
         #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             void Sources::GetSources (std::set<std::string> &sources_) const {
-                for (std::list<Source::SharedPtr>::const_iterator
-                        it = sources.begin (),
-                        end = sources.end (); it != end; ++it) {
-                    sources_.insert ((*it)->organization);
+                for (auto source : sources) {
+                    sources_.insert (source->organization);
                 }
             }
 
@@ -592,10 +587,8 @@ namespace thekogans {
                             ATTR_SCHEMA_VERSION,
                             util::ui32Tostring (SOURCES_XML_SCHEMA_VERSION)));
                     sourcesFile << util::OpenTag (0, TAG_SOURCES, attributes, false, true);
-                    for (std::list<Source::SharedPtr>::const_iterator
-                            it = sources.begin (),
-                            end = sources.end (); it != end; ++it) {
-                        (*it)->Save (sourcesFile, 1);
+                    for (auto source : sources) {
+                        source->Save (sourcesFile, 1);
                     }
                     sourcesFile << util::CloseTag (0, TAG_SOURCES);
                 }

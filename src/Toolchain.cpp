@@ -218,20 +218,16 @@ namespace thekogans {
                 GetVersions (organization, project, versions);
                 if (versions.size () > 1) {
                     util::Version latestVersion (0, 0, 0);
-                    for (std::list<std::string>::const_iterator
-                            it = versions.begin (),
-                            end = versions.end (); it != end; ++it) {
-                        util::Version version (*it);
-                        if (latestVersion < version) {
-                            latestVersion = version;
+                    for (const auto &version : versions) {
+                        util::Version version_ (version);
+                        if (latestVersion < version_) {
+                            latestVersion = version_;
                         }
                     }
                     std::unordered_set<std::string> visitedDependencies;
-                    for (std::list<std::string>::const_iterator
-                            it = versions.begin (),
-                            end = versions.end (); it != end; ++it) {
-                        if (util::Version (*it) != latestVersion) {
-                            Uninstall (organization, project, *it, true, visitedDependencies);
+                    for (const auto &version : versions) {
+                        if (util::Version (version) != latestVersion) {
+                            Uninstall (organization, project, version, true, visitedDependencies);
                         }
                     }
                 }

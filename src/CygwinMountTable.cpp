@@ -142,16 +142,12 @@ namespace thekogans {
 
             void CygwinMountTable::DumpEntries () const {
                 std::cout << "cygwin -> host:\n";
-                for (std::vector<Entry>::const_iterator
-                        it = hostEntries.begin (),
-                        end = hostEntries.end (); it != end; ++it) {
-                    std::cout << "  " << (*it).cygwin << " -> " << (*it).host << "\n";
+                for (const auto &hostEntry : hostEntries) {
+                    std::cout << "  " << hostEntry.cygwin << " -> " << hostEntry.host << "\n";
                 }
                 std::cout << "host -> cygwin:\n";
-                for (std::vector<Entry>::const_iterator
-                        it = cygwinEntries.begin (),
-                        end = cygwinEntries.end (); it != end; ++it) {
-                    std::cout << "  " << (*it).host << " -> " << (*it).cygwin << "\n";
+                for (const auto &cygwinEntry : cygwinEntries) {
+                    std::cout << "  " << cygwinEntry.host << " -> " << cygwinEntry.cygwin << "\n";
                 }
                 std::cout.flush ();
             }
@@ -159,13 +155,11 @@ namespace thekogans {
             std::string CygwinMountTable::ToHostPath (const std::string &cygwinPath) const {
                 std::string hostPath;
                 if (!cygwinPath.empty ()) {
-                    for (std::vector<Entry>::const_iterator
-                            it = hostEntries.begin (),
-                            end = hostEntries.end (); it != end; ++it) {
-                        if (cygwinPath.size () >= (*it).cygwin.size () &&
-                                strncasecmp (cygwinPath.c_str (), (*it).cygwin.c_str (),
-                                    (*it).cygwin.size ()) == 0) {
-                            hostPath = (*it).host + cygwinPath.substr ((*it).cygwin.size ());
+                    for (const auto &hostEntry : hostEntries) {
+                        if (cygwinPath.size () >= hostEntry.cygwin.size () &&
+                                strncasecmp (cygwinPath.c_str (), hostEntry.cygwin.c_str (),
+                                    hostEntry.cygwin.size ()) == 0) {
+                            hostPath = hostEntry.host + cygwinPath.substr (hostEntry.cygwin.size ());
                             break;
                         }
                     }
@@ -181,14 +175,12 @@ namespace thekogans {
                 std::string cygwinPath;
                 if (!hostPath.empty ()) {
                     const char *ptr = 0;
-                    for (std::vector<Entry>::const_iterator
-                            it = cygwinEntries.begin (),
-                            end = cygwinEntries.end (); it != end; ++it) {
-                        if (hostPath.size () >= (*it).host.size () &&
-                                strncasecmp (hostPath.c_str (), (*it).host.c_str (),
+                    for (const auto &cygwinEntry : cygwinEntries) {
+                        if (hostPath.size () >= cygwinEntry.host.size () &&
+                                strncasecmp (hostPath.c_str (), cygwinEntry.host.c_str (),
                                     (*it).host.size ()) == 0) {
-                            cygwinPath = (*it).cygwin;
-                            ptr = &hostPath[(*it).host.size ()];
+                            cygwinPath = cygwinEntry.cygwin;
+                            ptr = &hostPath[cygwinEntry.host.size ()];
                             break;
                         }
                     }

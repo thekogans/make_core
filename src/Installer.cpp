@@ -588,12 +588,10 @@ namespace thekogans {
                         if (!config.features.empty ()) {
                             configFile << util::OpenTag (1, thekogans_make::TAG_FEATURES,
                                 util::Attributes (), false, true);
-                            for (std::set<std::string>::const_iterator
-                                    it = config.features.begin (),
-                                    end = config.features.end (); it != end; ++it) {
+                            for (const auto &feature : config.features) {
                                 configFile <<
                                     util::OpenTag (2, thekogans_make::TAG_FEATURE) <<
-                                    *it <<
+                                    feature <<
                                     util::CloseTag (0, thekogans_make::TAG_FEATURE);
                             }
                             configFile << util::CloseTag (1, thekogans_make::TAG_FEATURES);
@@ -602,10 +600,8 @@ namespace thekogans {
                         if (!dependencies.empty ()) {
                             configFile << util::OpenTag (1, thekogans_make::TAG_DEPENDENCIES,
                                 util::Attributes (), false, true);
-                            for (std::list<std::string>::const_iterator
-                                    it = dependencies.begin (),
-                                    end = dependencies.end (); it != end; ++it) {
-                                configFile << *it;
+                            for (const auto &dependency : dependencies) {
+                                configFile << dependency;
                             }
                             configFile << util::CloseTag (1, thekogans_make::TAG_DEPENDENCIES);
                         }
@@ -697,14 +693,12 @@ namespace thekogans {
                             MAKE,
                             install_config,
                             install_type);
-                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
-                            it = plugin_config.plugin_hosts.begin (),
-                            end = plugin_config.plugin_hosts.end (); it != end; ++it) {
+                    for (auto plugin_host : plugin_config.plugin_hosts) {
                         const thekogans_make &host_config =
                             thekogans_make::GetConfig (
-                                (*it)->GetProjectRoot (),
-                                (*it)->GetConfigFile (),
-                                (*it)->GetGenerator (),
+                                plugin_host->GetProjectRoot (),
+                                plugin_host->GetConfigFile (),
+                                plugin_host->GetGenerator (),
                                 install_config,
                                 install_type);
                         std::string toDirectory = host_config.project_type == PROJECT_TYPE_PROGRAM ?
@@ -723,14 +717,11 @@ namespace thekogans {
                                     ToSystemPath (
                                         MakePath (toDirectory, THEKOGANS_MANIFEST + EXT_SEPARATOR + XML_EXT)));
                                 manifest.AddFile (pluginFileName, host_config.GetGoalFileName ());
-                                util::Plugins::Plugin::SharedPtr plugin =
-                                    plugins.GetPlugin (pluginFileName);
-                                if (plugin.Get () != 0) {
-                                    for (util::Plugins::Plugin::Dependencies::const_iterator
-                                            jt = plugin->dependencies.begin (),
-                                            end = plugin->dependencies.end (); jt != end; ++jt) {
-                                        if (manifest.DeleteFile (*jt, pluginFileName)) {
-                                            DeleteFile (MakePath (toDirectory, *jt));
+                                util::Plugins::Plugin::SharedPtr plugin = plugins.GetPlugin (pluginFileName);
+                                if (plugin != nullptr) {
+                                    for (const auto &dependency : plugin->dependencies) {
+                                        if (manifest.DeleteFile (dependency, pluginFileName)) {
+                                            DeleteFile (MakePath (toDirectory, dependency));
                                         }
                                     }
                                 }
@@ -746,10 +737,8 @@ namespace thekogans {
                                 {
                                     std::set<std::string> sharedLibraries;
                                     plugin_config.GetSharedLibraries (sharedLibraries);
-                                    for (std::set<std::string>::const_iterator
-                                            jt = sharedLibraries.begin (),
-                                            end = sharedLibraries.end (); jt != end; ++jt) {
-                                        dependencies.insert (util::Path (*jt).GetFullFileName ());
+                                    for (const auto &sharedLibrary : sharedLibraries) {
+                                        dependencies.insert (util::Path (sharedLibrary).GetFullFileName ());
                                     }
                                 }
                                 plugins.AddPlugin (
@@ -772,22 +761,20 @@ namespace thekogans {
                         MAKE,
                         config,
                         type);
-                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
-                        it = plugin_config.plugin_hosts.begin (),
-                        end = plugin_config.plugin_hosts.end (); it != end; ++it) {
+                for (auto plugin_host : plugin_config.plugin_hosts) {
                     const thekogans_make &host_config =
                         thekogans_make::GetConfig (
-                            (*it)->GetProjectRoot (),
-                            (*it)->GetConfigFile (),
-                            (*it)->GetGenerator (),
+                            plugin_host->GetProjectRoot (),
+                            plugin_host->GetConfigFile (),
+                            plugin_host->GetGenerator (),
                             config,
                             type);
-                    if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
+                    if (plugin_host->GetConfigFile () == THEKOGANS_MAKE_XML) {
                         if (host_config.project_type == PROJECT_TYPE_PROGRAM) {
-                            InstallProgram ((*it)->GetProjectRoot ());
+                            InstallProgram (plugin_host->GetProjectRoot ());
                         }
                         else if (host_config.project_type == PROJECT_TYPE_LIBRARY) {
-                            InstallLibrary ((*it)->GetProjectRoot ());
+                            InstallLibrary (plugin_host->GetProjectRoot ());
                         }
                     }
                 }

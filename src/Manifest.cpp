@@ -141,22 +141,18 @@ namespace thekogans {
                                 ATTR_SCHEMA_VERSION,
                                 util::ui32Tostring (MANIFEST_XML_SCHEMA_VERSION)));
                         manifestFile << util::OpenTag (0, TAG_MANIFEST, attributes, false, true);
-                        for (Files::const_iterator
-                                 it = files.begin (),
-                                 end = files.end (); it != end; ++it) {
+                        for (const auto &file : files) {
                             util::Attributes attributes;
                             attributes.push_back (
                                 util::Attribute (
                                     ATTR_NAME,
-                                    util::EncodeXMLCharEntities (it->first)));
+                                    util::EncodeXMLCharEntities (file.first)));
                             manifestFile << util::OpenTag (1, TAG_FILE, attributes, false, true);
-                            for (Dependents::const_iterator
-                                     jt = it->second.begin (),
-                                     end = it->second.end (); jt != end; ++jt) {
+                            for (const auto &dependent : file.second) {
                                 manifestFile <<
                                     util::OpenTag (2, TAG_DEPENDENT,
                                         util::Attributes (), false, false) <<
-                                    util::EncodeXMLCharEntities (*jt) <<
+                                    util::EncodeXMLCharEntities (dependent) <<
                                     util::CloseTag (0, TAG_DEPENDENT);
                             }
                             manifestFile << util::CloseTag (1, TAG_FILE);
