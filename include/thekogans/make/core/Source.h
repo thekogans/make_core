@@ -40,9 +40,8 @@ namespace thekogans {
             /// \brief
             /// Used to retrieve various info from the SOURCES_ROOT/$organization/Source.xml file.
 
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL Source {
-                using Ptr = std::unique_ptr<Source>;
-
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL Source : public util::RefCounted {
+                THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (Source)
                 THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                 static const char * const ATTR_SCHEMA_VERSION;
@@ -62,9 +61,8 @@ namespace thekogans {
                 std::string organization;
                 std::string url;
                 std::string schema_version;
-                struct Project {
-                    using Ptr = std::unique_ptr<Project>;
-
+                struct Project : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (Project)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string name;
@@ -86,10 +84,9 @@ namespace thekogans {
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Project)
                 };
-                std::list<Project::Ptr> projects;
-                struct Toolchain {
-                    using Ptr = std::unique_ptr<Toolchain>;
-
+                std::list<Project::SharedPtr> projects;
+                struct Toolchain : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (Toolchain)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string name;
@@ -111,7 +108,7 @@ namespace thekogans {
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Toolchain)
                 };
-                std::list<Toolchain::Ptr> toolchain;
+                std::list<Toolchain::SharedPtr> toolchain;
 
                 explicit Source (const std::string &organization);
                 explicit Source (const pugi::xml_node &node) {
@@ -130,7 +127,7 @@ namespace thekogans {
                 static void Destroy (const std::string &organization);
                 static void GetSources (std::set<std::string> &sources);
 
-                Project *GetProject (
+                Project::SharedPtr GetProject (
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const;
@@ -167,7 +164,7 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch);
 
-                Toolchain *GetToolchain (
+                Toolchain::SharedPtr GetToolchain (
                     const std::string &name,
                     const std::string &version) const;
                 void GetToolchainNames (std::set<std::string> &names) const;

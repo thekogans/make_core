@@ -110,7 +110,7 @@ namespace thekogans {
                             if (child.type () == pugi::node_element) {
                                 std::string childName = child.name ();
                                 if (childName == Source::TAG_SOURCE) {
-                                    sources.push_back (Source::Ptr (new Source (child)));
+                                    sources.push_back (Source::SharedPtr (new Source (child)));
                                 }
                             }
                         }
@@ -128,7 +128,7 @@ namespace thekogans {
 
             void Sources::ListSources () const {
                 if (!sources.empty ()) {
-                    for (std::list<Source::Ptr>::const_iterator
+                    for (std::list<Source::SharedPtr>::const_iterator
                             it = sources.begin (),
                             end = sources.end (); it != end; ++it) {
                         (*it)->List ();
@@ -145,7 +145,7 @@ namespace thekogans {
             void Sources::UpdateSources (const std::string &organization) {
                 if (!sources.empty ()) {
                     if (!organization.empty ()) {
-                        Source *source = GetSource (organization);
+                        Source::SharedPtr source = GetSource (organization);
                         if (source != nullptr) {
                             std::cout << "Updating " << *source << std::endl;
                             std::cout.flush ();
@@ -153,7 +153,7 @@ namespace thekogans {
                         }
                     }
                     else {
-                        for (std::list<Source::Ptr>::iterator
+                        for (std::list<Source::SharedPtr>::iterator
                                 it = sources.begin (),
                                 end = sources.end (); it != end; ++it) {
                             THEKOGANS_UTIL_TRY {
@@ -179,7 +179,7 @@ namespace thekogans {
         #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             void Sources::GetSources (std::set<std::string> &sources_) const {
-                for (std::list<Source::Ptr>::const_iterator
+                for (std::list<Source::SharedPtr>::const_iterator
                         it = sources.begin (),
                         end = sources.end (); it != end; ++it) {
                     sources_.insert ((*it)->organization);
@@ -190,7 +190,7 @@ namespace thekogans {
             void Sources::AddSource (
                     const std::string &organization,
                     const std::string &url) {
-                Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
                     std::cout << "Updating " << *source << " -> " << url << std::endl;
                     source->url = url;
@@ -198,7 +198,7 @@ namespace thekogans {
                 else {
                     source = new Source (organization, url);
                     std::cout << "Adding " << *source << std::endl;
-                    sources.push_back (Source::Ptr (source));
+                    sources.push_back (Source::SharedPtr (source));
                 }
                 std::cout.flush ();
                 UpdateSource (*source);
@@ -207,7 +207,7 @@ namespace thekogans {
         #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             void Sources::DeleteSource (const std::string &organization) {
-                for (std::list<Source::Ptr>::iterator
+                for (std::list<Source::SharedPtr>::iterator
                         it = sources.begin (),
                         end = sources.end (); it != end; ++it) {
                     if ((*it)->organization == organization) {
@@ -524,15 +524,13 @@ namespace thekogans {
                 }
             }
 
-            Source *Sources::GetSource (const std::string &organization) const {
-                for (std::list<Source::Ptr>::const_iterator
-                        it = sources.begin (),
-                        end = sources.end (); it != end; ++it) {
-                    if ((*it)->organization == organization) {
-                        return (*it).get ();
+            Source::SharedPtr Sources::GetSource (const std::string &organization) const {
+                for (auto source : sources) {
+                    if (source->organization == organization) {
+                        return source;
                     }
                 }
-                return 0;
+                return nullptr;
             }
 
         #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
@@ -594,7 +592,7 @@ namespace thekogans {
                             ATTR_SCHEMA_VERSION,
                             util::ui32Tostring (SOURCES_XML_SCHEMA_VERSION)));
                     sourcesFile << util::OpenTag (0, TAG_SOURCES, attributes, false, true);
-                    for (std::list<Source::Ptr>::const_iterator
+                    for (std::list<Source::SharedPtr>::const_iterator
                             it = sources.begin (),
                             end = sources.end (); it != end; ++it) {
                         (*it)->Save (sourcesFile, 1);

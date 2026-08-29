@@ -48,7 +48,7 @@ namespace thekogans {
 
                 std::string sourcesFilePath;
                 std::string schema_version;
-                std::list<Source::Ptr> sources;
+                std::list<Source::SharedPtr> sources;
 
                 Sources (const std::string &sourcesFilePath =
                     ToSystemPath (MakePath (_TOOLCHAIN_ROOT, SOURCES_XML)));
@@ -132,7 +132,7 @@ namespace thekogans {
                     const std::string &type = std::string ()) const;
 
             private:
-                Source *GetSource (const std::string &organization) const;
+                Source::SharedPtr GetSource (const std::string &organization) const;
             #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void UpdateSource (Source &source);
             #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)

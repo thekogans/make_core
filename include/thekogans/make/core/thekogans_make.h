@@ -41,9 +41,8 @@ namespace thekogans {
             /// \brief
             /// Used to retrieve various info from the project's thekogans_make.xml file.
 
-            struct _LIB_THEKOGANS_MAKE_CORE_DECL thekogans_make {
-                using Ptr = std::unique_ptr<thekogans_make>;
-
+            struct _LIB_THEKOGANS_MAKE_CORE_DECL thekogans_make : public util::RefCounted {
+                THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (thekogans_make)
                 THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                 static const char * const ATTR_ORGANIZATION;
@@ -220,8 +219,8 @@ namespace thekogans {
                 // thekogans_make body.
                 std::string goal;
                 std::set<std::string> features;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL Dependency {
-                    using Ptr = std::unique_ptr<Dependency>;
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL Dependency : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (Dependency)
 
                     virtual ~Dependency () {}
 
@@ -289,8 +288,8 @@ namespace thekogans {
 
                     virtual void ListDependencies (util::ui32 /*indentationLevel*/ = 0) const = 0;
                 };
-                std::list<Dependency::Ptr> plugin_hosts;
-                std::list<Dependency::Ptr> dependencies;
+                std::list<Dependency::SharedPtr> plugin_hosts;
+                std::list<Dependency::SharedPtr> dependencies;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL PrecompiledHeader {
                     enum Type {
                         None,
@@ -310,23 +309,20 @@ namespace thekogans {
                     PrecompiledHeader () :
                         type (None) {}
                 } precompiled_header;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL FileList {
-                    using Ptr = std::unique_ptr<FileList>;
-
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL FileList : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (FileList)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
                     bool install;
                     std::string destinationPrefix;
-                    struct _LIB_THEKOGANS_MAKE_CORE_DECL File {
-                        using Ptr = std::unique_ptr<File>;
-
+                    struct _LIB_THEKOGANS_MAKE_CORE_DECL File : public util::RefCounted {
+                        THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (File)
                         THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                         std::string name;
-                        struct _LIB_THEKOGANS_MAKE_CORE_DECL CustomBuild {
-                            using Ptr = std::unique_ptr<CustomBuild>;
-
+                        struct _LIB_THEKOGANS_MAKE_CORE_DECL CustomBuild : public util::RefCounted {
+                            THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (CustomBuild)
                             THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                             std::vector<std::string> outputs;
@@ -343,7 +339,7 @@ namespace thekogans {
 
                             THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (CustomBuild)
                         };
-                        CustomBuild::Ptr customBuild;
+                        CustomBuild::SharedPtr customBuild;
                         PrecompiledHeader precompiled_header;
 
                         File () {}
@@ -355,7 +351,7 @@ namespace thekogans {
 
                         THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (File)
                     };
-                    std::list<File::Ptr> files;
+                    std::list<File::SharedPtr> files;
 
                     explicit FileList (const std::string &destinationPrefix_) :
                         install (false),
@@ -363,9 +359,8 @@ namespace thekogans {
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (FileList)
                 };
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL IncludeDirectories {
-                    using Ptr = std::unique_ptr<IncludeDirectories>;
-
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL IncludeDirectories : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (IncludeDirectories)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
@@ -377,13 +372,12 @@ namespace thekogans {
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (IncludeDirectories)
                 };
-                std::list<IncludeDirectories::Ptr> include_directories;
+                std::list<IncludeDirectories::SharedPtr> include_directories;
                 std::list<std::string> preprocessor_definitions;
                 std::list<std::string> linker_flags;
                 std::list<std::string> librarian_flags;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL LinkLibraries {
-                    using Ptr = std::unique_ptr<LinkLibraries>;
-
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL LinkLibraries : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (LinkLibraries)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
@@ -398,42 +392,42 @@ namespace thekogans {
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (LinkLibraries)
                 };
-                std::list<LinkLibraries::Ptr> link_libraries;
+                std::list<LinkLibraries::SharedPtr> link_libraries;
                 std::list<std::string> masm_flags;
                 std::list<std::string> masm_preprocessor_definitions;
-                std::list<FileList::Ptr> masm_headers;
-                std::list<FileList::Ptr> masm_sources;
-                std::list<FileList::Ptr> masm_tests;
+                std::list<FileList::SharedPtr> masm_headers;
+                std::list<FileList::SharedPtr> masm_sources;
+                std::list<FileList::SharedPtr> masm_tests;
                 std::list<std::string> nasm_flags;
                 std::list<std::string> nasm_preprocessor_definitions;
-                std::list<FileList::Ptr> nasm_headers;
-                std::list<FileList::Ptr> nasm_sources;
-                std::list<FileList::Ptr> nasm_tests;
+                std::list<FileList::SharedPtr> nasm_headers;
+                std::list<FileList::SharedPtr> nasm_sources;
+                std::list<FileList::SharedPtr> nasm_tests;
                 std::list<std::string> c_flags;
                 std::list<std::string> c_preprocessor_definitions;
-                std::list<FileList::Ptr> c_headers;
-                std::list<FileList::Ptr> c_sources;
-                std::list<FileList::Ptr> c_tests;
+                std::list<FileList::SharedPtr> c_headers;
+                std::list<FileList::SharedPtr> c_sources;
+                std::list<FileList::SharedPtr> c_tests;
                 std::list<std::string> cpp_flags;
                 std::list<std::string> cpp_preprocessor_definitions;
-                std::list<FileList::Ptr> cpp_headers;
-                std::list<FileList::Ptr> cpp_sources;
-                std::list<FileList::Ptr> cpp_tests;
+                std::list<FileList::SharedPtr> cpp_headers;
+                std::list<FileList::SharedPtr> cpp_sources;
+                std::list<FileList::SharedPtr> cpp_tests;
                 std::list<std::string> objective_c_flags;
                 std::list<std::string> objective_c_preprocessor_definitions;
-                std::list<FileList::Ptr> objective_c_headers;
-                std::list<FileList::Ptr> objective_c_sources;
-                std::list<FileList::Ptr> objective_c_tests;
+                std::list<FileList::SharedPtr> objective_c_headers;
+                std::list<FileList::SharedPtr> objective_c_sources;
+                std::list<FileList::SharedPtr> objective_c_tests;
                 std::list<std::string> objective_cpp_flags;
                 std::list<std::string> objective_cpp_preprocessor_definitions;
-                std::list<FileList::Ptr> objective_cpp_headers;
-                std::list<FileList::Ptr> objective_cpp_sources;
-                std::list<FileList::Ptr> objective_cpp_tests;
-                std::list<FileList::Ptr> resources;
+                std::list<FileList::SharedPtr> objective_cpp_headers;
+                std::list<FileList::SharedPtr> objective_cpp_sources;
+                std::list<FileList::SharedPtr> objective_cpp_tests;
+                std::list<FileList::SharedPtr> resources;
                 // Windows specific.
                 std::list<std::string> rc_flags;
                 std::list<std::string> rc_preprocessor_definitions;
-                std::list<FileList::Ptr> rc_sources;
+                std::list<FileList::SharedPtr> rc_sources;
                 std::string subsystem;
                 std::string def_file;
                 // OSX specific.
@@ -484,7 +478,7 @@ namespace thekogans {
 
                 void CheckDependencies () const;
                 void ListDependencies (util::ui32 indentationLevel) const;
-                const Dependency *GetDependency (
+                Dependency::SharedPtr GetDependency (
                     const std::string &organization,
                     const std::string &name) const;
 
@@ -573,7 +567,7 @@ namespace thekogans {
                 void Parseconstants (pugi::xml_node &node);
                 void Parsedependencies (
                     pugi::xml_node &node,
-                    std::list<Dependency::Ptr> &dependencies);
+                    std::list<Dependency::SharedPtr> &dependencies);
                 void Parsedependencyfeatures (
                     pugi::xml_node &node,
                     std::set<std::string> &features);

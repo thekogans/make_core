@@ -235,6 +235,8 @@ namespace thekogans {
                 }
 
                 struct ProjectDependency : public thekogans_make::Dependency {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (ProjectDependency)
+
                     std::string organization;
                     std::string name;
                     mutable std::string branch;
@@ -274,11 +276,9 @@ namespace thekogans {
                                         GetConfig (),
                                         GetType ());
                                 std::set<std::string> missingFeatures;
-                                for (std::set<std::string>::const_iterator
-                                        it = features.begin (),
-                                        end = features.end (); it != end; ++it) {
-                                    if (config.features.find (*it) == config.features.end ()) {
-                                        missingFeatures.insert (*it);
+                                for (auto feature : features) {
+                                    if (config.features.find (feature) == config.features.end ()) {
+                                        missingFeatures.insert (feature);
                                     }
                                 }
                                 if (!missingFeatures.empty ()) {
@@ -356,10 +356,8 @@ namespace thekogans {
                             versions[projectName].insert (
                                 VersionAndBranch (
                                     version.empty () ? config.GetVersion () : version, branch));
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->CollectVersions (versions);
+                            for (auto dependency : config.dependencies) {
+                                dependency->CollectVersions (versions);
                             }
                         }
                     }
@@ -419,10 +417,8 @@ namespace thekogans {
                                     version = versionSet.begin ()->first;
                                 }
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->SetMinVersion (versions, visitedDependencies);
+                            for (auto dependency : config.dependencies) {
+                                dependency->SetMinVersion (versions, visitedDependencies);
                             }
                         }
                     }
@@ -460,10 +456,8 @@ namespace thekogans {
                                     preprocessorDefinitions.end (), type) == preprocessorDefinitions.end ()) {
                                 preprocessorDefinitions.push_back (type);
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
                             }
                         }
                     }
@@ -477,15 +471,11 @@ namespace thekogans {
                                 GetConfig (),
                                 GetType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
-                            for (std::set<std::string>::const_iterator
-                                    it = config.features.begin (),
-                                    end = config.features.end (); it != end; ++it) {
-                                features.insert (*it);
+                            for (auto feature : config.features) {
+                                features.insert (feature);
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetFeatures (features);
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetFeatures (features);
                             }
                         }
                     }
@@ -513,12 +503,8 @@ namespace thekogans {
                             for (auto linker_flag : config.linker_flags) {
                                 linker_flags.insert (linker_flag);
                             }
-                            if (config.type == TYPE_STATIC) {
-                                for (std::list<Dependency::Ptr>::const_iterator
-                                        it = config.dependencies.begin (),
-                                        end = config.dependencies.end (); it != end; ++it) {
-                                    (*it)->GetLinkerFlags (linker_flags);
-                                }
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetLinkerFlags (linker_flags);
                             }
                         }
                     }
@@ -535,12 +521,8 @@ namespace thekogans {
                             for (auto c_flag : config.c_flags) {
                                 c_flags.insert (c_flag);
                             }
-                            if (config.type == TYPE_STATIC) {
-                                for (std::list<Dependency::Ptr>::const_iterator
-                                        it = config.dependencies.begin (),
-                                        end = config.dependencies.end (); it != end; ++it) {
-                                    (*it)->GetCFlags (c_flags);
-                                }
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetCFlags (c_flags);
                             }
                         }
                     }
@@ -554,23 +536,17 @@ namespace thekogans {
                                 GetConfig (),
                                 GetType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
-                            for (std::list<thekogans_make::IncludeDirectories::Ptr>::const_iterator
-                                    it = config.include_directories.begin (),
-                                    end = config.include_directories.end (); it != end; ++it) {
-                                if ((*it)->install) {
+                            for (auto include_directory : config.include_directories) {
+                                if (include_directory->install) {
                                     std::string prefix =
-                                        MakePath (config.project_root, (*it)->prefix);
-                                    for (std::list<std::string>::const_iterator
-                                            jt = (*it)->paths.begin (),
-                                            end = (*it)->paths.end (); jt != end; ++jt) {
-                                        include_directories.insert (MakePath (prefix, *jt));
+                                        MakePath (config.project_root, include_directory->prefix);
+                                    for (auto path : include_directory->paths) {
+                                        include_directories.insert (MakePath (prefix, path));
                                     }
                                 }
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetIncludeDirectories (include_directories);
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetIncludeDirectories (include_directories);
                             }
                         }
                     }
@@ -588,10 +564,8 @@ namespace thekogans {
                                 link_libraries.push_back (config.GetProjectLinkLibrary ());
                             }
                             if (config.type == TYPE_STATIC) {
-                                for (std::list<Dependency::Ptr>::const_iterator
-                                        it = config.dependencies.begin (),
-                                        end = config.dependencies.end (); it != end; ++it) {
-                                    (*it)->GetLinkLibraries (link_libraries);
+                                for (auto dependency : config.dependencies) {
+                                    dependency->GetLinkLibraries (link_libraries);
                                 }
                             }
                         }
@@ -609,10 +583,8 @@ namespace thekogans {
                             if (GetType () == TYPE_SHARED && config.HasGoal ()) {
                                 shared_libraries.insert (config.GetProjectGoal ());
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetSharedLibraries (shared_libraries);
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetSharedLibraries (shared_libraries);
                             }
                         }
                     }
@@ -655,15 +627,15 @@ namespace thekogans {
                                 GetGenerator (),
                                 GetConfig (),
                                 GetType ());
-                        for (std::list<Dependency::Ptr>::const_iterator
-                                it = config.dependencies.begin (),
-                                end = config.dependencies.end (); it != end; ++it) {
-                            (*it)->ListDependencies (indentationLevel + 1);
+                        for (auto dependency : config.dependencies) {
+                            dependency->ListDependencies (indentationLevel + 1);
                         }
                     }
                 };
 
                 struct ToolchainDependency : public thekogans_make::Dependency {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (ToolchainDependency)
+
                     std::string organization;
                     std::string name;
                     mutable std::string version;
@@ -697,11 +669,9 @@ namespace thekogans {
                                         GetConfig (),
                                         GetType ());
                                 std::set<std::string> missingFeatures;
-                                for (std::set<std::string>::const_iterator
-                                        it = features.begin (),
-                                        end = features.end (); it != end; ++it) {
-                                    if (config.features.find (*it) == config.features.end ()) {
-                                        missingFeatures.insert (*it);
+                                for (auto feature : features) {
+                                    if (config.features.find (feature) == config.features.end ()) {
+                                        missingFeatures.insert (feature);
                                     }
                                 }
                                 if (!missingFeatures.empty ()) {
@@ -776,10 +746,8 @@ namespace thekogans {
                                     std::string (),
                                     std::string ());
                             versions[projectName].insert (VersionAndBranch (version, std::string ()));
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->CollectVersions (versions);
+                            for (auto dependency : config.dependencies) {
+                                dependency->CollectVersions (versions);
                             }
                         }
                     }
@@ -818,10 +786,8 @@ namespace thekogans {
                                 }
                                 version = versionSet.begin ()->first;
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->SetMinVersion (versions, visitedDependencies);
+                            for (auto dependency : config.dependencies) {
+                                dependency->SetMinVersion (versions, visitedDependencies);
                             }
                         }
                     }
@@ -853,10 +819,8 @@ namespace thekogans {
                                     preprocessorDefinitions.end (), type) == preprocessorDefinitions.end ()) {
                                 preprocessorDefinitions.push_back (type);
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
                             }
                         }
                     }
@@ -870,15 +834,11 @@ namespace thekogans {
                                 GetConfig (),
                                 GetType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
-                            for (std::set<std::string>::const_iterator
-                                    it = config.features.begin (),
-                                    end = config.features.end (); it != end; ++it) {
-                                features.insert (*it);
+                            for (auto feature : config.features) {
+                                features.insert (feature);
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetFeatures (features);
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetFeatures (features);
                             }
                         }
                     }
@@ -907,10 +867,8 @@ namespace thekogans {
                                 linker_flags.insert (linker_flag);
                             }
                             if (config.type == TYPE_STATIC) {
-                                for (std::list<Dependency::Ptr>::const_iterator
-                                        it = config.dependencies.begin (),
-                                        end = config.dependencies.end (); it != end; ++it) {
-                                    (*it)->GetLinkerFlags (linker_flags);
+                                for (auto dependency : config.dependencies) {
+                                    dependency->GetLinkerFlags (linker_flags);
                                 }
                             }
                         }
@@ -929,10 +887,8 @@ namespace thekogans {
                                 c_flags.insert (c_flag);
                             }
                             if (config.type == TYPE_STATIC) {
-                                for (std::list<Dependency::Ptr>::const_iterator
-                                        it = config.dependencies.begin (),
-                                        end = config.dependencies.end (); it != end; ++it) {
-                                    (*it)->GetCFlags (c_flags);
+                                for (auto dependency : config.dependencies) {
+                                    dependency->GetCFlags (c_flags);
                                 }
                             }
                         }
@@ -949,15 +905,11 @@ namespace thekogans {
                                 GetType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (!config.include_directories.empty ()) {
-                                for (std::list<thekogans_make::IncludeDirectories::Ptr>::const_iterator
-                                        it = config.include_directories.begin (),
-                                        end = config.include_directories.end (); it != end; ++it) {
+                                for (auto include_directory : config.include_directories) {
                                     std::string prefix =
-                                        MakePath (config.project_root, (*it)->prefix);
-                                    for (std::list<std::string>::const_iterator
-                                            jt = (*it)->paths.begin (),
-                                            end = (*it)->paths.end (); jt != end; ++jt) {
-                                        include_directories.insert (MakePath (prefix, *jt));
+                                        MakePath (config.project_root, include_directory->prefix);
+                                    for (auto path : include_directory->paths) {
+                                        include_directories.insert (MakePath (prefix, path));
                                     }
                                 }
                             }
@@ -967,10 +919,8 @@ namespace thekogans {
                                     include_directories.insert (include_directory);
                                 }
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
-                                    it = config.dependencies.begin (),
-                                    end = config.dependencies.end (); it != end; ++it) {
-                                (*it)->GetIncludeDirectories (include_directories);
+                            for (auto dependency : config.dependencies) {
+                                dependency->GetIncludeDirectories (include_directories);
                             }
                         }
                     }
@@ -986,7 +936,7 @@ namespace thekogans {
                                 GetType ());
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (!config.link_libraries.empty ()) {
-                                for (std::list<thekogans_make::LinkLibraries::Ptr>::const_iterator
+                                for (std::list<thekogans_make::LinkLibraries::SharedPtr>::const_iterator
                                         it = config.link_libraries.begin (),
                                         end = config.link_libraries.end (); it != end; ++it) {
                                     std::string prefix =
@@ -1005,7 +955,7 @@ namespace thekogans {
                                 }
                             }
                             if (config.type == TYPE_STATIC) {
-                                for (std::list<Dependency::Ptr>::const_iterator
+                                for (std::list<Dependency::SharedPtr>::const_iterator
                                         it = config.dependencies.begin (),
                                         end = config.dependencies.end (); it != end; ++it) {
                                     (*it)->GetLinkLibraries (link_libraries);
@@ -1025,7 +975,7 @@ namespace thekogans {
                         if (config.project_type == PROJECT_TYPE_LIBRARY) {
                             if (GetType () == TYPE_SHARED) {
                                 if (!config.link_libraries.empty ()) {
-                                    for (std::list<thekogans_make::LinkLibraries::Ptr>::const_iterator
+                                    for (std::list<thekogans_make::LinkLibraries::SharedPtr>::const_iterator
                                             it = config.link_libraries.begin (),
                                             end = config.link_libraries.end (); it != end; ++it) {
                                         std::string prefix =
@@ -1053,7 +1003,7 @@ namespace thekogans {
                                     }
                                 }
                             }
-                            for (std::list<Dependency::Ptr>::const_iterator
+                            for (std::list<Dependency::SharedPtr>::const_iterator
                                     it = config.dependencies.begin (),
                                     end = config.dependencies.end (); it != end; ++it) {
                                 (*it)->GetSharedLibraries (shared_libraries);
@@ -1091,7 +1041,7 @@ namespace thekogans {
                                 GetGenerator (),
                                 GetConfig (),
                                 GetType ());
-                        for (std::list<Dependency::Ptr>::const_iterator
+                        for (std::list<Dependency::SharedPtr>::const_iterator
                                 it = config.dependencies.begin (),
                                 end = config.dependencies.end (); it != end; ++it) {
                             (*it)->ListDependencies (indentationLevel + 1);
@@ -1100,6 +1050,8 @@ namespace thekogans {
                 };
 
                 struct PackageDependency : public thekogans_make::Dependency {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (PackageDependency)
+
                     std::string path;
                     std::string name;
                     std::string version;
@@ -1214,6 +1166,8 @@ namespace thekogans {
                 };
 
                 struct LibraryDependency : public thekogans_make::Dependency {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (LibraryDependency)
+
                     std::string path;
                     std::string name;
                     const thekogans_make &dependent;
@@ -1315,6 +1269,8 @@ namespace thekogans {
                 };
 
                 struct FrameworkDependency : public thekogans_make::Dependency {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (FrameworkDependency)
+
                     std::string path;
                     std::string name;
                     const thekogans_make &dependent;
@@ -1555,7 +1511,7 @@ namespace thekogans {
                     const std::string &generator,
                     const std::string &config,
                     const std::string &type) {
-                using ConfigMap = std::map<std::string, thekogans_make::Ptr>;
+                using ConfigMap = std::map<std::string, thekogans_make::SharedPtr>;
                 static ConfigMap configMap;
                 std::string configKey =
                     GetConfigKey (project_root, config_file, generator, config, type);
@@ -1567,7 +1523,7 @@ namespace thekogans {
                         configMap.insert (
                             ConfigMap::value_type (
                                 configKey,
-                                thekogans_make::Ptr (
+                                thekogans_make::SharedPtr (
                                     new thekogans_make (
                                         project_root,
                                         config_file,
@@ -1591,13 +1547,13 @@ namespace thekogans {
                     MakePath (project_root, config_file) << std::endl;
                 std::cout.flush ();
                 Dependency::Versions versions;
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->CollectVersions (versions);
                 }
                 std::set<std::string> visitedDependencies;
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->SetMinVersion (versions, visitedDependencies);
@@ -1609,21 +1565,19 @@ namespace thekogans {
                     std::string (indentationLevel * 2, ' ') <<
                     MakePath (project_root, config_file) << std::endl;
                 std::cout.flush ();
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->ListDependencies (indentationLevel + 1);
                 }
             }
 
-            const thekogans_make::Dependency *thekogans_make::GetDependency (
+            thekogans_make::Dependency::SharedPtr thekogans_make::GetDependency (
                     const std::string &organization,
                     const std::string &name) const {
-                for (std::list<Dependency::Ptr>::const_iterator
-                        it = dependencies.begin (),
-                        end = dependencies.end (); it != end; ++it) {
-                    if ((*it)->GetOrganization () == organization && (*it)->GetName () == name) {
-                        return (*it).get ();
+                for (auto dependency : dependencies) {
+                    if (dependency->GetOrganization () == organization && dependency->GetName () == name) {
+                        return dependency;
                     }
                 }
                 return nullptr;
@@ -1639,7 +1593,7 @@ namespace thekogans {
                         end = features.end (); it != end; ++it) {
                     features_.insert (*it);
                 }
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetFeatures (features_);
@@ -1652,7 +1606,7 @@ namespace thekogans {
 
             void thekogans_make::GetIncludeDirectories (
                     std::set<std::string> &include_directories_) const {
-                for (std::list<IncludeDirectories::Ptr>::const_iterator
+                for (std::list<IncludeDirectories::SharedPtr>::const_iterator
                         it = include_directories.begin (),
                         end = include_directories.end (); it != end; ++it) {
                     std::string prefix = MakePath (project_root, (*it)->prefix);
@@ -1662,7 +1616,7 @@ namespace thekogans {
                         include_directories_.insert (MakePath (prefix, *jt));
                     }
                 }
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetIncludeDirectories (include_directories_);
@@ -1671,12 +1625,10 @@ namespace thekogans {
 
             void thekogans_make::GetFrameworkDirectories (
                     std::set<std::string> &framework_directories) const {
-                for (std::list<Dependency::Ptr>::const_iterator
-                        it = dependencies.begin (),
-                        end = dependencies.end (); it != end; ++it) {
-                    FrameworkDependency *dependency = dynamic_cast<FrameworkDependency *> ((*it).get ());
-                    if (dependency != 0) {
-                        framework_directories.insert (dependency->path);
+                for (auto dependency : dependencies) {
+                    FrameworkDependency::SharedPtr frameworkDependency = dependency;
+                    if (frameworkDependency != nullptr) {
+                        framework_directories.insert (frameworkDependency->path);
                     }
                 }
             }
@@ -1684,7 +1636,7 @@ namespace thekogans {
             void thekogans_make::GetLinkLibraries (
                     std::list<std::string> &link_libraries_) const {
                 std::list<std::string> link_libraries;
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetLinkLibraries (link_libraries);
@@ -1701,7 +1653,7 @@ namespace thekogans {
 
             void thekogans_make::GetSharedLibraries (
                     std::set<std::string> &shared_libraries) const {
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetSharedLibraries (shared_libraries);
@@ -1714,7 +1666,7 @@ namespace thekogans {
                          end = linker_flags.end (); it != end; ++it) {
                     linker_flags_.insert (*it);
                 }
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                          it = dependencies.begin (),
                          end = dependencies.end (); it != end; ++it) {
                     (*it)->GetLinkerFlags (linker_flags_);
@@ -1769,7 +1721,7 @@ namespace thekogans {
                          end = c_flags.end (); it != end; ++it) {
                     c_flags_.insert (*it);
                 }
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                          it = dependencies.begin (),
                          end = dependencies.end (); it != end; ++it) {
                     (*it)->GetCFlags (c_flags_);
@@ -1936,16 +1888,13 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &project,
                     const std::string &example) const {
-                for (std::list<Dependency::Ptr>::const_iterator
-                        it = dependencies.begin (),
-                        end = dependencies.end (); it != end; ++it) {
-                    ProjectDependency *dependency =
-                        dynamic_cast<ProjectDependency *> ((*it).get ());
-                    if (dependency != 0 &&
-                            dependency->organization == organization &&
-                            dependency->name == project &&
-                            dependency->example == example) {
-                        return dependency->version;
+                for (auto dependency : dependencies) {
+                    ProjectDependency::SharedPtr projectDependency = dependency;
+                    if (projectDependency != nullptr &&
+                            projectDependency->organization == organization &&
+                            projectDependency->name == project &&
+                            projectDependency->example == example) {
+                        return projectDependency->version;
                     }
                 }
                 return std::string ();
@@ -1954,15 +1903,12 @@ namespace thekogans {
             std::string thekogans_make::GetToolchainDependencyVersion (
                     const std::string &organization,
                     const std::string &project) const {
-                for (std::list<Dependency::Ptr>::const_iterator
-                        it = dependencies.begin (),
-                        end = dependencies.end (); it != end; ++it) {
-                    ToolchainDependency *dependency =
-                        dynamic_cast<ToolchainDependency *> ((*it).get ());
-                    if (dependency != 0 &&
-                            dependency->organization == organization &&
-                            dependency->name == project) {
-                        return dependency->version;
+                for (auto dependency : dependencies) {
+                    ToolchainDependency::SharedPtr toolchainDependency = dependency;
+                    if (toolchainDependency != nullptr &&
+                            toolchainDependency->organization == organization &&
+                            toolchainDependency->name == project) {
+                        return toolchainDependency->version;
                     }
                 }
                 return std::string ();
@@ -2188,7 +2134,7 @@ namespace thekogans {
                     PREFIX + "_CONFIG_" + Expand ("$(config)"));
                 preprocessorDefinitions.push_back (
                     PREFIX + "_TYPE_" + Expand ("$(type)"));
-                for (std::list<Dependency::Ptr>::const_iterator
+                for (std::list<Dependency::SharedPtr>::const_iterator
                         it = dependencies.begin (),
                         end = dependencies.end (); it != end; ++it) {
                     (*it)->GetCommonPreprocessorDefinitions (preprocessorDefinitions);
@@ -2362,7 +2308,7 @@ namespace thekogans {
                             Parseprecompiled_header (child, precompiled_header);
                         }
                         else if (childName == TAG_INCLUDE_DIRECTORIES) {
-                            IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
+                            IncludeDirectories::SharedPtr includeDirectories (new IncludeDirectories);
                             {
                                 includeDirectories->prefix =
                                     Expand (child.attribute (ATTR_PREFIX).value ());
@@ -2387,7 +2333,7 @@ namespace thekogans {
                             Parselist (child, TAG_LIBRARIAN_FLAG, librarian_flags);
                         }
                         else if (childName == TAG_LINK_LIBRARIES) {
-                            LinkLibraries::Ptr linkLibraries (
+                            LinkLibraries::SharedPtr linkLibraries (
                                 new LinkLibraries (
                                     Expand (child.attribute (ATTR_PREFIX).value ()),
                                     Expand (child.attribute (ATTR_INSTALL).value ()) == VALUE_YES));
@@ -2411,11 +2357,11 @@ namespace thekogans {
                                 masm_preprocessor_definitions);
                         }
                         else if (childName == TAG_MASM_HEADERS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_MASM_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
+                                    IncludeDirectories::SharedPtr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
                                     includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
@@ -2424,14 +2370,14 @@ namespace thekogans {
                             }
                         }
                         else if (childName == TAG_MASM_SOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_MASM_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 masm_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_MASM_TESTS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_MASM_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 masm_tests.push_back (std::move (fileList));
@@ -2447,11 +2393,11 @@ namespace thekogans {
                                 nasm_preprocessor_definitions);
                         }
                         else if (childName == TAG_NASM_HEADERS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_NASM_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
+                                    IncludeDirectories::SharedPtr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
                                     includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
@@ -2460,14 +2406,14 @@ namespace thekogans {
                             }
                         }
                         else if (childName == TAG_NASM_SOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_NASM_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 nasm_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_NASM_TESTS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_NASM_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 nasm_tests.push_back (std::move (fileList));
@@ -2483,11 +2429,11 @@ namespace thekogans {
                                 c_preprocessor_definitions);
                         }
                         else if (childName == TAG_C_HEADERS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_C_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
+                                    IncludeDirectories::SharedPtr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
                                     includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
@@ -2496,14 +2442,14 @@ namespace thekogans {
                             }
                         }
                         else if (childName == TAG_C_SOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_C_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 c_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_C_TESTS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_C_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 c_tests.push_back (std::move (fileList));
@@ -2519,11 +2465,11 @@ namespace thekogans {
                                 cpp_preprocessor_definitions);
                         }
                         else if (childName == TAG_CPP_HEADERS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_CPP_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
+                                    IncludeDirectories::SharedPtr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
                                     includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
@@ -2532,14 +2478,14 @@ namespace thekogans {
                             }
                         }
                         else if (childName == TAG_CPP_SOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_CPP_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 cpp_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_CPP_TESTS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_CPP_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 cpp_tests.push_back (std::move (fileList));
@@ -2558,11 +2504,11 @@ namespace thekogans {
                                 objective_c_preprocessor_definitions);
                         }
                         else if (childName == TAG_OBJECTIVE_C_HEADERS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_C_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
+                                    IncludeDirectories::SharedPtr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
                                     includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
@@ -2571,14 +2517,14 @@ namespace thekogans {
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_C_SOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_C_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_c_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_C_TESTS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_C_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_c_tests.push_back (std::move (fileList));
@@ -2594,11 +2540,11 @@ namespace thekogans {
                                 objective_cpp_preprocessor_definitions);
                         }
                         else if (childName == TAG_OBJECTIVE_CPP_HEADERS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainIncludeDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainIncludeDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_CPP_HEADER, *fileList);
                             if (!fileList->files.empty ()) {
                                 {
-                                    IncludeDirectories::Ptr includeDirectories (new IncludeDirectories);
+                                    IncludeDirectories::SharedPtr includeDirectories (new IncludeDirectories);
                                     includeDirectories->install = fileList->install;
                                     includeDirectories->paths.push_back (fileList->prefix);
                                     include_directories.push_back (std::move (includeDirectories));
@@ -2607,21 +2553,21 @@ namespace thekogans {
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_CPP_SOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainSrcDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainSrcDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_CPP_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_cpp_sources.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_OBJECTIVE_CPP_TESTS) {
-                            FileList::Ptr fileList (new FileList (GetToolchainTestsDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainTestsDirectory ()));
                             ParseFileList (child, TAG_OBJECTIVE_CPP_TEST, *fileList);
                             if (!fileList->files.empty ()) {
                                 objective_cpp_tests.push_back (std::move (fileList));
                             }
                         }
                         else if (childName == TAG_RESOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainResourcesDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainResourcesDirectory ()));
                             ParseFileList (child, TAG_RESOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 resources.push_back (std::move (fileList));
@@ -2638,7 +2584,7 @@ namespace thekogans {
                                 rc_preprocessor_definitions);
                         }
                         else if (childName == TAG_RC_SOURCES) {
-                            FileList::Ptr fileList (new FileList (GetToolchainResourcesDirectory ()));
+                            FileList::SharedPtr fileList (new FileList (GetToolchainResourcesDirectory ()));
                             ParseFileList (child, TAG_RC_SOURCE, *fileList);
                             if (!fileList->files.empty ()) {
                                 rc_sources.push_back (std::move (fileList));
@@ -2686,7 +2632,7 @@ namespace thekogans {
 
             void thekogans_make::Parsedependencies (
                     pugi::xml_node &node,
-                    std::list<Dependency::Ptr> &dependencies) {
+                    std::list<Dependency::SharedPtr> &dependencies) {
                 for (pugi::xml_node child = node.first_child ();
                         !child.empty (); child = child.next_sibling ()) {
                     if (child.type () == pugi::node_element) {
@@ -2711,7 +2657,7 @@ namespace thekogans {
                             Parsedependencyfeatures (child, features);
                             if (Project::Find (organization, name, branch, version, std::string ())) {
                                 dependencies.push_back (
-                                    Dependency::Ptr (
+                                    Dependency::SharedPtr (
                                         new ProjectDependency (
                                             organization,
                                             name,
@@ -2725,7 +2671,7 @@ namespace thekogans {
                             }
                             else {
                                 dependencies.push_back (
-                                    Dependency::Ptr (
+                                    Dependency::SharedPtr (
                                         new ToolchainDependency (
                                             organization,
                                             name,
@@ -2759,7 +2705,7 @@ namespace thekogans {
                             std::set<std::string> features;
                             Parsedependencyfeatures (child, features);
                             dependencies.push_back (
-                                Dependency::Ptr (
+                                Dependency::SharedPtr (
                                     new ProjectDependency (
                                         organization,
                                         name,
@@ -2789,7 +2735,7 @@ namespace thekogans {
                             std::set<std::string> features;
                             Parsedependencyfeatures (child, features);
                             dependencies.push_back (
-                                Dependency::Ptr (
+                                Dependency::SharedPtr (
                                     new ToolchainDependency (
                                         organization,
                                         name,
@@ -2805,7 +2751,7 @@ namespace thekogans {
                             std::string version = Expand (child.attribute (ATTR_VERSION).value ());
                             if (!name.empty ()) {
                                 dependencies.push_back (
-                                    Dependency::Ptr (
+                                    Dependency::SharedPtr (
                                         new PackageDependency (path, name, version, *this)));
                             }
                         }
@@ -2814,7 +2760,7 @@ namespace thekogans {
                             std::string name = Expand (child.attribute (ATTR_NAME).value ());
                             if (!name.empty ()) {
                                 dependencies.push_back (
-                                    Dependency::Ptr (
+                                    Dependency::SharedPtr (
                                         new LibraryDependency (path, name, *this)));
                             }
                         }
@@ -2823,7 +2769,7 @@ namespace thekogans {
                             std::string name = Expand (child.attribute (ATTR_NAME).value ());
                             if (!name.empty ()) {
                                 dependencies.push_back (
-                                    Dependency::Ptr (
+                                    Dependency::SharedPtr (
                                         new FrameworkDependency (path, name, *this)));
                             }
                         }
@@ -2989,7 +2935,7 @@ namespace thekogans {
                         if (childName == name) {
                             std::string value = util::TrimSpaces (child.text ().get ());
                             if (!value.empty ()) {
-                                FileList::File::Ptr file (
+                                FileList::File::SharedPtr file (
                                     new FileList::File (Expand (value.c_str ())));
                                 ParseFile (child, *file);
                                 fileList.files.push_back (std::move (file));
@@ -3020,7 +2966,7 @@ namespace thekogans {
                             for (std::list<std::string>::const_iterator
                                     it = results.begin (),
                                     end = results.end (); it != end; ++it) {
-                                FileList::File::Ptr file (new FileList::File (*it));
+                                FileList::File::SharedPtr file (new FileList::File (*it));
                                 ParseFile (child, *file);
                                 fileList.files.push_back (std::move (file));
                             }
@@ -3058,7 +3004,7 @@ namespace thekogans {
                 std::string name = Expand (node.attribute (ATTR_NAME).value ());
                 localSymbolTable[ATTR_NAME] =
                     Value (MakePath (MakePath (project_root, fileList.prefix), name));
-                FileList::File::Ptr file (new FileList::File (name, true));
+                FileList::File::SharedPtr file (new FileList::File (name, true));
                 for (pugi::xml_node child = node.first_child ();
                         !child.empty (); child = child.next_sibling ()) {
                     if (child.type () == pugi::node_element) {

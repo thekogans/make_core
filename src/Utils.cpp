@@ -105,6 +105,8 @@ namespace thekogans {
                 util::GetEnvironmentVariable ("TOOLCHAIN_SHELL");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_MAKE =
                 util::GetEnvironmentVariable ("TOOLCHAIN_MAKE");
+            _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_CURL =
+                util::GetEnvironmentVariable ("TOOLCHAIN_CURL");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_ENDIAN =
                 util::GetEnvironmentVariable ("TOOLCHAIN_ENDIAN");
             _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_DIR =
@@ -154,6 +156,8 @@ namespace thekogans {
                 insert (value_type ("TOOLCHAIN_COMMON_BIN", Value (_TOOLCHAIN_COMMON_BIN)));
                 insert (value_type ("TOOLCHAIN_COMMON_RESOURCES", Value (_TOOLCHAIN_COMMON_RESOURCES)));
                 insert (value_type ("TOOLCHAIN_SHELL", Value (_TOOLCHAIN_SHELL)));
+                insert (value_type ("TOOLCHAIN_MAKE", Value (_TOOLCHAIN_MAKE)));
+                insert (value_type ("TOOLCHAIN_CURL", Value (_TOOLCHAIN_CURL)));
                 insert (value_type ("TOOLCHAIN_ENDIAN", Value (_TOOLCHAIN_ENDIAN)));
                 insert (value_type ("TOOLCHAIN_DIR", Value (_TOOLCHAIN_DIR)));
                 insert (value_type ("TOOLCHAIN_BRANCH", Value (_TOOLCHAIN_BRANCH)));
@@ -577,7 +581,7 @@ namespace thekogans {
                         MAKE,
                         config_,
                         type);
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                             it = config.dependencies.begin (),
                             end = config.dependencies.end (); it != end; ++it) {
                         if ((*it)->GetProjectRoot () == _TOOLCHAIN_DIR) {
@@ -963,7 +967,7 @@ namespace thekogans {
                         TYPE_SHARED);
                 if (plugin_config.project_type == PROJECT_TYPE_PLUGIN) {
                     std::string fromPlugin = plugin_config.GetProjectGoal ();
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                             it = plugin_config.plugin_hosts.begin (),
                             end = plugin_config.plugin_hosts.end (); it != end; ++it) {
                         if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -1158,7 +1162,7 @@ namespace thekogans {
                             config_,
                             type);
                         if (config.project_type == PROJECT_TYPE_PLUGIN) {
-                            for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                            for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                     it = config.plugin_hosts.begin (),
                                     end = config.plugin_hosts.end (); it != end; ++it) {
                                 if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -1192,7 +1196,7 @@ namespace thekogans {
                                 }
                             }
                         }
-                        for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                        for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                 it = config.dependencies.begin (),
                                 end = config.dependencies.end (); it != end; ++it) {
                             if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -1236,6 +1240,7 @@ namespace thekogans {
                     arguments.push_back ("--quiet");
                 }
                 if (parallel_build) {
+                    arguments.push_back ("--output-sync");
                     arguments.push_back ("-j");
                 }
                 arguments.push_back ("mode=" + mode);

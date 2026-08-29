@@ -127,6 +127,8 @@ namespace thekogans {
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_COMMON_BIN;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_COMMON_RESOURCES;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_SHELL;
+            extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_MAKE;
+            extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_CURL;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_ENDIAN;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_DIR;
             extern _LIB_THEKOGANS_MAKE_CORE_DECL const std::string _TOOLCHAIN_BRANCH;

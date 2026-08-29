@@ -43,13 +43,11 @@ namespace thekogans {
                         const thekogans_make &ReleaseShared,
                         const thekogans_make &ReleaseStatic,
                         std::set<std::string> &commonFeatures) {
-                    for (std::set<std::string>::const_iterator
-                            it = DebugShared.features.begin (),
-                            end = DebugShared.features.end (); it != end; ++it) {
-                        if (DebugStatic.features.find (*it) != DebugStatic.features.end () &&
-                                ReleaseShared.features.find (*it) != ReleaseShared.features.end () &&
-                                ReleaseStatic.features.find (*it) != ReleaseStatic.features.end ()) {
-                            commonFeatures.insert (*it);
+                    for (auto feature : DebugShared.features) {
+                        if (DebugStatic.features.find (feature) != DebugStatic.features.end () &&
+                                ReleaseShared.features.find (feature) != ReleaseShared.features.end () &&
+                                ReleaseStatic.features.find (feature) != ReleaseStatic.features.end ()) {
+                            commonFeatures.insert (feature);
                         }
                     }
                 }
@@ -64,32 +62,24 @@ namespace thekogans {
                         std::set<std::string> &DebugStaticFeatures,
                         std::set<std::string> &ReleaseSharedFeatures,
                         std::set<std::string> &ReleaseStaticFeatures) {
-                    for (std::set<std::string>::const_iterator
-                            it = DebugShared.features.begin (),
-                            end = DebugShared.features.end (); it != end; ++it) {
-                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            DebugSharedFeatures.insert (*it);
+                    for (auto feature :DebugShared.features) {
+                        if (commonFeatures.find (feature) == commonFeatures.end ()) {
+                            DebugSharedFeatures.insert (feature);
                         }
                     }
-                    for (std::set<std::string>::const_iterator
-                            it = DebugStatic.features.begin (),
-                            end = DebugStatic.features.end (); it != end; ++it) {
-                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            DebugStaticFeatures.insert (*it);
+                    for (auto feature : DebugStatic.features) {
+                        if (commonFeatures.find (feature) == commonFeatures.end ()) {
+                            DebugStaticFeatures.insert (feature);
                         }
                     }
-                    for (std::set<std::string>::const_iterator
-                            it = ReleaseShared.features.begin (),
-                            end = ReleaseShared.features.end (); it != end; ++it) {
-                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            ReleaseSharedFeatures.insert (*it);
+                    for (auto feature : ReleaseShared.features) {
+                        if (commonFeatures.find (feature) == commonFeatures.end ()) {
+                            ReleaseSharedFeatures.insert (feature);
                         }
                     }
-                    for (std::set<std::string>::const_iterator
-                            it = ReleaseStatic.features.begin (),
-                            end = ReleaseStatic.features.end (); it != end; ++it) {
-                        if (commonFeatures.find (*it) == commonFeatures.end ()) {
-                            ReleaseStaticFeatures.insert (*it);
+                    for (auto feature : ReleaseStatic.features) {
+                        if (commonFeatures.find (feature) == commonFeatures.end ()) {
+                            ReleaseStaticFeatures.insert (feature);
                         }
                     }
                 }
@@ -97,10 +87,8 @@ namespace thekogans {
                 bool ContainsDependency (
                         const thekogans_make &config,
                         const thekogans_make::Dependency &dependency) {
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = config.dependencies.begin (),
-                            end = config.dependencies.end (); it != end; ++it) {
-                        if ((*it)->EquivalentTo (dependency)) {
+                    for (auto dependency_ : config.dependencies) {
+                        if (dependency_->EquivalentTo (dependency)) {
                             return true;
                         }
                     }
@@ -112,25 +100,21 @@ namespace thekogans {
                         const thekogans_make &DebugStatic,
                         const thekogans_make &ReleaseShared,
                         const thekogans_make &ReleaseStatic,
-                        std::list<thekogans_make::Dependency *> &commonDependencies) {
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = DebugShared.dependencies.begin (),
-                            end = DebugShared.dependencies.end (); it != end; ++it) {
-                        if (ContainsDependency (DebugStatic, **it) &&
-                                ContainsDependency (ReleaseShared, **it) &&
-                                ContainsDependency (ReleaseStatic, **it)) {
-                            commonDependencies.push_back ((*it).get ());
+                        std::list<thekogans_make::Dependency::SharedPtr> &commonDependencies) {
+                    for (auto dependency : DebugShared.dependencies) {
+                        if (ContainsDependency (DebugStatic, *dependency) &&
+                                ContainsDependency (ReleaseShared, *dependency) &&
+                                ContainsDependency (ReleaseStatic, *dependency)) {
+                            commonDependencies.push_back (dependency);
                         }
                     }
                 }
 
                 bool DoesNotContainDependency (
-                        const std::list<thekogans_make::Dependency *> &commonDependencies,
+                        const std::list<thekogans_make::Dependency::SharedPtr> &commonDependencies,
                         const thekogans_make::Dependency &dependency) {
-                    for (std::list<thekogans_make::Dependency *>::const_iterator
-                            it = commonDependencies.begin (),
-                            end = commonDependencies.end (); it != end; ++it) {
-                        if ((*it)->EquivalentTo (dependency)) {
+                    for (auto dependency_ : commonDependencies) {
+                        if (dependency_->EquivalentTo (dependency)) {
                             return false;
                         }
                     }
@@ -142,37 +126,29 @@ namespace thekogans {
                         const thekogans_make &DebugStatic,
                         const thekogans_make &ReleaseShared,
                         const thekogans_make &ReleaseStatic,
-                        const std::list<thekogans_make::Dependency *> &commonDependencies,
-                        std::list<thekogans_make::Dependency *> &DebugSharedDependencies,
-                        std::list<thekogans_make::Dependency *> &DebugStaticDependencies,
-                        std::list<thekogans_make::Dependency *> &ReleaseSharedDependencies,
-                        std::list<thekogans_make::Dependency *> &ReleaseStaticDependencies) {
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = DebugShared.dependencies.begin (),
-                            end = DebugShared.dependencies.end (); it != end; ++it) {
-                        if (DoesNotContainDependency (commonDependencies, **it)) {
-                            DebugSharedDependencies.push_back ((*it).get ());
+                        const std::list<thekogans_make::Dependency::SharedPtr> &commonDependencies,
+                        std::list<thekogans_make::Dependency::SharedPtr> &DebugSharedDependencies,
+                        std::list<thekogans_make::Dependency::SharedPtr> &DebugStaticDependencies,
+                        std::list<thekogans_make::Dependency::SharedPtr> &ReleaseSharedDependencies,
+                        std::list<thekogans_make::Dependency::SharedPtr> &ReleaseStaticDependencies) {
+                    for (auto dependency : DebugShared.dependencies) {
+                        if (DoesNotContainDependency (commonDependencies, *dependency)) {
+                            DebugSharedDependencies.push_back (dependency);
                         }
                     }
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = DebugStatic.dependencies.begin (),
-                            end = DebugStatic.dependencies.end (); it != end; ++it) {
-                        if (DoesNotContainDependency (commonDependencies, **it)) {
-                            DebugStaticDependencies.push_back ((*it).get ());
+                    for (auto dependency : DebugStatic.dependencies) {
+                        if (DoesNotContainDependency (commonDependencies, *dependency)) {
+                            DebugStaticDependencies.push_back (dependency);
                         }
                     }
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = ReleaseShared.dependencies.begin (),
-                            end = ReleaseShared.dependencies.end (); it != end; ++it) {
-                        if (DoesNotContainDependency (commonDependencies, **it)) {
-                            ReleaseSharedDependencies.push_back ((*it).get ());
+                    for (auto dependency : ReleaseShared.dependencies) {
+                        if (DoesNotContainDependency (commonDependencies, *dependency)) {
+                            ReleaseSharedDependencies.push_back (dependency);
                         }
                     }
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = ReleaseStatic.dependencies.begin (),
-                            end = ReleaseStatic.dependencies.end (); it != end; ++it) {
-                        if (DoesNotContainDependency (commonDependencies, **it)) {
-                            ReleaseStaticDependencies.push_back ((*it).get ());
+                    for (auto dependency : ReleaseStatic.dependencies) {
+                        if (DoesNotContainDependency (commonDependencies, *dependency)) {
+                            ReleaseStaticDependencies.push_back (dependency);
                         }
                     }
                 }
@@ -181,21 +157,17 @@ namespace thekogans {
 
                 void GetInstallPaths (
                         const thekogans_make &config,
-                        const std::list<thekogans_make::FileList::Ptr> &fileList,
+                        const std::list<thekogans_make::FileList::SharedPtr> &fileLists,
                         std::set<InstallPaths> &installPaths) {
-                    for (std::list<thekogans_make::FileList::Ptr>::const_iterator
-                            it = fileList.begin (),
-                            end = fileList.end (); it != end; ++it) {
-                        if ((*it)->install) {
-                            std::string prefix = MakePath (config.project_root, (*it)->prefix);
-                            for (std::list<thekogans_make::FileList::File::Ptr>::const_iterator
-                                    jt = (*it)->files.begin (),
-                                    end = (*it)->files.end (); jt != end; ++jt) {
-                                if ((*jt)->customBuild.get () == 0) {
+                    for (auto fileList : fileLists) {
+                        if (fileList->install) {
+                            std::string prefix = MakePath (config.project_root, fileList->prefix);
+                            for (auto file : fileList->files) {
+                                if (file->customBuild == nullptr) {
                                     installPaths.insert (
                                         InstallPaths (
-                                            MakePath (prefix, (*jt)->name),
-                                            MakePath ((*it)->destinationPrefix, (*jt)->name)));
+                                            MakePath (prefix, file->name),
+                                            MakePath (fileList->destinationPrefix, file->name)));
                                 }
                                 else {
                                     std::string prefix =
@@ -203,14 +175,12 @@ namespace thekogans {
                                             MakePath (
                                                 config.project_root,
                                                 GetBuildDirectory (config.generator, config.config, config.type)),
-                                            (*it)->prefix);
-                                    for (std::vector<std::string>::const_iterator
-                                            kt = (*jt)->customBuild->outputs.begin (),
-                                            end = (*jt)->customBuild->outputs.end (); kt != end; ++kt) {
+                                            fileList->prefix);
+                                    for (auto output : file->customBuild->outputs) {
                                         installPaths.insert (
                                             InstallPaths (
-                                                MakePath (prefix, *kt),
-                                                MakePath ((*it)->destinationPrefix, *kt)));
+                                                MakePath (prefix, output),
+                                                MakePath (fileList->destinationPrefix, output)));
                                     }
                                 }
                             }
@@ -507,20 +477,18 @@ namespace thekogans {
                             install_config,
                             install_type);
                     std::list<std::string> dependencies;
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
-                            it = config.dependencies.begin (),
-                            end = config.dependencies.end (); it != end; ++it) {
-                        if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
-                            const core::thekogans_make &dependency = thekogans_make::GetConfig (
-                                (*it)->GetProjectRoot (),
-                                (*it)->GetConfigFile (),
-                                (*it)->GetGenerator (),
-                                (*it)->GetConfig (),
-                                (*it)->GetType ());
-                            if (dependency.project_type == PROJECT_TYPE_PROGRAM ||
-                                    dependency.project_type == PROJECT_TYPE_PLUGIN) {
-                                InstallDependency (dependency);
-                                dependencies.push_back ((*it)->ToString (2));
+                    for (auto dependency : config.dependencies) {
+                        if (dependency->GetConfigFile () == THEKOGANS_MAKE_XML) {
+                            const core::thekogans_make &dependency_ = thekogans_make::GetConfig (
+                                dependency->GetProjectRoot (),
+                                dependency->GetConfigFile (),
+                                dependency->GetGenerator (),
+                                dependency->GetConfig (),
+                                dependency->GetType ());
+                            if (dependency_.project_type == PROJECT_TYPE_PROGRAM ||
+                                    dependency_.project_type == PROJECT_TYPE_PLUGIN) {
+                                InstallDependency (dependency_);
+                                dependencies.push_back (dependency->ToString (2));
                             }
                         }
                     }
@@ -541,10 +509,8 @@ namespace thekogans {
                                 config.GetProjectGoal (),
                                 config.GetToolchainGoal ()));
                     }
-                    for (std::set<InstallPaths>::const_iterator
-                            it = installPaths.begin (),
-                            end = installPaths.end (); it != end; ++it) {
-                        CopyFile ((*it).first, (*it).second);
+                    for (auto installPath :  installPaths) {
+                        CopyFile (installPath.first, installPath.second);
                     }
                     CopyDependencies (
                         project_root,
@@ -644,10 +610,8 @@ namespace thekogans {
                             configFile << util::CloseTag (1, thekogans_make::TAG_DEPENDENCIES);
                         }
                         // resources
-                        for (std::list<thekogans_make::FileList::Ptr>::const_iterator
-                                it = config.resources.begin (),
-                                end = config.resources.end (); it != end; ++it) {
-                            if ((*it)->install) {
+                        for (auto resource : config.resources) {
+                            if (resource->install) {
                                 util::Attributes attributes;
                                 attributes.push_back (
                                     util::Attribute (
@@ -666,22 +630,18 @@ namespace thekogans {
                                         VALUE_YES));
                                 configFile << util::OpenTag (1, thekogans_make::TAG_RESOURCES,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::FileList::File::Ptr>::const_iterator
-                                        jt = (*it)->files.begin (),
-                                        end = (*it)->files.end (); jt != end; ++jt) {
-                                    if ((*jt)->customBuild.get () == 0) {
+                                for (auto file : resource->files) {
+                                    if (file->customBuild == nullptr) {
                                         configFile <<
                                             util::OpenTag (2, thekogans_make::TAG_RESOURCE) <<
-                                            (*jt)->name <<
+                                            file->name <<
                                             util::CloseTag (0, thekogans_make::TAG_RESOURCE);
                                     }
                                     else {
-                                        for (std::vector<std::string>::const_iterator
-                                                kt = (*jt)->customBuild->outputs.begin (),
-                                                end = (*jt)->customBuild->outputs.end (); kt != end; ++kt) {
+                                        for (auto output : file->customBuild->outputs) {
                                             configFile <<
                                                 util::OpenTag (2, thekogans_make::TAG_RESOURCE) <<
-                                                *kt <<
+                                                output <<
                                                 util::CloseTag (0, thekogans_make::TAG_RESOURCE);
                                         }
                                     }
@@ -737,7 +697,7 @@ namespace thekogans {
                             MAKE,
                             install_config,
                             install_type);
-                    for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                             it = plugin_config.plugin_hosts.begin (),
                             end = plugin_config.plugin_hosts.end (); it != end; ++it) {
                         const thekogans_make &host_config =
@@ -812,7 +772,7 @@ namespace thekogans {
                         MAKE,
                         config,
                         type);
-                for (std::list<thekogans_make::Dependency::Ptr>::const_iterator
+                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                         it = plugin_config.plugin_hosts.begin (),
                         end = plugin_config.plugin_hosts.end (); it != end; ++it) {
                     const thekogans_make &host_config =
@@ -846,17 +806,17 @@ namespace thekogans {
                     const thekogans_make &DebugStatic,
                     const thekogans_make &ReleaseShared,
                     const thekogans_make &ReleaseStatic) {
-                std::list<thekogans_make::Dependency *> commonDependencies;
+                std::list<thekogans_make::Dependency::SharedPtr> commonDependencies;
                 GetCommonDependencies (
                     DebugShared,
                     DebugStatic,
                     ReleaseShared,
                     ReleaseStatic,
                     commonDependencies);
-                std::list<thekogans_make::Dependency *> DebugSharedDependencies;
-                std::list<thekogans_make::Dependency *> DebugStaticDependencies;
-                std::list<thekogans_make::Dependency *> ReleaseSharedDependencies;
-                std::list<thekogans_make::Dependency *> ReleaseStaticDependencies;
+                std::list<thekogans_make::Dependency::SharedPtr> DebugSharedDependencies;
+                std::list<thekogans_make::Dependency::SharedPtr> DebugStaticDependencies;
+                std::list<thekogans_make::Dependency::SharedPtr> ReleaseSharedDependencies;
+                std::list<thekogans_make::Dependency::SharedPtr> ReleaseStaticDependencies;
                 GetUniqueDependencies (
                     DebugShared,
                     DebugStatic,
@@ -867,7 +827,7 @@ namespace thekogans {
                     DebugStaticDependencies,
                     ReleaseSharedDependencies,
                     ReleaseStaticDependencies);
-                for (std::list<thekogans_make::Dependency *>::const_iterator
+                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                         it = commonDependencies.begin (),
                         end = commonDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -880,7 +840,7 @@ namespace thekogans {
                                 (*it)->GetType ()));
                     }
                 }
-                for (std::list<thekogans_make::Dependency *>::const_iterator
+                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                         it = DebugSharedDependencies.begin (),
                         end = DebugSharedDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -893,7 +853,7 @@ namespace thekogans {
                                 (*it)->GetType ()));
                     }
                 }
-                for (std::list<thekogans_make::Dependency *>::const_iterator
+                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                         it = DebugStaticDependencies.begin (),
                         end = DebugStaticDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -906,7 +866,7 @@ namespace thekogans {
                                 (*it)->GetType ()));
                     }
                 }
-                for (std::list<thekogans_make::Dependency *>::const_iterator
+                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                         it = ReleaseSharedDependencies.begin (),
                         end = ReleaseSharedDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -919,7 +879,7 @@ namespace thekogans {
                                 (*it)->GetType ()));
                     }
                 }
-                for (std::list<thekogans_make::Dependency *>::const_iterator
+                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                         it = ReleaseStaticDependencies.begin (),
                         end = ReleaseStaticDependencies.end (); it != end; ++it) {
                     if ((*it)->GetConfigFile () == THEKOGANS_MAKE_XML) {
@@ -1459,7 +1419,7 @@ namespace thekogans {
                             !ReleaseStaticDependencies.empty ()) {
                         configFile << util::OpenTag (1, thekogans_make::TAG_DEPENDENCIES,
                             util::Attributes (), false, true);
-                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                        for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                 it = commonDependencies.begin (),
                                 end = commonDependencies.end (); it != end; ++it) {
                             configFile << (*it)->ToString (2);
@@ -1487,7 +1447,7 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                        for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                                 it = DebugSharedDependencies.begin (),
                                                 end = DebugSharedDependencies.end (); it != end; ++it) {
                                             configFile << (*it)->ToString (6);
@@ -1502,7 +1462,7 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                        for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                                 it = DebugStaticDependencies.begin (),
                                                 end = DebugStaticDependencies.end (); it != end; ++it) {
                                             configFile << (*it)->ToString (6);
@@ -1519,7 +1479,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = DebugSharedDependencies.begin (),
                                             end = DebugSharedDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1534,7 +1494,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = DebugStaticDependencies.begin (),
                                             end = DebugStaticDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1562,7 +1522,7 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                        for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                                 it = ReleaseSharedDependencies.begin (),
                                                 end = ReleaseSharedDependencies.end (); it != end; ++it) {
                                             configFile << (*it)->ToString (6);
@@ -1577,7 +1537,7 @@ namespace thekogans {
                                                 VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                         configFile << util::OpenTag (5, thekogans_make::TAG_WHEN,
                                             attributes, false, true);
-                                        for (std::list<thekogans_make::Dependency *>::const_iterator
+                                        for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                                 it = ReleaseStaticDependencies.begin (),
                                                 end = ReleaseStaticDependencies.end (); it != end; ++it) {
                                             configFile << (*it)->ToString (6);
@@ -1594,7 +1554,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = ReleaseSharedDependencies.begin (),
                                             end = ReleaseSharedDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1609,7 +1569,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_IF,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = ReleaseStaticDependencies.begin (),
                                             end = ReleaseStaticDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1639,7 +1599,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = DebugSharedDependencies.begin (),
                                             end = DebugSharedDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1654,7 +1614,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = DebugStaticDependencies.begin (),
                                             end = DebugStaticDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1671,7 +1631,7 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                         it = DebugSharedDependencies.begin (),
                                         end = DebugSharedDependencies.end (); it != end; ++it) {
                                     configFile << (*it)->ToString (4);
@@ -1686,7 +1646,7 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                         it = DebugStaticDependencies.begin (),
                                         end = DebugStaticDependencies.end (); it != end; ++it) {
                                     configFile << (*it)->ToString (4);
@@ -1714,7 +1674,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = ReleaseSharedDependencies.begin (),
                                             end = ReleaseSharedDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1729,7 +1689,7 @@ namespace thekogans {
                                             VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                     configFile << util::OpenTag (4, thekogans_make::TAG_WHEN,
                                         attributes, false, true);
-                                    for (std::list<thekogans_make::Dependency *>::const_iterator
+                                    for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                             it = ReleaseStaticDependencies.begin (),
                                             end = ReleaseStaticDependencies.end (); it != end; ++it) {
                                         configFile << (*it)->ToString (5);
@@ -1746,7 +1706,7 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_SHARED)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                         it = ReleaseSharedDependencies.begin (),
                                         end = ReleaseSharedDependencies.end (); it != end; ++it) {
                                     configFile << (*it)->ToString (4);
@@ -1761,7 +1721,7 @@ namespace thekogans {
                                         VariableTest (thekogans_make::VAR_TYPE, TYPE_STATIC)));
                                 configFile << util::OpenTag (3, thekogans_make::TAG_IF,
                                     attributes, false, true);
-                                for (std::list<thekogans_make::Dependency *>::const_iterator
+                                for (std::list<thekogans_make::Dependency::SharedPtr>::const_iterator
                                         it = ReleaseStaticDependencies.begin (),
                                         end = ReleaseStaticDependencies.end (); it != end; ++it) {
                                     configFile << (*it)->ToString (4);
