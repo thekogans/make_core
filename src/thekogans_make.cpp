@@ -1513,7 +1513,7 @@ namespace thekogans {
                 }
 
                 std::regex::flag_type ParseRegexFlags (const std::string &flags) {
-                    std::regex::flag_type value;
+                    std::regex::flag_type value = 0;
                     std::string::size_type lastPipe = 0;
                     std::string::size_type currPipe = flags.find_first_of ('|', 0);
                     for (; currPipe == std::string::npos;
