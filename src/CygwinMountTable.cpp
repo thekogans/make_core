@@ -131,7 +131,6 @@ namespace thekogans {
                         [] (const Entry &entry1, const Entry &entry2) -> bool {
                             return entry1.host.size () > entry2.host.size ();
                         });
-                    mountTableFile.close ();
                 }
                 else {
                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
@@ -174,7 +173,7 @@ namespace thekogans {
             std::string CygwinMountTable::ToCygwinPath (const std::string &hostPath) const {
                 std::string cygwinPath;
                 if (!hostPath.empty ()) {
-                    const char *ptr = 0;
+                    const char *ptr = nullptr;
                     for (const auto &cygwinEntry : cygwinEntries) {
                         if (hostPath.size () >= cygwinEntry.host.size () &&
                                 strncasecmp (hostPath.c_str (), cygwinEntry.host.c_str (),
@@ -184,7 +183,7 @@ namespace thekogans {
                             break;
                         }
                     }
-                    if (ptr == 0) {
+                    if (ptr == nullptr) {
                         ptr = hostPath.data ();
                     }
                     while (*ptr != 0) {

@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with thekogans_make_core. If not, see <http://www.gnu.org/licenses/>.
 
+#include <vector>
 #include "thekogans/util/Types.h"
 #include "thekogans/util/Path.h"
 #include "thekogans/util/Directory.h"
@@ -77,7 +78,7 @@ namespace thekogans {
             void Toolchain::GetVersions (
                     const std::string &organization,
                     const std::string &project,
-                    std::list<std::string> &versions) {
+                    std::vector<std::string> &versions) {
                 std::string path = ToSystemPath (MakePath (_TOOLCHAIN_DIR, CONFIG_DIR));
                 if (util::Path (path).Exists ()) {
                     util::Directory directory (path);
@@ -152,7 +153,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &project,
                     const std::string &version) {
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (CONFIG_DIR);
                 components.push_back (
@@ -166,17 +167,17 @@ namespace thekogans {
                     const std::string &version,
                     const std::string &config,
                     const std::string &type) {
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (LIB_DIR);
                 components.push_back (
                     GetFileName (organization, project, std::string (), version, std::string ()));
                 std::string namingConvention =
-                    thekogans_make::GetNamingConvention (
+                    thekogans_make::GetConfig (
                         _TOOLCHAIN_DIR,
                         MakePath (
                             CONFIG_DIR,
-                            GetFileName (organization, project, std::string (), version, XML_EXT)));
+                            GetFileName (organization, project, std::string (), version, XML_EXT))).naming_convention;
                 if (namingConvention == NAMING_CONVENTION_HIERARCHICAL) {
                     components.push_back (config);
                     components.push_back (type);
@@ -201,7 +202,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &project,
                     const std::string &version) {
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (_TOOLCHAIN_DIR);
                 components.push_back (BIN_DIR);
                 components.push_back (
@@ -214,7 +215,7 @@ namespace thekogans {
             void Toolchain::Cleanup (
                     const std::string &organization,
                     const std::string &project) {
-                std::list<std::string> versions;
+                std::vector<std::string> versions;
                 GetVersions (organization, project, versions);
                 if (versions.size () > 1) {
                     util::Version latestVersion (0, 0, 0);

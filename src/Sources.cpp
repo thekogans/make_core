@@ -32,7 +32,9 @@
 #include "thekogans/util/File.h"
 #include "thekogans/util/Directory.h"
 #include "thekogans/util/LoggerMgr.h"
-#include "thekogans/util/ChildProcess.h"
+#if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
+    #include "thekogans/util/ChildProcess.h"
+#endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 #include "thekogans/util/SHA2.h"
 #include "thekogans/util/XMLUtils.h"
 #include "thekogans/make/core/Utils.h"
@@ -150,16 +152,14 @@ namespace thekogans {
                         }
                     }
                     else {
-                        for (std::list<Source::SharedPtr>::iterator
-                                it = sources.begin (),
-                                end = sources.end (); it != end; ++it) {
+                        for (auto source : sources) {
                             THEKOGANS_UTIL_TRY {
-                                std::cout << "Updating " << **it << std::endl;
+                                std::cout << "Updating " << *source << std::endl;
                                 std::cout.flush ();
-                                UpdateSource (**it);
+                                UpdateSource (*source);
                             }
                             THEKOGANS_UTIL_CATCH (util::Exception) {
-                                std::cout << "Unable to update " << **it <<
+                                std::cout << "Unable to update " << *source <<
                                     "(" << exception.what () << "), skipping.\n";
                                 std::cout.flush ();
                             }
@@ -202,12 +202,10 @@ namespace thekogans {
         #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             void Sources::DeleteSource (const std::string &organization) {
-                for (std::list<Source::SharedPtr>::iterator
-                        it = sources.begin (),
-                        end = sources.end (); it != end; ++it) {
-                    if ((*it)->organization == organization) {
-                        std::cout << "Deleting " << **it << std::endl;
-                        sources.erase (it);
+                for (std::size_t i = 0, count = sources.size (); i < count; ++i) {
+                    if (sources[i]->organization == organization) {
+                        std::cout << "Deleting " << *sources[i] << std::endl;
+                        sources.erase (sources.begin () + i);
                         Save ();
                         return;
                     }
@@ -218,7 +216,7 @@ namespace thekogans {
 
             std::string Sources::GetSourceURL (
                     const std::string &organization) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ? source->url : std::string ();
             }
 
@@ -226,7 +224,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     const std::string &branch) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ?
                     source->GetProjectLatestVersion (name, branch) :
                     std::string ();
@@ -236,7 +234,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     std::set<std::string> &branches) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
                     source->GetProjectBranches (name, branches);
                 }
@@ -247,7 +245,7 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch,
                     std::set<std::string> &versions) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
                     source->GetProjectVersions (name, branch, versions);
                 }
@@ -258,7 +256,7 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ?
                     source->GetProjectDescription (name, branch, version) :
                     std::string ();
@@ -269,7 +267,7 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ?
                     source->GetProjectSHA2_256 (name, branch, version) :
                     std::string ();
@@ -280,9 +278,9 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
-                    const Source::Project *project = source->GetProject (name, branch, version);
+                    Source::Project::SharedPtr project = source->GetProject (name, branch, version);
                     if (project != nullptr) {
                         return true;
                     }
@@ -290,17 +288,18 @@ namespace thekogans {
                 return false;
             }
 
+        #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
             void Sources::GetSourceProject (
                     const std::string &organization,
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
-                    const Source::Project *project = source->GetProject (name, branch, version);
+                    Source::Project::SharedPtr project = source->GetProject (name, branch, version);
                     if (project != nullptr) {
                         util::ChildProcess shellProcess (ToSystemPath (_TOOLCHAIN_SHELL));
-                        std::list<std::string> components;
+                        std::vector<std::string> components;
                         components.push_back (_TOOLCHAIN_ROOT);
                         components.push_back (COMMON_DIR);
                         components.push_back (BIN_DIR);
@@ -334,11 +333,12 @@ namespace thekogans {
                         organization.c_str ());
                 }
             }
+        #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             std::string Sources::GetSourceToolchainLatestVersion (
                     const std::string &organization,
                     const std::string &name) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ?
                     source->GetToolchainLatestVersion (name) :
                     std::string ();
@@ -348,7 +348,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     std::set<std::string> &versions) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
                     source->GetToolchainVersions (name, versions);
                 }
@@ -358,7 +358,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ? source->GetToolchainFile (name, version) : std::string ();
             }
 
@@ -366,7 +366,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ? source->GetToolchainDescription (name, version) : std::string ();
             }
 
@@ -374,7 +374,7 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 return source != nullptr ? source->GetToolchainSHA2_256 (name, version) : std::string ();
             }
 
@@ -462,9 +462,9 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
-                    const Source::Toolchain *toolchain = source->GetToolchain (name, version);
+                    Source::Toolchain::SharedPtr toolchain = source->GetToolchain (name, version);
                     if (toolchain != nullptr) {
                         return true;
                     }
@@ -472,18 +472,19 @@ namespace thekogans {
                 return false;
             }
 
+        #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
             void Sources::InstallSourceToolchain (
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version,
                     const std::string &config,
                     const std::string &type) const {
-                const Source *source = GetSource (organization);
+                Source::SharedPtr source = GetSource (organization);
                 if (source != nullptr) {
-                    const Source::Toolchain *toolchain = source->GetToolchain (name, version);
+                    Source::Toolchain::SharedPtr toolchain = source->GetToolchain (name, version);
                     if (toolchain != nullptr) {
                         util::ChildProcess shellProcess (ToSystemPath (_TOOLCHAIN_SHELL));
-                        std::list<std::string> components;
+                        std::vector<std::string> components;
                         components.push_back (_TOOLCHAIN_ROOT);
                         components.push_back (COMMON_DIR);
                         components.push_back (BIN_DIR);
@@ -518,6 +519,7 @@ namespace thekogans {
                         organization.c_str ());
                 }
             }
+        #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             Source::SharedPtr Sources::GetSource (const std::string &organization) const {
                 for (auto source : sources) {

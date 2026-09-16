@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <string>
-#include <list>
+#include <vector>
 #include <set>
 #include <map>
 #include "pugixml/pugixml.hpp"
@@ -58,7 +58,6 @@ namespace thekogans {
                 static const char * const ATTR_SCHEMA_VERSION;
                 static const char * const ATTR_CONDITION;
                 static const char * const ATTR_PREFIX;
-                static const char * const ATTR_INSTALL;
                 static const char * const ATTR_DESTINATION_PREFIX;
                 static const char * const ATTR_NAME;
                 static const char * const ATTR_VALUE;
@@ -67,11 +66,10 @@ namespace thekogans {
                 static const char * const ATTR_EXAMPLE;
                 static const char * const ATTR_CONFIG;
                 static const char * const ATTR_TYPE;
+                static const char * const ATTR_PRIVATE;
                 static const char * const ATTR_FLAGS;
-                static const char * const ATTR_PATH;
 
                 static const char * const TAG_THEKOGANS_MAKE;
-                static const char * const TAG_GOAL;
                 static const char * const TAG_CONSTANTS;
                 static const char * const TAG_CONSTANT;
                 static const char * const TAG_FEATURES;
@@ -86,7 +84,6 @@ namespace thekogans {
                 static const char * const TAG_TOOLCHAIN;
                 static const char * const TAG_PACKAGE;
                 static const char * const TAG_LIBRARY;
-                static const char * const TAG_FRAMEWORK;
                 static const char * const TAG_INCLUDE_DIRECTORIES;
                 static const char * const TAG_INCLUDE_DIRECTORY;
                 static const char * const TAG_PREPROCESSOR_DEFINITIONS;
@@ -176,6 +173,7 @@ namespace thekogans {
                 static const char * const TAG_BUNDLE;
                 static const char * const TAG_INFO_PLIST;
                 static const char * const TAG_FRAMEWORKS;
+                static const char * const TAG_FRAMEWORK;
                 static const char * const TAG_PLUGINS;
                 static const char * const TAG_PLUGIN;
                 static const char * const TAG_SHARED_SUPPORTS;
@@ -217,12 +215,26 @@ namespace thekogans {
                 util::GUID guid;
                 std::string schema_version;
                 // thekogans_make body.
-                std::string goal;
                 std::set<std::string> features;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL Dependency : public util::RefCounted {
                     THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (Dependency)
 
+                    const thekogans_make &dependent;
+                    bool isPrivate;
+
+                    Dependency (
+                        const thekogans_make &dependent_,
+                        bool isPrivate_) :
+                        dependent (dependent_),
+                        isPrivate (isPrivate_) {}
                     virtual ~Dependency () {}
+
+                    inline const thekogans_make &GetDependent () const {
+                        return dependent;
+                    }
+                    inline bool IsPrivate () const {
+                        return isPrivate;
+                    }
 
                     virtual std::string GetOrganization () const {
                         return std::string ();
@@ -230,13 +242,21 @@ namespace thekogans {
                     virtual std::string GetName () const {
                         return std::string ();
                     }
-                    virtual const thekogans_make &GetDependent () const = 0;
-
-                    virtual std::string GetProjectRoot () const = 0;
-                    virtual std::string GetConfigFile () const = 0;
-                    virtual std::string GetGenerator () const = 0;
-                    virtual std::string GetConfig () const = 0;
-                    virtual std::string GetType () const = 0;
+                    virtual std::string GetProjectRoot () const {
+                        return std::string ();
+                    }
+                    virtual std::string GetConfigFile () const {
+                        return std::string ();
+                    }
+                    virtual std::string GetGenerator () const {
+                        return std::string ();
+                    }
+                    virtual std::string GetConfig () const {
+                        return std::string ();
+                    }
+                    virtual std::string GetType () const {
+                        return std::string ();
+                    }
 
                     virtual bool EquivalentTo (const Dependency & /*dependency*/) const = 0;
 
@@ -244,19 +264,20 @@ namespace thekogans {
                     using VersionSet = std::set<VersionAndBranch>;
                     using Versions = std::map<std::string, VersionSet>;
 
-                    virtual void CollectVersions (Versions & /*versions*/) const = 0;
+                    virtual void CollectVersions (Versions & /*versions*/) const {}
                     virtual void SetMinVersion (
                         Versions & /*versions*/,
-                        std::set<std::string> & /*visitedDependencies*/) const = 0;
+                        std::set<std::string> & /*visitedDependencies*/) const {}
 
-                    virtual void GetCommonPreprocessorDefinitions (
-                        std::list<std::string> & /*preprocessorDefinitions*/) const = 0;
-                    virtual void GetFeatures (
-                        std::set<std::string> & /*features*/) const = 0;
+                    virtual void GetCommonPreprocessorDefinitions (std::set<std::string> & /*preprocessorDefinitions*/) const {}
+                    virtual void GetFeatures (std::set<std::string> & /*features*/) const {}
                     virtual bool HaveFeature (const std::string & /*feature*/) const {
                         return false;
                     }
 
+                    virtual void GetIncludeDirectories (std::set<std::string> & /*include_directories*/) const {}
+                    virtual void GetLibraryDirectories (std::set<std::string> & /*library_directories*/) const {}
+                    virtual void GetFrameworkDirectories (std::set<std::string> & /*framework_directories*/) const {}
                     virtual void GetLinkerFlags (std::set<std::string> & /*linker_flags*/) const {}
                     virtual void GetLibrarianFlags (std::set<std::string> & /*librarian_flags*/) const {}
                     virtual void GetMasmFlags (std::set<std::string> & /*masm_flags*/) const {}
@@ -274,22 +295,23 @@ namespace thekogans {
                     virtual void GetRCFlags (std::set<std::string> & /*rc_flags*/) const {}
                     virtual void GetRCPreprocessorDefinitions (std::set<std::string> & /*rc_preprocessor_definitions*/) const {}
 
-                    virtual void GetIncludeDirectories (
-                        std::set<std::string> & /*include_directories*/) const = 0;
+                    // Libraries must come is strict order. We can't use a set here.
+                    virtual void GetLinkLibraries (std::vector<std::string> & /*link_libraries*/) const {}
+                    virtual void GetSharedLibraries (std::set<std::string> & /*shared_libraries*/) const {}
 
-                    virtual void GetLinkLibraries (
-                        std::list<std::string> & /*link_libraries*/) const = 0;
+                    virtual bool IsInstalled () const {
+                        return true;
+                    }
+                    virtual std::string ToString (util::ui32 /*indentationLevel*/ = 0) const {
+                        return std::string ();
+                    }
 
-                    virtual void GetSharedLibraries (
-                        std::set<std::string> & /*shared_libraries*/) const = 0;
+                    virtual void ListDependencies (util::ui32 /*indentationLevel*/ = 0) const {}
 
-                    virtual bool IsInstalled () const = 0;
-                    virtual std::string ToString (util::ui32 /*indentationLevel*/ = 0) const = 0;
-
-                    virtual void ListDependencies (util::ui32 /*indentationLevel*/ = 0) const = 0;
+                    THEKOGANS_UTIL_DISALLOW_COPY_MOVE_AND_ASSIGN (Dependency)
                 };
-                std::list<Dependency::SharedPtr> plugin_hosts;
-                std::list<Dependency::SharedPtr> dependencies;
+                std::vector<Dependency::SharedPtr> plugin_hosts;
+                std::vector<Dependency::SharedPtr> dependencies;
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL PrecompiledHeader {
                     enum Type {
                         None,
@@ -309,12 +331,24 @@ namespace thekogans {
                     PrecompiledHeader () :
                         type (None) {}
                 } precompiled_header;
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL StringList : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (StringList)
+                    THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
+
+                    bool isPrivate;
+                    std::vector<std::string> strings;
+
+                    StringList () :
+                        isPrivate (false) {}
+
+                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (StringList)
+                };
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL FileList : public util::RefCounted {
                     THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (FileList)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
-                    bool install;
+                    bool isPrivate;
                     std::string destinationPrefix;
                     struct _LIB_THEKOGANS_MAKE_CORE_DECL File : public util::RefCounted {
                         THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (File)
@@ -351,130 +385,87 @@ namespace thekogans {
 
                         THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (File)
                     };
-                    std::list<File::SharedPtr> files;
+                    std::vector<File::SharedPtr> files;
 
                     explicit FileList (const std::string &destinationPrefix_) :
-                        install (false),
+                        isPrivate (true),
                         destinationPrefix (destinationPrefix_) {}
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (FileList)
                 };
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL IncludeDirectories : public util::RefCounted {
-                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (IncludeDirectories)
+                struct _LIB_THEKOGANS_MAKE_CORE_DECL IncludeDirectoriesList : public util::RefCounted {
+                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (IncludeDirectoriesList)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
 
                     std::string prefix;
-                    bool install;
-                    std::list<std::string> paths;
+                    bool isPrivate;
+                    std::vector<std::string> paths;
 
-                    IncludeDirectories () :
-                        install (false) {}
+                    IncludeDirectoriesList () :
+                        isPrivate (false) {}
 
-                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (IncludeDirectories)
+                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (IncludeDirectoriesList)
                 };
-                std::list<IncludeDirectories::SharedPtr> include_directories;
-                std::list<std::string> preprocessor_definitions;
-                std::list<std::string> linker_flags;
-                std::list<std::string> librarian_flags;
-                struct _LIB_THEKOGANS_MAKE_CORE_DECL LinkLibraries : public util::RefCounted {
-                    THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (LinkLibraries)
-                    THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
-
-                    std::string prefix;
-                    bool install;
-                    std::list<std::string> files;
-
-                    LinkLibraries (
-                        const std::string &prefix_,
-                        bool install_) :
-                        prefix (prefix_),
-                        install (install_) {}
-
-                    THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (LinkLibraries)
-                };
-                std::list<LinkLibraries::SharedPtr> link_libraries;
-                std::list<std::string> masm_flags;
-                std::list<std::string> masm_preprocessor_definitions;
-                std::list<FileList::SharedPtr> masm_headers;
-                std::list<FileList::SharedPtr> masm_sources;
-                std::list<FileList::SharedPtr> masm_tests;
-                std::list<std::string> nasm_flags;
-                std::list<std::string> nasm_preprocessor_definitions;
-                std::list<FileList::SharedPtr> nasm_headers;
-                std::list<FileList::SharedPtr> nasm_sources;
-                std::list<FileList::SharedPtr> nasm_tests;
-                std::list<std::string> c_flags;
-                std::list<std::string> c_preprocessor_definitions;
-                std::list<FileList::SharedPtr> c_headers;
-                std::list<FileList::SharedPtr> c_sources;
-                std::list<FileList::SharedPtr> c_tests;
-                std::list<std::string> cpp_flags;
-                std::list<std::string> cpp_preprocessor_definitions;
-                std::list<FileList::SharedPtr> cpp_headers;
-                std::list<FileList::SharedPtr> cpp_sources;
-                std::list<FileList::SharedPtr> cpp_tests;
-                std::list<std::string> objective_c_flags;
-                std::list<std::string> objective_c_preprocessor_definitions;
-                std::list<FileList::SharedPtr> objective_c_headers;
-                std::list<FileList::SharedPtr> objective_c_sources;
-                std::list<FileList::SharedPtr> objective_c_tests;
-                std::list<std::string> objective_cpp_flags;
-                std::list<std::string> objective_cpp_preprocessor_definitions;
-                std::list<FileList::SharedPtr> objective_cpp_headers;
-                std::list<FileList::SharedPtr> objective_cpp_sources;
-                std::list<FileList::SharedPtr> objective_cpp_tests;
-                std::list<FileList::SharedPtr> resources;
+                std::vector<IncludeDirectoriesList::SharedPtr> include_directories;
+                std::vector<std::string> preprocessor_definitions;
+                std::vector<std::string> linker_flags;
+                std::vector<std::string> librarian_flags;
+                std::vector<std::string> masm_flags;
+                std::vector<std::string> masm_preprocessor_definitions;
+                std::vector<FileList::SharedPtr> masm_headers;
+                std::vector<FileList::SharedPtr> masm_sources;
+                std::vector<FileList::SharedPtr> masm_tests;
+                std::vector<std::string> nasm_flags;
+                std::vector<std::string> nasm_preprocessor_definitions;
+                std::vector<FileList::SharedPtr> nasm_headers;
+                std::vector<FileList::SharedPtr> nasm_sources;
+                std::vector<FileList::SharedPtr> nasm_tests;
+                std::vector<std::string> c_flags;
+                std::vector<std::string> c_preprocessor_definitions;
+                std::vector<FileList::SharedPtr> c_headers;
+                std::vector<FileList::SharedPtr> c_sources;
+                std::vector<FileList::SharedPtr> c_tests;
+                std::vector<std::string> cpp_flags;
+                std::vector<std::string> cpp_preprocessor_definitions;
+                std::vector<FileList::SharedPtr> cpp_headers;
+                std::vector<FileList::SharedPtr> cpp_sources;
+                std::vector<FileList::SharedPtr> cpp_tests;
+                std::vector<std::string> objective_c_flags;
+                std::vector<std::string> objective_c_preprocessor_definitions;
+                std::vector<FileList::SharedPtr> objective_c_headers;
+                std::vector<FileList::SharedPtr> objective_c_sources;
+                std::vector<FileList::SharedPtr> objective_c_tests;
+                std::vector<std::string> objective_cpp_flags;
+                std::vector<std::string> objective_cpp_preprocessor_definitions;
+                std::vector<FileList::SharedPtr> objective_cpp_headers;
+                std::vector<FileList::SharedPtr> objective_cpp_sources;
+                std::vector<FileList::SharedPtr> objective_cpp_tests;
+                std::vector<FileList::SharedPtr> resources;
                 // Windows specific.
-                std::list<std::string> rc_flags;
-                std::list<std::string> rc_preprocessor_definitions;
-                std::list<FileList::SharedPtr> rc_sources;
+                std::vector<std::string> rc_flags;
+                std::vector<std::string> rc_preprocessor_definitions;
+                std::vector<FileList::SharedPtr> rc_sources;
                 std::string subsystem;
                 std::string def_file;
                 // OSX specific.
                 struct _LIB_THEKOGANS_MAKE_CORE_DECL Bunde {
                     std::string info_plist;
-                    std::list<std::string> resources;
-                    std::list<std::string> frameworks;
-                    std::list<std::string> plugins;
-                    std::list<std::string> shared_supports;
+                    std::vector<std::string> resources;
+                    std::vector<std::string> frameworks;
+                    std::vector<std::string> plugins;
+                    std::vector<std::string> shared_supports;
                 } bundle;
                 SymbolTable globalSymbolTable;
                 SymbolTable localSymbolTable;
 
-                static std::string GetOrganization (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static std::string GetProject (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static std::string GetProjectType (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static std::string GetVersion (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static std::string GetNamingConvention (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static std::string GetBuildConfig (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static std::string GetBuildType (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static util::GUID GetGUID (
-                    const std::string &project_root,
-                    const std::string &config_file);
-                static std::string GetSchemaVersion (
-                    const std::string &project_root,
-                    const std::string &config_file);
-
                 static const thekogans_make &GetConfig (
                     const std::string &project_root,
                     const std::string &config_file,
-                    const std::string &generator,
-                    const std::string &config,
-                    const std::string &type);
+                    const std::string &generator = std::string (),
+                    const std::string &config = std::string (),
+                    const std::string &type = std::string ());
+
+                std::string GetVersion () const;
 
                 void CheckDependencies () const;
                 void ListDependencies (util::ui32 indentationLevel) const;
@@ -482,12 +473,12 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name) const;
 
-                std::string GetVersion () const;
                 void GetFeatures (std::set<std::string> &features_) const;
                 bool HasFeature (const std::string &feature) const;
                 void GetIncludeDirectories (std::set<std::string> &include_directories_) const;
+                void GetLibraryDirectories (std::set<std::string> &include_directories_) const;
                 void GetFrameworkDirectories (std::set<std::string> &framework_directories) const;
-                void GetLinkLibraries (std::list<std::string> &link_libraries_) const;
+                void GetLinkLibraries (std::vector<std::string> &link_libraries_) const;
                 void GetSharedLibraries (std::set<std::string> &shared_libraries) const;
 
                 void GetLinkerFlags (std::set<std::string> &linker_flags_) const;
@@ -509,7 +500,6 @@ namespace thekogans {
 
                 inline bool HasGoal () const {
                     return
-                        !goal.empty () ||
                         !masm_sources.empty () ||
                         !nasm_sources.empty () ||
                         !c_sources.empty () ||
@@ -552,8 +542,7 @@ namespace thekogans {
                 std::string GetToolchainGoal () const;
                 std::string GetToolchainLinkLibrary () const;
 
-                void GetCommonPreprocessorDefinitions (
-                    std::list<std::string> &preprocessorDefinitions) const;
+                void GetCommonPreprocessorDefinitions (std::set<std::string> &preprocessorDefinitions) const;
                 std::string GetGoalFileName () const;
 
             private:
@@ -567,7 +556,7 @@ namespace thekogans {
                 void Parseconstants (pugi::xml_node &node);
                 void Parsedependencies (
                     pugi::xml_node &node,
-                    std::list<Dependency::SharedPtr> &dependencies);
+                    std::vector<Dependency::SharedPtr> &dependencies);
                 void Parsedependencyfeatures (
                     pugi::xml_node &node,
                     std::set<std::string> &features);
@@ -578,7 +567,7 @@ namespace thekogans {
                 void Parselist (
                     pugi::xml_node &node,
                     const std::string &name,
-                    std::list<std::string> &list);
+                    std::vector<std::string> &list);
                 void ParseFileList (
                     pugi::xml_node &node,
                     const std::string &name,

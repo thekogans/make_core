@@ -79,14 +79,22 @@ namespace thekogans {
                         buffer >> ch;
                         switch (ch) {
                             case '\\': {
-                                buffer >> ch;
-                                if (IsEscapableCh (ch)) {
-                                    identifier.first += ch;
+                                if (!buffer.IsEmpty ()) {
+                                    buffer >> ch;
+                                    if (IsEscapableCh (ch)) {
+                                        identifier.first += ch;
+                                    }
+                                    else {
+                                        THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
+                                            "Invalid escape sequence in identifier in: %s (near %u)",
+                                            buffer.Tostring ().c_str (),
+                                            buffer.readOffset);
+                                    }
                                 }
                                 else {
                                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                                        "Invalid escape sequence in identifier in: %s (near %u)",
-                                        buffer.data,
+                                        "Invalid escape sequence (eof) in identifier in: %s (near %u)",
+                                        buffer.Tostring ().c_str (),
                                         buffer.readOffset);
                                 }
                                 break;
@@ -113,7 +121,7 @@ namespace thekogans {
                                     else {
                                         THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
                                             "Invalid identifier in: %s (near %u)",
-                                            buffer.data,
+                                            buffer.Tostring ().c_str (),
                                             buffer.readOffset);
                                     }
                                 }
@@ -151,14 +159,22 @@ namespace thekogans {
                         }
                         switch (ch) {
                             case '\\': {
-                                buffer >> ch;
-                                if (IsEscapableCh (ch)) {
-                                    option += ch;
+                                if (!buffer.IsEmpty ()) {
+                                    buffer >> ch;
+                                    if (IsEscapableCh (ch)) {
+                                        option += ch;
+                                    }
+                                    else {
+                                        THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
+                                            "Invalid escape sequence in option in: %s (near %u)",
+                                            buffer.Tostring ().c_str (),
+                                            buffer.readOffset);
+                                    }
                                 }
                                 else {
                                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                                        "Invalid escape sequence in option in: %s (near %u)",
-                                        buffer.data,
+                                        "Invalid escape sequence (eof) in option in: %s (near %u)",
+                                        buffer.Tostring ().c_str (),
                                         buffer.readOffset);
                                 }
                                 break;
@@ -194,14 +210,22 @@ namespace thekogans {
                         }
                         switch (ch) {
                             case '\\': {
-                                buffer >> ch;
-                                if (IsEscapableCh (ch)) {
-                                    value += ch;
+                                if (!buffer.IsEmpty ()) {
+                                    buffer >> ch;
+                                    if (IsEscapableCh (ch)) {
+                                        value += ch;
+                                    }
+                                    else {
+                                        THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
+                                            "Invalid escape sequence in value in: %s (near %u)",
+                                            buffer.Tostring ().c_str (),
+                                            buffer.readOffset);
+                                    }
                                 }
                                 else {
                                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                                        "Invalid escape sequence in value in: %s (near %u)",
-                                        buffer.data,
+                                        "Invalid escape sequence (eof) in value in: %s (near %u)",
+                                        buffer.Tostring ().c_str (),
                                         buffer.readOffset);
                                 }
                                 break;

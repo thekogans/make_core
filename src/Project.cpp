@@ -137,11 +137,11 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &project,
                     const std::string &branch) {
-                util::Version latestVersion (0, 0, 0);
+                util::Version latestVersion;
                 std::string path;
                 std::string fileTemplate;
                 {
-                    std::list<std::string> components;
+                    std::vector<std::string> components;
                     components.push_back (_DEVELOPMENT_ROOT);
                     components.push_back (organization);
                     if (!branch.empty ()) {
@@ -201,7 +201,7 @@ namespace thekogans {
                     const std::string &branch,
                     const std::string &version,
                     const std::string &example) {
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (_DEVELOPMENT_ROOT);
                 components.push_back (organization);
                 components.push_back (GetDirectoryFromName (project));
@@ -228,11 +228,11 @@ namespace thekogans {
                     const std::string &type) {
                 std::string project_root =
                     GetRoot (organization, project, branch, version, example);
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (project_root);
                 components.push_back (LIB_DIR);
                 std::string naming_convention =
-                    thekogans_make::GetNamingConvention (project_root, THEKOGANS_MAKE_XML);
+                    thekogans_make::GetConfig (project_root, THEKOGANS_MAKE_XML).naming_convention;
                 if (naming_convention == NAMING_CONVENTION_HIERARCHICAL) {
                     components.push_back (_TOOLCHAIN_BRANCH);
                     components.push_back (config);
@@ -251,7 +251,7 @@ namespace thekogans {
                 }
                 libraryName += VERSION_SEPARATOR +
                     (!example.empty () ?
-                        thekogans_make::GetVersion (project_root, THEKOGANS_MAKE_XML) :
+                        thekogans_make::GetConfig (project_root, THEKOGANS_MAKE_XML).GetVersion () :
                         version) + EXT_SEPARATOR + GetLinkLibrarySuffix (type);
                 components.push_back (libraryName);
                 return MakePath (components, true);
@@ -267,11 +267,11 @@ namespace thekogans {
                     const std::string &type) {
                 std::string project_root =
                     GetRoot (organization, project, branch, version, example);
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (project_root);
                 components.push_back (BIN_DIR);
                 std::string naming_convention =
-                    thekogans_make::GetNamingConvention (project_root, THEKOGANS_MAKE_XML);
+                    thekogans_make::GetConfig (project_root, THEKOGANS_MAKE_XML).naming_convention;
                 if (naming_convention == NAMING_CONVENTION_HIERARCHICAL) {
                     components.push_back (_TOOLCHAIN_BRANCH);
                     components.push_back (config);
@@ -290,7 +290,7 @@ namespace thekogans {
                 }
                 programName += VERSION_SEPARATOR +
                     (!example.empty () ?
-                        thekogans_make::GetVersion (project_root, THEKOGANS_MAKE_XML) :
+                        thekogans_make::GetConfig (project_root, THEKOGANS_MAKE_XML).GetVersion () :
                         version) + _TOOLCHAIN_PROGRAM_SUFFIX;
                 components.push_back (programName);
                 return MakePath (components, true);
@@ -306,11 +306,11 @@ namespace thekogans {
                 const std::string type = TYPE_SHARED;
                 std::string project_root =
                     GetRoot (organization, project, branch, version, example);
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (project_root);
                 components.push_back (LIB_DIR);
                 std::string naming_convention =
-                    thekogans_make::GetNamingConvention (project_root, THEKOGANS_MAKE_XML);
+                    thekogans_make::GetConfig (project_root, THEKOGANS_MAKE_XML).naming_convention;
                 if (naming_convention == NAMING_CONVENTION_HIERARCHICAL) {
                     components.push_back (_TOOLCHAIN_BRANCH);
                     components.push_back (config);
@@ -329,8 +329,9 @@ namespace thekogans {
                 }
                 pluginName += VERSION_SEPARATOR +
                     (!example.empty () ?
-                        thekogans_make::GetVersion (project_root, THEKOGANS_MAKE_XML) :
-                        version) + EXT_SEPARATOR + _TOOLCHAIN_SHARED_LIBRARY_SUFFIX;
+                        thekogans_make::GetConfig (project_root, THEKOGANS_MAKE_XML).GetVersion () :
+                        version) +
+                    EXT_SEPARATOR + _TOOLCHAIN_SHARED_LIBRARY_SUFFIX;
                 components.push_back (pluginName);
                 return MakePath (components, true);
             }

@@ -15,15 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with thekogans_make_core. If not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
-#include <fstream>
 #include <string>
-#include <regex>
-#include <sstream>
-#include <vector>
-#include "thekogans/util/StringUtils.h"
-#include "thekogans/util/Path.h"
-#include "thekogans/make/core/Utils.h"
+#include "thekogans/util/Version.h"
 #include "thekogans/make/core/Package.h"
 
 namespace thekogans {
@@ -31,144 +24,199 @@ namespace thekogans {
         namespace core {
 
             namespace {
-                void GetPackagePaths (std::vector<std::string> &paths) {
-                    std::string::size_type start = 0;
-                    std::string::size_type end = _TOOLCHAIN_PKG_CONFIG_PATH.find_first_of (":", start);
-                    while (end != std::string::npos) {
-                        std::string path = util::TrimSpaces (
-                            _TOOLCHAIN_PKG_CONFIG_PATH.substr (start, end - start).c_str ());
-                        if (!path.empty ()) {
-                            paths.push_back (path);
-                        }
-                        start = end + 1;
-                        end = _TOOLCHAIN_PKG_CONFIG_PATH.find_first_of (":", start);
-                    }
-                    std::string path = util::TrimSpaces (
-                        _TOOLCHAIN_PKG_CONFIG_PATH.substr (start).c_str ());
-                    if (!path.empty ()) {
-                        paths.push_back (path);
-                    }
-                }
-            }
+                struct Tokenizer {
+                    const char *expression;
+                    struct Token {
+                        enum Type {
+                            END,              // end of expression
+                            IDENTIFIER,
+                            OP,
+                            VERSION
+                        } type;
+                        std::string value;
 
-            Package::Package (
-                    const std::string &path_,
-                    const std::string &name_,
-                    const std::string &version_,
-                    const std::string &config_,
-                    const std::string &type_) :
-                    path (path_),
-                    name (name_),
-                    version (version_),
-                    config (config_),
-                    type (type_) {
-                std::vector<std::string> paths;
-                if (path.empty ()) {
-                    GetPackagePaths (paths);
-                }
-                else {
-                    paths.push_back (path);
-                }
-                for (auto path : paths) {
-                    std::ifstream file (ToSystemPath (MakePath (path, name + ".pc")));
-                    if (file.is_open ()) {
-                        std::string line;
-                        while (std::getline (file, line)) {
-                            line = util::TrimSpaces  (line.c_str ());
-                            // Skip empty lines and comments
-                            if (!line.empty () && line[0] != '#') {
-                                // Check for Property definition (Keyword: Value)
-                                size_t colonPos = line.find (':');
-                                // Check for Variable definition (key=value)
-                                size_t equalPos = line.find ('=');
-                                if (colonPos != std::string::npos &&
-                                        (equalPos == std::string::npos || colonPos < equalPos)) {
-                                    // It's a property
-                                    std::string key = util::TrimSpaces (line.substr (0, colonPos).c_str ());
-                                    // Resolve variables inside the property value
-                                    std::string rawValue = ResolveVariables (util::TrimSpaces (line.substr (colonPos + 1).c_str ()));
-                                    properties[key] = rawValue;
+                        Token (
+                            Type type_ = END,
+                            const std::string &value_ = std::string ()) :
+                            type (type_),
+                            value (value_) {}
+                    };
+
+                    Tokenizer (const char *expression_) :
+                        expression (expression_) {}
+
+                    Token GetToken () {
+                        while (*expression != '\0' && isspace (*expression)) {
+                            ++expression;
+                        }
+                        switch (*expression) {
+                            case '\0': {
+                                return Token (Token::END);
+                            }
+                            case '=': {
+                                ++expression;
+                                return Token (Token::OP, "=");
+                            }
+                            case '!': {
+                                ++expression;
+                                if (*expression == '=') {
+                                    ++expression;
+                                    return Token (Token::OP, "!=");
                                 }
-                                else if (equalPos != std::string::npos) {
-                                    // It's a variable
-                                    std::string key = util::TrimSpaces (line.substr (0, equalPos).c_str ());
-                                    // Variables can reference previously defined variables
-                                    std::string rawValue = ResolveVariables (util::TrimSpaces (line.substr (equalPos + 1).c_str ()));
-                                    variables[key] = rawValue;
+                                else {
+                                    // FIXME: throw
+                                }
+                            }
+                            case '<': {
+                                ++expression;
+                                if (*expression == '=') {
+                                    ++expression;
+                                    return Token (Token::OP, "<=");
+                                }
+                                return Token (Token::OP, "<");
+                            }
+                            case '>': {
+                                ++expression;
+                                if (*expression == '=') {
+                                    ++expression;
+                                    return Token (Token::OP, ">=");
+                                }
+                                return Token (Token::OP, ">");
+                            }
+                            default: {
+                                if (isalpha (*expression)) {
+                                    Token token (Token::IDENTIFIER);
+                                    while (*expression != '\0' && !isspace (*expression)) {
+                                        token.value += *expression++;
+                                    }
+                                    return token;
+                                }
+                                else if (isdigit (*expression)) {
+                                    return Token (Token::VERSION, util::Version (expression).ToString ());
+                                }
+                                else {
+                                    // FIXME: throw
                                 }
                             }
                         }
-                        break;
+                        return Token ();
+                    }
+                };
+            }
+
+            Package::Constraint Package::Constraint::Parse (const std::string &requirement) {
+                Package::Constraint constraint;
+                if (!requirement.empty ()) {
+                    Tokenizer tokenizer (requirement.c_str ());
+                    Tokenizer::Token token = tokenizer.GetToken ();
+                    if (token.type == Tokenizer::Token::IDENTIFIER) {
+                        constraint.name = token.value;
+                        token = tokenizer.GetToken ();
+                        if (token.type == Tokenizer::Token::OP) {
+                            constraint.op = util::Version::stringToOP (token.value);
+                            token = tokenizer.GetToken ();
+                            if (token.type == Tokenizer::Token::VERSION) {
+                                constraint.version = util::Version (token.value);
+                            }
+                            else {
+                                // FIXME: throw something.
+                            }
+                        }
                     }
                 }
+                return constraint;
             }
 
-            Package::SharedPtr Package::GetConfig (
-                    const std::string &path,
-                    const std::string &name,
-                    const std::string &version,
-                    const std::string &config,
-                    const std::string &type) {
-                return new Package (path, name, version, config, type);
-            }
-
-            bool Package::IsInstalled (
-                    const std::string &package,
-                    const std::string &version) {
-                std::vector<std::string> paths;
-                GetPackagePaths (paths);
-                for (auto path : paths) {
-                    if (util::Path (ToSystemPath (MakePath (path, package + ".pc"))).Exists ()) {
+            bool Package::Constraint::MatchesRequirement (const Constraint &requirement) const {
+                if (name == requirement.name) {
+                    if (op == util::Version::NOP || requirement.op == util::Version::NOP ||
+                            version.IsEmpty () || requirement.version.IsEmpty ()) {
+                        return true;
+                    }
+                    if (op == util::Version::EQ) {
+                        return
+                            version.SatisfiesConstraint (requirement.op, requirement.version);
+                    }
+                    if (op == util::Version::NEQ) {
+                        if (requirement.op == util::Version::EQ) {
+                            return version.Compare (requirement.version) != 0;
+                        }
+                        if (requirement.op == util::Version::NEQ) {
+                            return version.Compare (requirement.version) == 0;
+                        }
+                        return true;
+                    }
+                    if (op == util::Version::GEQ) {
+                        if (requirement.op == util::Version::EQ) {
+                            return version.Compare (requirement.version) <= 0;
+                        }
+                        if (requirement.op == util::Version::LEQ) {
+                            return version.Compare (requirement.version) <= 0;
+                        }
+                        if (requirement.op == util::Version::LT) {
+                            return version.Compare (requirement.version) < 0;
+                        }
+                        return true;
+                    }
+                    if (op == util::Version::LEQ) {
+                        if (requirement.op == util::Version::EQ) {
+                            return version.Compare (requirement.version) >= 0;
+                        }
+                        if (requirement.op == util::Version::GEQ) {
+                            return version.Compare (requirement.version) >= 0;
+                        }
+                        if (requirement.op == util::Version::GT) {
+                            return version.Compare (requirement.version) > 0;
+                        }
+                    }
+                    if (op == util::Version::GT) {
+                        if (requirement.op == util::Version::EQ) {
+                            return version.Compare (requirement.version) < 0;
+                        }
+                        if (requirement.op == util::Version::LEQ) {
+                            return version.Compare (requirement.version) < 0;
+                        }
+                        if (requirement.op == util::Version::LT) {
+                            return version.Compare (requirement.version) < 0;
+                        }
+                        return true;
+                    }
+                    if (op == util::Version::LT) {
+                        if (requirement.op == util::Version::EQ) {
+                            return version.Compare (requirement.version) > 0;
+                        }
+                        if (requirement.op == util::Version::GEQ) {
+                            return version.Compare (requirement.version) > 0;
+                        }
+                        if (requirement.op == util::Version::GT) {
+                            return version.Compare (requirement.version) > 0;
+                        }
                         return true;
                     }
                 }
                 return false;
             }
 
-            void Package::GetLibs (std::set<std::string> &libs) const {
-                Properties::const_iterator it = properties.find ("Libs");
-                if (it != properties.end ()) {
-                    libs.insert (it->second);
-                }
-                if (type == TYPE_STATIC) {
-                    Properties::const_iterator it = properties.find ("Libs.private");
-                    if (it != properties.end ()) {
-                        libs.insert (it->second);
-                    }
-                }
+            int Package::CompareVersion (const util::Version &targetVersion) const {
+                return version.Compare (targetVersion);
             }
 
-            void Package::GetCFlags (std::set<std::string> &c_flags) const {
-                Properties::const_iterator it = properties.find ("Cflags");
-                if (it != properties.end ()) {
-                    c_flags.insert (it->second);
-                }
-                if (type == TYPE_STATIC) {
-                    Properties::const_iterator it = properties.find ("Cflags.private");
-                    if (it != properties.end ()) {
-                        c_flags.insert (it->second);
-                    }
-                }
+            bool Package::SatisfiesConstraint (
+                    util::Version::OP op,
+                    const util::Version &targetVersion) const {
+                return version.SatisfiesConstraint (op, targetVersion);
             }
 
-            // Recursively resolves ${variable} blocks within a string
-            std::string Package::ResolveVariables (std::string value) {
-                std::regex variableRegex (R"(\$\{([^}]+)\})");
-                std::smatch match;
-                // Max loop depth to prevent infinite recursion on self-referential variables
-                int depth = 0;
-                while (std::regex_search (value, match, variableRegex) && depth++ < 10) {
-                    std::string fullMatch = match[0].str ();
-                    std::string variable = match[1].str ();
-                    auto it = variables.find (variable);
-                    std::string replacement = it != variables.end () ? it->second : "";
-                    // Replace the first occurrence of the variable match
-                    size_t pos = value.find (fullMatch);
-                    if (pos != std::string::npos) {
-                        value.replace (pos, fullMatch.length (), replacement);
+            bool Package::MatchesRequirement (const Constraint &requirement) const {
+                if (fileName == requirement.name) {
+                    return SatisfiesConstraint (requirement.op, requirement.version);
+                }
+                for (const auto &capability : provides) {
+                    if (capability.MatchesRequirement (requirement)) {
+                        return true;
                     }
                 }
-                return value;
+                return false;
             }
 
         } // namespace core

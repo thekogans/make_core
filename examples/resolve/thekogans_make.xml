@@ -1,0 +1,25 @@
+<thekogans_make organization = "thekogans"
+                project = "make_core_resolve"
+                project_type = "program"
+                major_version = "0"
+                minor_version = "1"
+                patch_version = "0"
+                guid = "d327c95f6303a838642d03facf4fe328"
+                schema_version = "2">
+  <dependencies>
+    <dependency organization = "thekogans"
+                name = "util"/>
+    <dependency organization = "thekogans"
+                name = "make_core"/>
+  </dependencies>
+  <cpp_headers prefix = "include">
+    <cpp_header>$(organization)/$(project_directory)/Version.h</cpp_header>
+  </cpp_headers>
+  <cpp_sources prefix = "src">
+    <cpp_source>main.cpp</cpp_source>
+    <cpp_source>Version.cpp</cpp_source>
+  </cpp_sources>
+  <if condition = "$(TOOLCHAIN_OS) == 'Windows'">
+    <subsystem>Console</subsystem>
+  </if>
+</thekogans_make>

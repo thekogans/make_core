@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <string>
-#include <list>
+#include <vector>
 #include <set>
 #include "pugixml/pugixml.hpp"
 #include "thekogans/util/Heap.h"
@@ -84,7 +84,7 @@ namespace thekogans {
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Project)
                 };
-                std::list<Project::SharedPtr> projects;
+                std::vector<Project::SharedPtr> projects;
                 struct Toolchain : public util::RefCounted {
                     THEKOGANS_UTIL_DECLARE_REF_COUNTED_POINTERS (Toolchain)
                     THEKOGANS_UTIL_DECLARE_STD_ALLOCATOR_FUNCTIONS
@@ -108,7 +108,7 @@ namespace thekogans {
 
                     THEKOGANS_UTIL_DISALLOW_COPY_AND_ASSIGN (Toolchain)
                 };
-                std::list<Toolchain::SharedPtr> toolchain;
+                std::vector<Toolchain::SharedPtr> toolchain;
 
                 explicit Source (const std::string &organization);
                 explicit Source (const pugi::xml_node &node) {

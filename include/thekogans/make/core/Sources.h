@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <string>
-#include <list>
+#include <vector>
 #include <set>
 #include "pugixml/pugixml.hpp"
 #include "thekogans/util/Heap.h"
@@ -48,7 +48,7 @@ namespace thekogans {
 
                 std::string sourcesFilePath;
                 std::string schema_version;
-                std::list<Source::SharedPtr> sources;
+                std::vector<Source::SharedPtr> sources;
 
                 Sources (const std::string &sourcesFilePath =
                     ToSystemPath (MakePath (_TOOLCHAIN_ROOT, SOURCES_XML)));
@@ -95,11 +95,13 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const;
+            #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void GetSourceProject (
                     const std::string &organization,
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const;
+            #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
                 std::string GetSourceToolchainLatestVersion (
                     const std::string &organization,
@@ -124,12 +126,14 @@ namespace thekogans {
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version) const;
+            #if defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
                 void InstallSourceToolchain (
                     const std::string &organization,
                     const std::string &name,
                     const std::string &version,
                     const std::string &config = std::string (),
                     const std::string &type = std::string ()) const;
+            #endif // defined (THEKOGANS_MAKE_CORE_HAVE_CURL)
 
             private:
                 Source::SharedPtr GetSource (const std::string &organization) const;

@@ -87,7 +87,7 @@ namespace thekogans {
             THEKOGANS_UTIL_IMPLEMENT_HEAP_FUNCTIONS (Source::Toolchain)
 
             Source::Source (const std::string &organization) {
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (_SOURCES_ROOT);
                 components.push_back (organization);
                 components.push_back (SOURCE_XML);
@@ -194,7 +194,7 @@ namespace thekogans {
                             gotEntry; gotEntry = directory.GetNextEntry (entry)) {
                         if (entry.type == util::Directory::Entry::Folder &&
                                 !util::IsDotOrDotDot (entry.name.c_str ())) {
-                            std::list<std::string> components;
+                            std::vector<std::string> components;
                             components.push_back (_SOURCES_ROOT);
                             components.push_back (entry.name);
                             components.push_back (SOURCE_XML);
@@ -252,11 +252,9 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch) const {
                 util::Version latestVersion (0);
-                for (std::list<Project::SharedPtr>::const_iterator
-                        it = projects.begin (),
-                        end = projects.end (); it != end; ++it) {
-                    if ((*it)->name == name && (*it)->branch == branch) {
-                        util::Version version ((*it)->version);
+                for (auto project : projects) {
+                    if (project->name == name && project->branch == branch) {
+                        util::Version version (project->version);
                         if (latestVersion < version) {
                             latestVersion = version;
                         }
@@ -269,16 +267,16 @@ namespace thekogans {
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const {
-                const Project *project = GetProject (name, branch, version);
-                return project != 0 ? project->description : std::string ();
+                Project::SharedPtr project = GetProject (name, branch, version);
+                return project != nullptr ? project->description : std::string ();
             }
 
             std::string Source::GetProjectSHA2_256 (
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) const {
-                const Project *project = GetProject (name, branch, version);
-                return project != 0 ? project->SHA2_256 : std::string ();
+                Project::SharedPtr project = GetProject (name, branch, version);
+                return project != nullptr ? project->SHA2_256 : std::string ();
             }
 
             void Source::AddProject (
@@ -287,52 +285,42 @@ namespace thekogans {
                     const std::string &branch,
                     const std::string &version,
                     const std::string &SHA2_256) {
-                bool updated = false;
-                for (std::list<Project::SharedPtr>::iterator
-                        it = projects.begin (),
-                        end = projects.end (); it != end; ++it) {
-                    if ((*it)->name == name && (*it)->branch == branch) {
-                        if ((*it)->version == version) {
+                for (std::size_t i = 0, count = projects.size (); i < count; ++i) {
+                    Project::SharedPtr project = projects[i];
+                    if (project->name == name && project->branch == branch) {
+                        if (project->version == version) {
                             if (!description.empty ()) {
-                                (*it)->description = description;
+                                project->description = description;
                             }
-                            (*it)->SHA2_256 = SHA2_256;
-                            std::cout << "Updating " << **it << std::endl;
-                            updated = true;
-                            break;
+                            project->SHA2_256 = SHA2_256;
+                            std::cout << "Updating " << *project << std::endl;
+                            return;
                         }
-                        else if (util::Version (version) > util::Version ((*it)->version)) {
-                            Project::SharedPtr project (new Project (name, description, branch, version, SHA2_256));
-                            std::cout << "Adding " << *project << std::endl;
-                            projects.insert (it, std::move (project));
-                            updated = true;
-                            break;
+                        else if (util::Version (version) > util::Version (project->version)) {
+                            Project::SharedPtr newProject (new Project (name, description, branch, version, SHA2_256));
+                            std::cout << "Adding " << *newProject << std::endl;
+                            projects.insert (projects.begin () + i, newProject);
+                            return;
                         }
                     }
                 }
-                if (!updated) {
-                    Project::SharedPtr project (new Project (name, description, branch, version, SHA2_256));
-                    std::cout << "Adding " << *project << std::endl;
-                    projects.push_back (std::move (project));
-                }
+                Project::SharedPtr project (new Project (name, description, branch, version, SHA2_256));
+                std::cout << "Adding " << *project << std::endl;
+                projects.push_back (project);
             }
 
             bool Source::DeleteProject (
                     const std::string &name,
                     const std::string &branch,
                     const std::string &version) {
-                for (std::list<Project::SharedPtr>::iterator
-                        it = projects.begin (),
-                        end = projects.end (); it != end;) {
-                    if ((*it)->name == name &&
-                            (*it)->branch == branch &&
-                            (*it)->version == version) {
-                        std::cout << "Deleting " << **it << std::endl;
-                        projects.erase (it);
+                for (std::size_t i = 0, count = projects.size (); i < count; ++i) {
+                    Project::SharedPtr project = projects[i];
+                    if (project->name == name &&
+                            project->branch == branch &&
+                            project->version == version) {
+                        std::cout << "Deleting " << *project << std::endl;
+                        projects.erase (projects.begin () + i);
                         return true;
-                    }
-                    else {
-                        ++it;
                     }
                 }
                 return false;
@@ -367,21 +355,17 @@ namespace thekogans {
 
             void Source::GetToolchainNames (
                     std::set<std::string> &names) const {
-                for (std::list<Toolchain::SharedPtr>::const_iterator
-                        it = toolchain.begin (),
-                        end = toolchain.end (); it != end; ++it) {
-                    names.insert ((*it)->name);
+                for (auto toolchain_ : toolchain) {
+                    names.insert (toolchain_->name);
                 }
             }
 
             void Source::GetToolchainVersions (
                     const std::string &name,
                     std::set<std::string> &versions) const {
-                for (std::list<Toolchain::SharedPtr>::const_iterator
-                        it = toolchain.begin (),
-                        end = toolchain.end (); it != end; ++it) {
-                    if ((*it)->name == name) {
-                        versions.insert ((*it)->version);
+                for (auto toolchain_ : toolchain) {
+                    if (toolchain_->name == name) {
+                        versions.insert (toolchain_->version);
                     }
                 }
             }
@@ -389,11 +373,9 @@ namespace thekogans {
             std::string Source::GetToolchainLatestVersion (
                     const std::string &name) const {
                 util::Version latestVersion (0);
-                for (std::list<Toolchain::SharedPtr>::const_iterator
-                        it = toolchain.begin (),
-                        end = toolchain.end (); it != end; ++it) {
-                    if ((*it)->name == name) {
-                        util::Version version ((*it)->version);
+                for (auto toolchain_ : toolchain) {
+                    if (toolchain_->name == name) {
+                        util::Version version (toolchain_->version);
                         if (latestVersion < version) {
                             latestVersion = version;
                         }
@@ -405,22 +387,22 @@ namespace thekogans {
             std::string Source::GetToolchainFile (
                     const std::string &name,
                     const std::string &version) const {
-                const Toolchain *toolchain = GetToolchain (name, version);
-                return toolchain != 0 ? toolchain->file : std::string ();
+                Toolchain::SharedPtr toolchain = GetToolchain (name, version);
+                return toolchain != nullptr ? toolchain->file : std::string ();
             }
 
             std::string Source::GetToolchainDescription (
                     const std::string &name,
                     const std::string &version) const {
-                const Toolchain *toolchain = GetToolchain (name, version);
-                return toolchain != 0 ? toolchain->description : std::string ();
+                Toolchain::SharedPtr toolchain = GetToolchain (name, version);
+                return toolchain != nullptr ? toolchain->description : std::string ();
             }
 
             std::string Source::GetToolchainSHA2_256 (
                     const std::string &name,
                     const std::string &version) const {
-                const Toolchain *toolchain = GetToolchain (name, version);
-                return toolchain != 0 ? toolchain->SHA2_256 : std::string ();
+                Toolchain::SharedPtr toolchain = GetToolchain (name, version);
+                return toolchain != nullptr ? toolchain->SHA2_256 : std::string ();
             }
 
             void Source::AddToolchain (
@@ -429,47 +411,36 @@ namespace thekogans {
                     const std::string &version,
                     const std::string &file,
                     const std::string &SHA2_256) {
-                bool updated = false;
-                for (std::list<Toolchain::SharedPtr>::iterator
-                        it = toolchain.begin (),
-                        end = toolchain.end (); it != end; ++it) {
-                    if ((*it)->name == name) {
-                        if ((*it)->version == version) {
-                            (*it)->file = file;
-                            (*it)->SHA2_256 = SHA2_256;
-                            std::cout << "Updating " << **it << std::endl;
-                            updated = true;
-                            break;
+                for (std::size_t i =0, count = toolchain.size (); i < count; ++i) {
+                    Toolchain::SharedPtr toolchain_ = toolchain[i];
+                    if (toolchain_->name == name) {
+                        if (toolchain_->version == version) {
+                            toolchain_->file = file;
+                            toolchain_->SHA2_256 = SHA2_256;
+                            std::cout << "Updating " << *toolchain_ << std::endl;
+                            return;
                         }
-                        else if (util::Version (version) > util::Version ((*it)->version)) {
-                            Toolchain::SharedPtr toolchain_ (new Toolchain (name, description, version, file, SHA2_256));
-                            std::cout << "Adding " << *toolchain_ << std::endl;
-                            toolchain.insert (it, std::move (toolchain_));
-                            updated = true;
-                            break;
+                        else if (util::Version (version) > util::Version (toolchain_->version)) {
+                            Toolchain::SharedPtr newToolchain (new Toolchain (name, description, version, file, SHA2_256));
+                            std::cout << "Adding " << *newToolchain << std::endl;
+                            toolchain.insert (toolchain.begin () + i, newToolchain);
+                            return;
                         }
                     }
                 }
-                if (!updated) {
-                    Toolchain::SharedPtr toolchain_ (new Toolchain (name, description, version, file, SHA2_256));
-                    std::cout << "Adding " << *toolchain_ << std::endl;
-                    toolchain.push_back (std::move (toolchain_));
-                }
+                Toolchain::SharedPtr newToolchain (new Toolchain (name, description, version, file, SHA2_256));
+                std::cout << "Adding " << *newToolchain << std::endl;
+                toolchain.push_back (newToolchain);
             }
 
             bool Source::DeleteToolchain (
                     const std::string &name,
                     const std::string &version) {
-                for (std::list<Toolchain::SharedPtr>::iterator
-                        it = toolchain.begin (),
-                        end = toolchain.end (); it != end;) {
-                    if ((*it)->name == name && (*it)->version == version) {
-                        std::cout << "Deleting " << **it << std::endl;
-                        toolchain.erase (it);
+                for (std::size_t i = 0, count = toolchain.size (); i < count; ++i) {
+                    if (toolchain[i]->name == name && toolchain[i]->version == version) {
+                        std::cout << "Deleting " << *toolchain[i] << std::endl;
+                        toolchain.erase (toolchain.begin () + i);
                         return true;
-                    }
-                    else {
-                        ++it;
                     }
                 }
                 return false;
@@ -480,11 +451,9 @@ namespace thekogans {
                 std::string latestVersion = GetToolchainLatestVersion (name);
                 std::set<std::string> versions;
                 GetToolchainVersions (name, versions);
-                for (std::set<std::string>::const_iterator
-                        it = versions.begin (),
-                        end = versions.end (); it != end; ++it) {
-                    if (latestVersion != *it) {
-                        DeleteToolchain (name, *it);
+                for (const auto &version : versions) {
+                    if (latestVersion != version) {
+                        DeleteToolchain (name, version);
                         deleted = true;
                     }
                 }
@@ -494,16 +463,12 @@ namespace thekogans {
             void Source::List () const {
                 std::cout << organization << ": " << url << std::endl;
                 std::cout << "projects:\n";
-                for (std::list<Source::Project::SharedPtr>::const_iterator
-                        it = projects.begin (),
-                        end = projects.end (); it != end; ++it) {
-                    std::cout << "  " << **it << std::endl;
+                for (auto project : projects) {
+                    std::cout << "  " << *project << std::endl;
                 }
                 std::cout << "toolchain:\n";
-                for (std::list<Source::Toolchain::SharedPtr>::const_iterator
-                        it = toolchain.begin (),
-                        end = toolchain.end (); it != end; ++it) {
-                    std::cout << "  " << **it << std::endl;
+                for (auto toolchain_ : toolchain) {
+                    std::cout << "  " << *toolchain_ << std::endl;
                 }
             }
 
@@ -513,7 +478,7 @@ namespace thekogans {
             }
 
             void Source::Save () const {
-                std::list<std::string> components;
+                std::vector<std::string> components;
                 components.push_back (_SOURCES_ROOT);
                 components.push_back (organization);
                 components.push_back (SOURCE_XML);
@@ -652,34 +617,30 @@ namespace thekogans {
                 attributes.push_back (
                     util::Attribute (ATTR_SCHEMA_VERSION, schema_version));
                 sourceFile << util::OpenTag (indentationLevel, TAG_SOURCE, attributes, false, true);
-                for (std::list<Source::Project::SharedPtr>::const_iterator
-                        it = projects.begin (),
-                        end = projects.end (); it != end; ++it) {
+                for (auto project : projects) {
                     util::Attributes attributes;
-                    attributes.push_back (util::Attribute (ATTR_NAME, (*it)->name));
-                    if (!(*it)->description.empty ()) {
-                        attributes.push_back (util::Attribute (ATTR_DESCRIPTION, (*it)->description));
+                    attributes.push_back (util::Attribute (ATTR_NAME, project->name));
+                    if (!project->description.empty ()) {
+                        attributes.push_back (util::Attribute (ATTR_DESCRIPTION, project->description));
                     }
-                    if (!(*it)->branch.empty ()) {
-                        attributes.push_back (util::Attribute (ATTR_BRANCH, (*it)->branch));
+                    if (!project->branch.empty ()) {
+                        attributes.push_back (util::Attribute (ATTR_BRANCH, project->branch));
                     }
-                    attributes.push_back (util::Attribute (ATTR_VERSION, (*it)->version));
-                    attributes.push_back (util::Attribute (ATTR_SHA2_256, (*it)->SHA2_256));
+                    attributes.push_back (util::Attribute (ATTR_VERSION, project->version));
+                    attributes.push_back (util::Attribute (ATTR_SHA2_256, project->SHA2_256));
                     sourceFile << util::OpenTag (indentationLevel + 1, TAG_PROJECT, attributes, true, true);
                 }
-                for (std::list<Source::Toolchain::SharedPtr>::const_iterator
-                        it = toolchain.begin (),
-                        end = toolchain.end (); it != end; ++it) {
+                for (auto toolchain_ : toolchain) {
                     util::Attributes attributes;
-                    attributes.push_back (util::Attribute (ATTR_NAME, (*it)->name));
-                    if (!(*it)->description.empty ()) {
-                        attributes.push_back (util::Attribute (ATTR_DESCRIPTION, (*it)->description));
+                    attributes.push_back (util::Attribute (ATTR_NAME, toolchain_->name));
+                    if (!toolchain_->description.empty ()) {
+                        attributes.push_back (util::Attribute (ATTR_DESCRIPTION, toolchain_->description));
                     }
-                    attributes.push_back (util::Attribute (ATTR_VERSION, (*it)->version));
-                    if (!(*it)->file.empty ()) {
-                        attributes.push_back (util::Attribute (ATTR_FILE, (*it)->file));
+                    attributes.push_back (util::Attribute (ATTR_VERSION, toolchain_->version));
+                    if (!toolchain_->file.empty ()) {
+                        attributes.push_back (util::Attribute (ATTR_FILE, toolchain_->file));
                     }
-                    attributes.push_back (util::Attribute (ATTR_SHA2_256, (*it)->SHA2_256));
+                    attributes.push_back (util::Attribute (ATTR_SHA2_256, toolchain_->SHA2_256));
                     sourceFile << util::OpenTag (indentationLevel + 1, TAG_TOOLCHAIN, attributes, true, true);
                 }
                 sourceFile << util::CloseTag (indentationLevel, TAG_SOURCE);

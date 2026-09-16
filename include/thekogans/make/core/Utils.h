@@ -19,7 +19,7 @@
 #define __thekogans_make_core_Utils_h
 
 #include <string>
-#include <list>
+#include <vector>
 #include <unordered_set>
 #include <unordered_map>
 #include "thekogans/util/Environment.h"
@@ -151,6 +151,8 @@ namespace thekogans {
         #else // defined (TOOLCHAIN_OS_Windows)
             #define ToSystemPath(path) (path)
         #endif // defined (TOOLCHAIN_OS_Windows)
+            _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API SanitizeName (
+                const std::string &name);
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API ParseQuotedString (
                 const thekogans_make &config,
                 thekogans::util::Buffer &buffer,
@@ -209,7 +211,7 @@ namespace thekogans {
                 const std::string &path1,
                 const std::string &path2);
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API MakePath (
-                const std::list<std::string> &components,
+                const std::vector<std::string> &components,
                 bool absolute);
 
             _LIB_THEKOGANS_MAKE_CORE_DECL std::string _LIB_THEKOGANS_MAKE_CORE_API GetFileHash (

@@ -19,7 +19,7 @@
 #define __thekogans_make_core_Parser_h
 
 #include <string>
-#include <list>
+#include <vector>
 #include <set>
 #include "thekogans/make/core/Config.h"
 #include "thekogans/make/core/Value.h"
@@ -59,7 +59,7 @@ namespace thekogans {
                         type (type_),
                         value (value_) {}
                 };
-                std::list<Token> stack;
+                std::vector<Token> stack;
 
                 Tokenizer (
                     const char *expression_,

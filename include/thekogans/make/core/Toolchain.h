@@ -19,7 +19,7 @@
 #define __thekogans_make_core_Toolchain_h
 
 #include <string>
-#include <list>
+#include <vector>
 #include "thekogans/make/core/Config.h"
 
 namespace thekogans {
@@ -38,7 +38,7 @@ namespace thekogans {
                 static void GetVersions (
                     const std::string &organization,
                     const std::string &project,
-                    std::list<std::string> &versions);
+                    std::vector<std::string> &versions);
                 static std::string GetLatestVersion (
                     const std::string &organization,
                     const std::string &project);

@@ -46,7 +46,7 @@ namespace thekogans {
                     return token;
                 }
                 else {
-                    while (*expression != 0 && isspace (*expression)) {
+                    while (*expression != '\0' && isspace (*expression)) {
                         ++expression;
                     }
                     switch (*expression) {
@@ -152,8 +152,7 @@ namespace thekogans {
                         }
                         case '$': {
                             ++expression;
-                            util::TenantReadBuffer buffer (
-                                util::HostEndian, expression, strlen (expression));
+                            util::TenantReadBuffer buffer (util::HostEndian, expression, strlen (expression));
                             Value value = Function::ParseAndExec (config, buffer);
                             expression += buffer.readOffset;
                             return Token (Token::VALUE, value);
