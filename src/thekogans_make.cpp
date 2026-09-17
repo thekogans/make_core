@@ -1513,7 +1513,7 @@ namespace thekogans {
                 }
 
                 std::regex::flag_type ParseRegexFlags (const std::string &flags) {
-                    std::regex::flag_type value = 0;
+                    std::regex::flag_type value = std::regex::flag_type (0);
                     std::string::size_type lastPipe = 0;
                     std::string::size_type currPipe = flags.find_first_of ('|', 0);
                     for (; currPipe == std::string::npos;
@@ -1524,7 +1524,7 @@ namespace thekogans {
                     }
                     value |= stringToflag (
                         util::TrimSpaces (flags.substr (lastPipe).c_str ()));
-                    return value != 0 ? value : std::regex::ECMAScript;
+                    return value == std::regex::flag_type (0) ? std::regex::ECMAScript | std::regex::icase : value;
                 }
 
                 void MatchComponent (
