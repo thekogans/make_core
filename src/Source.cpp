@@ -95,8 +95,8 @@ namespace thekogans {
                 if (util::Path (sourceFilePath).Exists ()) {
                     util::ReadOnlyFile sourcesFile (util::HostEndian, sourceFilePath);
                     // Protect yourself.
-                    const util::ui32 MAX_SOURCES_FILE_SIZE = 1024 * 1024;
-                    util::ui32 sourcesFileSize = (util::ui32)sourcesFile.GetSize ();
+                    const util::ui64 MAX_SOURCES_FILE_SIZE = 1024 * 1024;
+                    util::ui64 sourcesFileSize = sourcesFile.GetSize ();
                     if (sourcesFileSize > MAX_SOURCES_FILE_SIZE) {
                         THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
                             "'%s' is bigger (%u) than expected. (%u)",

@@ -1913,8 +1913,8 @@ namespace thekogans {
                     ToSystemPath (MakePath (project_root, config_file));
                 util::ReadOnlyFile configFile (util::HostEndian, configFilePath);
                 // Protect yourself.
-                const util::ui32 MAX_CONFIG_FILE_SIZE = 1024 * 1024;
-                util::ui32 configFileSize = (util::ui32)configFile.GetSize ();
+                const util::ui64 MAX_CONFIG_FILE_SIZE = 1024 * 1024;
+                util::ui64 configFileSize = configFile.GetSize ();
                 if (configFileSize > MAX_CONFIG_FILE_SIZE) {
                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
                         "'%s' is bigger (%u) than expected. (%u)",
