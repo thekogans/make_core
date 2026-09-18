@@ -127,6 +127,14 @@ namespace thekogans {
                 return constraint;
             }
 
+            std::string Package::Constraint::ToString () const {
+                std::string value = name;
+                if (op != util::Version::NOP) {
+                    value += " " + util::Version::OPTostring (op) + " " + version.ToString ();
+                }
+                return value;
+            }
+
             bool Package::Constraint::MatchesRequirement (const Constraint &requirement) const {
                 if (name == requirement.name) {
                     if (op == util::Version::NOP || requirement.op == util::Version::NOP ||

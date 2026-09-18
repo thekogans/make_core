@@ -82,6 +82,7 @@ namespace thekogans {
                     /// \param[in] name_ Package name.
                     /// \param[in] constraint Optional properly formatted (see above) version constraint.
                     static Constraint Parse (const std::string &requirement);
+                    std::string ToString () const;
 
                     bool MatchesRequirement (const Constraint &requirement) const;
                 };

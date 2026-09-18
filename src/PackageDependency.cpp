@@ -31,6 +31,11 @@ namespace thekogans {
                     package (
                         PackageResolver::Instance ()->Resolve (
                             requirement, dependent.type == TYPE_STATIC)) {
+                if (package == nullptr) {
+                    THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
+                        "Unable to resolve package dependency: %s",
+                        requirement.ToString ().c_str ());
+                }
             }
 
             bool PackageDependency::EquivalentTo (const Dependency &dependency) const {

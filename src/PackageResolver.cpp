@@ -178,7 +178,7 @@ namespace thekogans {
                 std::vector<Package::SharedPtr> packages;
                 std::unordered_set<std::string> visited;
                 std::string resolvedName = ResolveName (requirement, "PackageResolver");
-                if (dfs (resolvedName, static_, packages, visited)) {
+                if (!resolvedName.empty () && dfs (resolvedName, static_, packages, visited)) {
                     std::vector<std::string> libs;
                     // Process libraries from leaf node dependencies up to the root (Bottom-Up)
                     for (auto package : packages) {
