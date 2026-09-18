@@ -154,7 +154,10 @@ namespace thekogans {
                     else {
                         // 1
                         util::Path projectDirectory (GetDirectoryFromName (project));
-                        components.push_back (projectDirectory.GetDirectory ());
+                        std::string directory = projectDirectory.GetDirectory ();
+                        if (!directory.empty ()) {
+                            components.push_back (directory);
+                        }
                         fileTemplate = projectDirectory.GetFullFileName ();
                     }
                     path = ToSystemPath (MakePath (components, false));

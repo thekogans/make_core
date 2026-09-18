@@ -296,7 +296,7 @@ namespace thekogans {
                     virtual void GetRCPreprocessorDefinitions (std::set<std::string> & /*rc_preprocessor_definitions*/) const {}
 
                     // Libraries must come is strict order. We can't use a set here.
-                    virtual void GetLinkLibraries (std::vector<std::string> & /*link_libraries*/) const {}
+                    virtual void GetLinkLibraries (std::set<std::string> & /*link_libraries*/) const {}
                     virtual void GetSharedLibraries (std::set<std::string> & /*shared_libraries*/) const {}
 
                     virtual bool IsInstalled () const {
@@ -478,7 +478,7 @@ namespace thekogans {
                 void GetIncludeDirectories (std::set<std::string> &include_directories_) const;
                 void GetLibraryDirectories (std::set<std::string> &include_directories_) const;
                 void GetFrameworkDirectories (std::set<std::string> &framework_directories) const;
-                void GetLinkLibraries (std::vector<std::string> &link_libraries_) const;
+                void GetLinkLibraries (std::set<std::string> &link_libraries_) const;
                 void GetSharedLibraries (std::set<std::string> &shared_libraries) const;
 
                 void GetLinkerFlags (std::set<std::string> &linker_flags_) const;

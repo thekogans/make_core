@@ -76,18 +76,14 @@ namespace thekogans {
                 }
             }
 
-            void PackageDependency::GetLinkLibraries (std::vector<std::string> &link_libraries) const {
+            void PackageDependency::GetLinkLibraries (std::set<std::string> &link_libraries) const {
                 for (const auto &library_name : package->library_names) {
                     std::string library = "-l" + library_name;
-                    if (link_libraries.empty () || link_libraries.back () != library) {
-                        link_libraries.push_back (library);
-                    }
+                    link_libraries.insert (library);
                 }
                 for (const auto &framework_name : package->framework_names) {
                     std::string framework = "-framework " + framework_name;
-                    if (link_libraries.empty () || link_libraries.back () != framework) {
-                        link_libraries.push_back (framework);
-                    }
+                    link_libraries.insert (framework);
                 }
             }
 

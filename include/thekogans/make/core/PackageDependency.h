@@ -45,7 +45,7 @@ namespace thekogans {
                 virtual void GetLinkerFlags (std::set<std::string> &linker_flags) const override;
                 virtual void GetCFlags (std::set<std::string> &c_flags) const override;
                 virtual void GetCPreprocessorDefinitions (std::set<std::string> &c_preprocessor_definitions) const override;
-                virtual void GetLinkLibraries (std::vector<std::string> &link_libraries) const override;
+                virtual void GetLinkLibraries (std::set<std::string> &link_libraries) const override;
             };
 
         } // namespace core

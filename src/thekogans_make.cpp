@@ -345,7 +345,7 @@ namespace thekogans {
                 }
             }
 
-            void thekogans_make::GetLinkLibraries (std::vector<std::string> &link_libraries) const {
+            void thekogans_make::GetLinkLibraries (std::set<std::string> &link_libraries) const {
                 for (auto dependency : dependencies) {
                     dependency->GetLinkLibraries (link_libraries);
                 }

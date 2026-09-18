@@ -408,10 +408,10 @@ namespace thekogans {
                 }
             }
 
-            void ProjectDependency::GetLinkLibraries (std::vector<std::string> &link_libraries) const {
+            void ProjectDependency::GetLinkLibraries (std::set<std::string> &link_libraries) const {
                 if (config_.project_type == PROJECT_TYPE_LIBRARY) {
                     if (config_.HasGoal ()) {
-                        link_libraries.push_back (config_.GetProjectLinkLibrary ());
+                        link_libraries.insert (config_.GetProjectLinkLibrary ());
                     }
                     for (auto dependency : config_.dependencies) {
                         if (!dependency->IsPrivate () || GetType () == TYPE_STATIC) {

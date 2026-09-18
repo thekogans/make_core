@@ -30,12 +30,12 @@ namespace thekogans {
                 return libraryDependency != nullptr && libraryDependency->name == name;
             }
 
-            void LibraryDependency::GetLinkLibraries (std::vector<std::string> &link_libraries) const {
+            void LibraryDependency::GetLinkLibraries (std::set<std::string> &link_libraries) const {
                     std::string prefix;
                 #if !defined (TOOLCHAIN_OS_Windows)
                     prefix += "-l";
                 #endif // !defined (TOOLCHAIN_OS_Windows)
-                    link_libraries.push_back (prefix + name);
+                    link_libraries.insert (prefix + name);
             }
 
             std::string LibraryDependency::ToString (util::ui32 indentationLevel) const {

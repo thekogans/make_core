@@ -376,11 +376,11 @@ namespace thekogans {
                 }
             }
 
-            void ToolchainDependency::GetLinkLibraries (std::vector<std::string> &link_libraries) const {
+            void ToolchainDependency::GetLinkLibraries (std::set<std::string> &link_libraries) const {
                 if (config_.project_type == PROJECT_TYPE_LIBRARY) {
                     std::string link_library = config_.GetToolchainLinkLibrary ();
                     if (util::Path (ToSystemPath (link_library)).Exists ()) {
-                        link_libraries.push_back (link_library);
+                        link_libraries.insert (link_library);
                     }
                     for (auto dependency : config_.dependencies) {
                         if (!dependency->IsPrivate () || config_.type == TYPE_STATIC) {

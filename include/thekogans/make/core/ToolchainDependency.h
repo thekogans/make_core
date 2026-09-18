@@ -113,7 +113,7 @@ namespace thekogans {
                 virtual void GetRCFlags (std::set<std::string> &rc_flags) const override;
                 virtual void GetRCPreprocessorDefinitions (std::set<std::string> &rc_preprocessor_definitions) const override;
 
-                virtual void GetLinkLibraries (std::vector<std::string> &link_libraries) const override;
+                virtual void GetLinkLibraries (std::set<std::string> &link_libraries) const override;
                 virtual void GetSharedLibraries (std::set<std::string> &shared_libraries) const override;
 
                 virtual bool IsInstalled () const override {

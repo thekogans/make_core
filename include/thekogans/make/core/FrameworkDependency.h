@@ -39,8 +39,8 @@ namespace thekogans {
 
                 virtual bool EquivalentTo (const Dependency &dependency) const override;
 
-                virtual void GetLinkLibraries (std::vector<std::string> &link_libraries) const override {
-                    link_libraries.push_back ("-framework " + name);
+                virtual void GetLinkLibraries (std::set<std::string> &link_libraries) const override {
+                    link_libraries.insert ("-framework " + name);
                 }
 
                 virtual std::string ToString (util::ui32 indentationLevel = 0) const override;
