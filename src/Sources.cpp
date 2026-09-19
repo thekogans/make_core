@@ -66,7 +66,8 @@ namespace thekogans {
                     util::ui64 sourcesFileSize = sourcesFile.GetSize ();
                     if (sourcesFileSize > MAX_SOURCES_FILE_SIZE) {
                         THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                            "'%s' is bigger (%u) than expected. (%u)",
+                            "'%s' is bigger " THEKOGANS_UTIL_UI64_FORMAT
+                            " than expected. " THEKOGANS_UTIL_UI64_FORMAT,
                             sourcesFilePath.c_str (),
                             sourcesFileSize,
                             MAX_SOURCES_FILE_SIZE);
@@ -77,7 +78,7 @@ namespace thekogans {
                                 buffer.GetWritePtr (),
                                 sourcesFileSize)) != sourcesFileSize) {
                         THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                            "Unable to read %u bytes from '%s'.",
+                            "Unable to read " THEKOGANS_UTIL_UI64_FORMAT " bytes from '%s'.",
                             sourcesFileSize,
                             sourcesFilePath.c_str ());
                     }

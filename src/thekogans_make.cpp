@@ -1917,7 +1917,8 @@ namespace thekogans {
                 util::ui64 configFileSize = configFile.GetSize ();
                 if (configFileSize > MAX_CONFIG_FILE_SIZE) {
                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                        "'%s' is bigger (%u) than expected. (%u)",
+                        "'%s' is bigger " THEKOGANS_UTIL_UI64_FORMAT
+                        " than expected. " THEKOGANS_UTIL_UI64_FORMAT,
                         configFilePath.c_str (),
                         configFileSize,
                         MAX_CONFIG_FILE_SIZE);
@@ -1928,7 +1929,7 @@ namespace thekogans {
                             buffer.GetWritePtr (),
                             configFileSize)) != configFileSize) {
                     THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                        "Unable to read %u bytes from '%s'.",
+                        "Unable to read " THEKOGANS_UTIL_UI64_FORMAT " bytes from '%s'.",
                         configFileSize,
                         configFilePath.c_str ());
                 }

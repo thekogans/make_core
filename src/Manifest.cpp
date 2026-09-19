@@ -50,18 +50,17 @@ namespace thekogans {
                     util::ui64 fileSize = file.GetSize ();
                     if (fileSize > maxManifestFileSize) {
                         THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                            "'%s' is bigger (%u) than expected. (" THEKOGANS_UTIL_UI64_FORMAT ")",
+                            "'%s' is bigger " THEKOGANS_UTIL_UI64_FORMAT
+                            " than expected. (" THEKOGANS_UTIL_UI64_FORMAT ")",
                             path.c_str (),
                             fileSize,
                             maxManifestFileSize);
                     }
                     util::Buffer buffer (util::HostEndian, (util::ui32)fileSize);
                     if (buffer.AdvanceWriteOffset (
-                            file.Read (
-                                buffer.GetWritePtr (),
-                                (util::ui32)fileSize)) != (util::ui32)fileSize) {
+                            file.Read (buffer.GetWritePtr (), fileSize)) != fileSize) {
                         THEKOGANS_UTIL_THROW_STRING_EXCEPTION (
-                            "Unable to read %u bytes from '%s'.",
+                            "Unable to read " THEKOGANS_UTIL_UI64_FORMAT " bytes from '%s'.",
                             fileSize,
                             path.c_str ());
                     }
