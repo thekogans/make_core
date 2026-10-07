@@ -25,13 +25,13 @@ namespace thekogans {
                 util::ui32 major = 0;
                 util::ui32 minor = 0;
                 util::ui32 patch = 0;
-            #if !THEKOGANS_UTIL_IS_MACRO_EMPTY (THEKOGANS_MAKE_CORE_MAJOR_VERSION)
+            #if defined (THEKOGANS_MAKE_CORE_MAJOR_VERSION)
                 major = THEKOGANS_MAKE_CORE_MAJOR_VERSION;
             #endif
-            #if !THEKOGANS_UTIL_IS_MACRO_EMPTY (THEKOGANS_MAKE_CORE_MINOR_VERSION)
+            #if defined (THEKOGANS_MAKE_CORE_MINOR_VERSION)
                 minor = THEKOGANS_MAKE_CORE_MINOR_VERSION;
             #endif
-            #if !THEKOGANS_UTIL_IS_MACRO_EMPTY (THEKOGANS_MAKE_CORE_PATCH_VERSION)
+            #if defined (THEKOGANS_MAKE_CORE_PATCH_VERSION)
                 patch = THEKOGANS_MAKE_CORE_PATCH_VERSION;
             #endif
                 static const util::Version version (major, minor, patch);
